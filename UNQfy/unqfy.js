@@ -99,9 +99,9 @@ class UNQfy {
   }
 
   deleteTrack(artistId, trackId){
-    this.playlists.forEach(playL => playL.filter (track => track !== trackId))
+    this.playlists.forEach(playL => playL.tracks.filter (track => track !== trackId))
     const artist = this.artists.find(artist => artist === artistId);
-    artist.albumes.forEach(album => album.filter(track => track !== trackId))
+    artist.albumes.forEach(album => album.tracks.filter(track => track !== trackId))
   }
 
   getArtistById(id) {
