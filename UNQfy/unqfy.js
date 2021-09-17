@@ -5,6 +5,7 @@ const fs = require('fs'); // para cargar/guarfar unqfy
 const Album = require('./album');
 const Artist = require('./artist'); 
 const Track = require('./track');
+const { isUndefined } = require('util');
 
 class UNQfy {
   constructor() {
@@ -28,13 +29,8 @@ class UNQfy {
   }
 
   contentArtist(artistId) {
-    let content = false;
-    this.artists.forEach( artist => {
-        if(artist.id === artistId) {
-            content = true;
-        }
-    });
-    return content;
+    return this.artists.some( artist => artist.id === artistId)
+    
   }
 
   /*
@@ -102,6 +98,12 @@ class UNQfy {
     }
   }
 
+  deleteTrack(artistId, trackId){
+    this.playlists.forEach(playL => playL.filter (track => track !== trackId))
+    const artist = this.artists.find(artist => artist === artistId);
+    artist.albumes.forEach(album => album.filter(track => track !== trackId))
+  }
+
   getArtistById(id) {
     return this.artists.find(artist => artist.id === id);
   }
@@ -142,7 +144,12 @@ class UNQfy {
   // artistName: nombre de artista(string)
   // retorna: los tracks interpredatos por el artista con nombre artistName
   getTracksMatchingArtist(artistName) {
-
+    const tracksByArtist = [];
+    const artistR = this.artists.find(artist => artist === artistName );
+    if (!artistR.isUndefined()){
+      tracksByArtist = artistR.albumes.forEach(listTrack => tracksByArtist.concat(listTrack));
+    }
+    return tracksByArtist;
   }
 
   // name: nombre de la playlist
