@@ -42,7 +42,6 @@ function saveUNQfy(unqfy, filename = 'data.json') {
    2. Obtener instancia de UNQfy (getUNQFy)
    3. Ejecutar el comando correspondiente en Unqfy
    4. Guardar el estado de UNQfy (saveUNQfy)
-
 */
 
 function addArtist(unqfy, name, country, genre){
@@ -50,12 +49,14 @@ function addArtist(unqfy, name, country, genre){
 }
 
 function deleteArtist(unqfy, name) {
-  unqfy.deleteArtist({name: name});
+  const artist = unqfy.artists.find(artist => artist.name === name);
+  unqfy.deleteArtist(artist.id);
 }
 
 function addAlbum(unqfy, artistName, name, year, genre){
   const artist = unqfy.artists.find(artist => artist.name === artistName);
-  unqfy.addAlbum(artist.id, {name:name, year: year, genre: genre, author: artist.name});
+    unqfy.addAlbum(artist.id, {name:name, year: year, genre: genre, author: artist.name});
+ 
 }
 
 // function deleteAlbum(unqfy, artistName) 

@@ -27,6 +27,28 @@ class UNQfy {
     return artist;
   }
 
+  contentArtist(artistId) {
+    let content = false;
+    this.artists.forEach( artist => {
+        if(artist.id === artistId) {
+            content = true;
+        }
+    });
+    return content;
+  }
+
+  /*
+  contentArtist(artistName) {
+    const artists = this.artists;
+    if (artists.length >=1 ) {
+      while (artists.length !== 0 && artists[0].name !== artistName) { 
+        artists.shift();
+      }  
+      return artists[0].name !== artistName;    
+    }
+  }
+  */
+
   // albumData: objeto JS con los datos necesarios para crear un album
   //   albumData.name (string)
   //   albumData.year (number)
@@ -38,13 +60,14 @@ class UNQfy {
      - una propiedad year (number)
   */
     const album = new Album(albumData.name, albumData.year, albumData.genre, albumData.author);
-    this.artists.forEach(artist => {
-      if (artist.id === artistId) {
-           artist.albumes.push(album);
-      }
-    });
-    return album; 
+      this.artists.forEach(artist => {
+        if (artist.id === artistId) {
+             artist.albumes.push(album);
+        }
+      });
+      return album; 
   }
+    
 
   // trackData: objeto JS con los datos necesarios para crear un track
   //   trackData.name (string)
@@ -72,19 +95,9 @@ class UNQfy {
     return track;
   }
 
-  contentArtist(artistName) {
-    let content = false;
-    this.artists.forEach( artist => {
-        if(artist.name === artistName) {
-            content = true;
-        }
-    });
-    return content;
-  }
-
-  deleteArtist(artistData) {
-    if(this.contentArtist(artistData.name)) {
-      const pos =  this.artists.indexOf(artistData.name);
+  deleteArtist(artistId) {
+    if(this.contentArtist(artistId)) {
+      const pos =  this.artists.indexOf(artistId);
       this.artists.splice(pos, 1);
     }
   }
@@ -111,18 +124,19 @@ class UNQfy {
   // genres: array de generos(strings)
   // retorna: los tracks que contenga alguno de los generos en el parametro genres
   getTracksMatchingGenres(genres) {
-    const albumes = this.artists.map(artist => artist.albumes);
-    const tracks = albumes.map(album => album.tracks);
-    let tracksResultado = [];
-      tracks.forEach(track => {
-        genres.forEach(genre => {
-          if (track.genres.includes(genre)) {
-          tracksResultado = tracksResultado.push(track);  //// Agrega el mismo track varias veces ?
-          }
-        });
-      });
-    return tracksResultado;
-    //return tracks.filter(track => { genres.forEach( genre => track.genres.includes(genre));
+    const albumesFiltrados = this.artists.map(artist => artist.albumes).filter(album => genres.includes(album.genre));
+    const tracks = albumesFiltrados.map(album => album.tracks);
+    const tracksRes = tracks.filter(track => this.contentGenres(track.genres, genres));
+        
+    return tracksRes;
+  }
+
+  contentGenres(trackGenres, genres) {
+    const trackMod = trackGenres;
+    while(trackMod.length !== 0 && !genres.includes(trackMod[0])) {
+      trackMod.shift();
+    }
+    return genres.includes(trackMod[0]);
   }
 
   // artistName: nombre de artista(string)
@@ -130,7 +144,6 @@ class UNQfy {
   getTracksMatchingArtist(artistName) {
 
   }
-
 
   // name: nombre de la playlist
   // genresToInclude: array de generos
@@ -143,6 +156,10 @@ class UNQfy {
       * un metodo duration() que retorne la duración de la playlist.
       * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
   */
+
+  }
+
+  searchByName() {
 
   }
 
