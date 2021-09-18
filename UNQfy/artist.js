@@ -8,13 +8,16 @@ class Artist {
     }
 
     contentAlbum(albumId) {
-        let content = false;
-        this.albumes.forEach( album => {
-            if(album.id === albumId) {
-                content = true;
-            }
-        });
-        return content;
+        return this.albumes.some(album => album.id === albumId); 
+    }
+    
+    addAlbum(album) {
+        this.albumes.push(album);
+    }
+
+    deleteAlbum(album) {
+      const pos = this.albumes.indexOf(album.id);
+      this.albumes.splice(pos, 1);
     }
 }
 

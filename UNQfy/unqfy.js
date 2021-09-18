@@ -29,8 +29,7 @@ class UNQfy {
   }
 
   contentArtist(artistId) {
-    return this.artists.some( artist => artist.id === artistId)
-    
+    return this.artists.some(artist => artist.id === artistId);
   }
 
   /*
@@ -56,12 +55,13 @@ class UNQfy {
      - una propiedad year (number)
   */
     const album = new Album(albumData.name, albumData.year, albumData.genre, albumData.author);
-      this.artists.forEach(artist => {
-        if (artist.id === artistId) {
-             artist.albumes.push(album);
-        }
-      });
+    if(this.contentArtist(artistId)) {
+      const artist = this.artists.find(artist => artist.id === artistId );
+      artist.addAlbum(album);
       return album; 
+    } else {
+      return console.log('No se puede agregar el album '+album.name+ 'porque el artist no existe');
+    }
   }
     
 
@@ -77,15 +77,12 @@ class UNQfy {
       - una propiedad duration (number),
       - una propiedad genres (lista de strings)
   */
-    const track = new Track(trackData.name, parseInt(trackData.duration), trackData.genres, trackData.author);
+    const track = new Track(trackData.name, parseInt(trackData.duration), trackData.genres, trackData.album, trackData.author);
     this.artists.forEach(artist => {
-      if (artist.contentAlbum(albumId)) {
-        artist.albumes.forEach( album => {
-          if (album.id === albumId) {
-            album.tracks.push(track);
-            album.setDuration(track.duration);
-          }
-        });
+      if(artist.contentAlbum(albumId)) {
+        const album = artist.albumes.find(album => album.id === albumId);
+        album.addTrack(track);
+        album.setDuration(track.duration);
       }
     });
     return track;
@@ -97,6 +94,34 @@ class UNQfy {
       this.artists.splice(pos, 1);
     }
   }
+
+  deleteAlbum(artistId, albumId) {
+    if(this.contentArtist(artistId)) {
+      const artist = this.artists.find(artist => artist.id === artistId );
+      if(artist.contentAlbum(albumId)) {
+        const album = artist.albumes.find(album => album.i === albumId);
+        if(album.tracks.length === 0) {
+          artist.deleteAlbum(album);
+        } else {
+          album.deleteTracks();
+        }
+      }
+    }
+  }
+/*
+  deleteTrack(artistId, albumId, trackId) {
+    if(this.contentArtist(artistId)) {
+      const artist = this.artists.find(artist => artist.id === artistId );
+      if(artist.contentAlbum(albumId)) {
+        const album = artist.albumes.find(album => album.id === albumId);
+        if(album.contentTrack(trackId)) {
+          const track = album.tracks.find(track => track.id === trackId);
+          album.deleteTrack(track);
+        }
+      }
+    }  
+  }
+*/
 
   deleteTrack(artistId, trackId){
     this.playlists.forEach(playL => playL.tracks.filter (track => track !== trackId))
@@ -144,8 +169,8 @@ class UNQfy {
   // artistName: nombre de artista(string)
   // retorna: los tracks interpredatos por el artista con nombre artistName
   getTracksMatchingArtist(artistName) {
-    const tracksByArtist = [];
-    const artistR = this.artists.find(artist => artist === artistName );
+    let tracksByArtist = [];
+    const artistR = this.artists.find(artist => artist.name === artistName);
     if (!artistR.isUndefined()){
       tracksByArtist = artistR.albumes.forEach(listTrack => tracksByArtist.concat(listTrack));
     }
@@ -166,8 +191,29 @@ class UNQfy {
 
   }
 
-  searchByName() {
+  searchByName(name) {
+    const artistsByName = this.artists.filter(artist =>  artist.name.includes(name));
+    const albumes = this.artists.map(artist => artist.albumes);
+    const albumesByName = albumes.filter(album => album.name.includes(name));
+    const tracksByName = albumes.map(album => album.tracks).filter(track => track.name.includes(name));
+    const search = [artistsByName + albumesByName + tracksByName];
+    console.log(search);
+    return search;
+  }
 
+  searchByArtist(artist) {
+    const search = [];
+    artist.albumes.forEach(album => search.concat(album.tracks));
+    console.log(search);
+    return search;
+  }
+
+  searchByGenre(genre) {
+    const search = [];
+    const albumesByGenre = this.artists.map(artist => artist.albumes).filter(album => album.genre === genre);
+    albumesByGenre.forEach(album => search.concat(album.tracks));
+    console.log(search);
+    return search;
   }
 
   save(filename) {

@@ -56,19 +56,41 @@ function deleteArtist(unqfy, name) {
 function addAlbum(unqfy, artistName, name, year, genre){
   const artist = unqfy.artists.find(artist => artist.name === artistName);
     unqfy.addAlbum(artist.id, {name:name, year: year, genre: genre, author: artist.name});
- 
 }
 
-// function deleteAlbum(unqfy, artistName) 
+function deleteAlbum(unqfy, artistName, name) {
+  const artist = unqfy.artists.find(artist => artist.name === artistName);
+  const album = artist.albumes.find(album => album.name === name);
+  unqfy.deleteAlbum(artist.id, album.id);
+}
 
 function addTrack(unqfy, artistName, albumName, name, duration, genres) {
   const artist = unqfy.artists.find(artist => artist.name === artistName);
   const album = artist.albumes.find(album => album.name === albumName);
-  unqfy.addTrack(album.id, {name: name, duration: duration, genres: genres, author: artist.name});
+  unqfy.addTrack(album.id, {name: name, duration: duration, genres: genres, album: album.name, author: artist.name});
+}
+
+function deleteTrack(unqfy, artistName, albumName, name) {
+  const artist = unqfy.artists.find(artist => artist.name === artistName);
+  const album = artist.albumes.find(album => album.name === albumName);
+  const track = album.tracks.find(track => track.name === name);
+  unqfy.deleteTrack(artist.id, album.id, track.id);
+}
+
+function searchByName(unqfy, name) {
+  unqfy.searchByName(name);
+}
+
+function searchByArtist(unqfy, artistName) {
+  const artist = unqfy.artists.find(artist => artist.name === artistName);
+  unqfy.searchByArtist(artist);
+}
+
+function searchByGenre(unqfy, genre) {
+  unqfy.searchByGenre(genre);
 }
 
 function main() {
-  console.log('arguments:');
   const arguments_ = process.argv.splice(2);
   const unqfy = getUNQfy();
   if (arguments_[0] === "addArtist"){
@@ -79,8 +101,17 @@ function main() {
     addTrack(unqfy, arguments_[1], arguments_[2], arguments_[3], arguments_[4], arguments_[5]);
   } else if (arguments_[0] === "deleteArtist") {
     deleteArtist(unqfy, arguments_[1]);
+  } else if (arguments_[0] === "deleteAlbum") {
+    deleteAlbum(unqfy, arguments_[1], arguments_[2]);
+  } else if (arguments_[0] === "deleteTrack") {
+    deleteTrack(unqfy, arguments_[1], arguments_[2], arguments_[3]);
+  } else if (arguments_[0] === 'searchByName') {
+    searchByName(unqfy, arguments_[1]);
+  } else if (arguments_[0] === 'searchByArtist') {
+    searchByArtist(unqfy, arguments_[1]);
+  } else if (arguments_[0] === 'searchByGenre') {
+    searchByGenre(unqfy, arguments_[1]);
   }
-
   saveUNQfy(unqfy);
 }
 
