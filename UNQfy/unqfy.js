@@ -6,6 +6,7 @@ const Album = require('./album');
 const Artist = require('./artist'); 
 const Track = require('./track');
 const { isUndefined } = require('util');
+const Playlist = require('./playlist');
 
 class UNQfy {
   constructor() {
@@ -124,9 +125,9 @@ class UNQfy {
 */
 
   deleteTrack(artistId, trackId){
-    this.playlists.forEach(playL => playL.tracks.filter (track => track !== trackId))
+    this.playlists.forEach(playL => playL.tracks.filter (track => track !== trackId));
     const artist = this.artists.find(artist => artist === artistId);
-    artist.albumes.forEach(album => album.tracks.filter(track => track !== trackId))
+    artist.albumes.forEach(album => album.tracks.filter(track => track !== trackId));
   }
 
   getArtistById(id) {
@@ -171,10 +172,14 @@ class UNQfy {
   getTracksMatchingArtist(artistName) {
     let tracksByArtist = [];
     const artistR = this.artists.find(artist => artist.name === artistName);
-    if (!artistR.isUndefined()){
+    if (artistR !== undefined){
       tracksByArtist = artistR.albumes.forEach(listTrack => tracksByArtist.concat(listTrack));
     }
     return tracksByArtist;
+  }
+
+  contentPlaylist(name) {
+    return this.playlists.some(playlist => playlist.name === name);
   }
 
   // name: nombre de la playlist
@@ -188,7 +193,15 @@ class UNQfy {
       * un metodo duration() que retorne la duración de la playlist.
       * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
   */
-
+    if(!this.contentPlaylist(name)) {
+      const playlist = new Playlist(name, maxDuration, genresToInclude);
+      const tracks = this.getTracksMatchingGenres(genresToInclude);
+      while( tracks[0].duration <= playlist.duration) {
+        !playlist.hasTrack(tracks[0]) ? playlist.addTrack(tracks[0]) : [];
+         tracks.shift();
+      }
+    }
+    return this.playlist;
   }
 
   searchByName(name) {

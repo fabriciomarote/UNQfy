@@ -90,6 +90,10 @@ function searchByGenre(unqfy, genre) {
   unqfy.searchByGenre(genre);
 }
 
+function createPlaylist(unqfy, name, genres, duration) {
+  unqfy.createPlaylist(name, genres, duration);
+}
+
 function main() {
   const arguments_ = process.argv.splice(2);
   const unqfy = getUNQfy();
@@ -111,6 +115,8 @@ function main() {
     searchByArtist(unqfy, arguments_[1]);
   } else if (arguments_[0] === 'searchByGenre') {
     searchByGenre(unqfy, arguments_[1]);
+  } else if (arguments_[0] === 'createPlaylist') {
+    createPlaylist(unqfy, arguments_[1], arguments_[2], arguments_[3]);
   }
   saveUNQfy(unqfy);
 }
