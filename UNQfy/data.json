@@ -22,26 +22,109 @@
       "albumes": "__00005__"
     },
     "__00005__": {
-      "0": "__00006__"
+      "0": "__00006__",
+      "1": "__00007__"
     },
     "__00006__": {
       "id": 0,
       "name": "Doble Vida",
-      "year": "Rock",
+      "year": "1980",
+      "genre": "Rock",
       "author": "Soda Stereo",
-      "duration": 280,
-      "tracks": "__00007__"
+      "duration": 2215,
+      "tracks": "__00008__"
     },
     "__00007__": {
-      "0": "__00008__"
+      "id": 0,
+      "name": "Cancion Animal",
+      "year": "1985",
+      "genre": "Rock",
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00009__"
     },
     "__00008__": {
+      "0": "__00010__",
+      "1": "__00011__",
+      "2": "__00012__",
+      "3": "__00013__",
+      "4": "__00014__",
+      "5": "__00015__",
+      "6": "__00016__",
+      "7": "__00017__"
+    },
+    "__00009__": {},
+    "__00010__": {
       "id": 0,
-      "name": "En El Borde",
-      "duration": 280,
+      "name": "De Musica Ligera",
+      "duration": 310,
+      "genres": "Rock",
+      "album": "Cancion Animal",
+      "author": "Soda Stereo"
+    },
+    "__00011__": {
+      "id": 0,
+      "name": "Te Para 3",
+      "duration": 146,
+      "genres": "Rock",
+      "album": "Cancion Animal",
+      "author": "Soda Stereo"
+    },
+    "__00012__": {
+      "id": 0,
+      "name": "Los Languis",
+      "duration": 231,
       "genres": "Rock",
       "album": "Doble Vida",
       "author": "Soda Stereo"
+    },
+    "__00013__": {
+      "id": 0,
+      "name": "El Ritmo De Tus Ojos",
+      "duration": 234,
+      "genres": "Rock",
+      "album": "Doble Vida",
+      "author": "Soda Stereo"
+    },
+    "__00014__": {
+      "id": 0,
+      "name": "Terapia De Amor Intensiva",
+      "duration": 337,
+      "genres": "Rock",
+      "album": "Doble Vida",
+      "author": "Soda Stereo"
+    },
+    "__00015__": {
+      "id": 0,
+      "name": "Lo Que Sangra",
+      "duration": 271,
+      "genres": "Rock, Rock-Pop",
+      "album": "Doble Vida",
+      "author": "Soda Stereo"
+    },
+    "__00016__": {
+      "id": 0,
+      "name": "En La Ciudad De La Furia",
+      "duration": 343,
+      "genres": "__00018__",
+      "album": "Doble Vida",
+      "author": "Soda Stereo"
+    },
+    "__00017__": {
+      "id": 0,
+      "name": "Signos",
+      "duration": 343,
+      "genres": "__00019__",
+      "album": "Doble Vida",
+      "author": "Soda Stereo"
+    },
+    "__00018__": {
+      "0": "Rock",
+      "1": " Pop"
+    },
+    "__00019__": {
+      "0": "Rock",
+      "1": " Pop"
     }
   },
   "types": {
@@ -51,7 +134,18 @@
     "__00004__": "Artist",
     "__00005__": "Array",
     "__00006__": "Album",
-    "__00007__": "Array",
-    "__00008__": "Track"
+    "__00007__": "Album",
+    "__00008__": "Array",
+    "__00009__": "Array",
+    "__00010__": "Track",
+    "__00011__": "Track",
+    "__00012__": "Track",
+    "__00013__": "Track",
+    "__00014__": "Track",
+    "__00015__": "Track",
+    "__00016__": "Track",
+    "__00017__": "Track",
+    "__00018__": "Array",
+    "__00019__": "Array"
   }
 }

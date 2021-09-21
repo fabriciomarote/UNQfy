@@ -1,8 +1,8 @@
 class Playlist {
-    constructor(name, duration, genres) {
+    constructor(name, genres) {
         this.id = 1;
         this.name = name;
-        this.duration = duration;
+        this.duration = 0;
         this.genres = genres;
         this.tracks = [];
     }

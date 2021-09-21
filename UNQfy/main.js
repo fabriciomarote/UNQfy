@@ -49,7 +49,7 @@ function addArtist(unqfy, name, country, genre){
 }
 
 function deleteArtist(unqfy, name) {
-  if(unqfy.contentArtist(name)) {
+  if(unqfy.existsArtist(name)) {
     const artist = unqfy.artists.find(artist => artist.name === name);
     unqfy.deleteArtist(artist);
   } else {
@@ -58,7 +58,7 @@ function deleteArtist(unqfy, name) {
 }
 
 function addAlbum(unqfy, artistName, name, year, genre){
-  if(unqfy.contentArtist(artistName)) {
+  if(unqfy.existsArtist(artistName)) {
     const artist = unqfy.artists.find(artist => artist.name === artistName);
     unqfy.addAlbum(artist.id, {name:name, year: year, genre: genre, author: artist.name});
   } else {
@@ -67,7 +67,7 @@ function addAlbum(unqfy, artistName, name, year, genre){
 }  
 
 function deleteAlbum(unqfy, artistName, name) {
-  if(unqfy.contentArtist(artistName)) {
+  if(unqfy.existsArtist(artistName)) {
     const artist = unqfy.artists.find(artist => artist.name === artistName);
     if(artist.existsAlbum(name)) {
       const album = artist.albumes.find(album => album.name === name);
@@ -81,7 +81,7 @@ function deleteAlbum(unqfy, artistName, name) {
 }
 
 function addTrack(unqfy, artistName, albumName, name, duration, genres) {
-  if(unqfy.contentArtist(artistName)) {
+  if(unqfy.existsArtist(artistName)) {
     const artist = unqfy.artists.find(artist => artist.name === artistName);
     if(artist.existsAlbum(albumName)) {
       const album = artist.albumes.find(album => album.name === albumName);
@@ -123,11 +123,15 @@ function createPlaylist(unqfy, name, genres, duration) {
 }
 
 function getTracksMatchingArtist(unqfy, artistName) {
-  if(unqfy.contentArtist(artistName)) {
+  if(unqfy.existsArtist(artistName)) {
     unqfy.getTracksMatchingArtist(artistName)
   } else {
     console.log('The tracks cannot be returned because the artist '+artistName+' does not exist');
   }   
+}
+
+function getTracksMatchingGenres(unqfy, genres) {
+  unqfy.getTracksMatchingGenres(genres);
 }
 
 function main() {
@@ -155,6 +159,8 @@ function main() {
     createPlaylist(unqfy, arguments_[1], arguments_[2], arguments_[3]);
   } else if (arguments_[0] === 'getTracksMatchingArtist') {
     getTracksMatchingArtist(unqfy,arguments_[1]);
+  } else if (arguments_[0] === 'getTracksMatchingGenres') {
+    getTracksMatchingGenres(unqfy,arguments_[1]);
   }
   saveUNQfy(unqfy);
 }

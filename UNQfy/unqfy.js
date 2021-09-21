@@ -23,7 +23,7 @@ class UNQfy {
     - una propiedad name (string)
     - una propiedad country (string)
   */
-    if(!this.contentArtist(artistData.name)) {
+    if(!this.existsArtist(artistData.name)) {
       const artist = new Artist(artistData.name, artistData.country, artistData.genre);
       this.artists.push(artist);
       console.log('The artist '+artistData.name+' was added successfully');
@@ -33,7 +33,7 @@ class UNQfy {
     }   
   }
 
-  contentArtist(artistName) {
+  existsArtist(artistName) {
     return this.artists.some(artist => artist.name === artistName);
   }
 
@@ -47,7 +47,7 @@ class UNQfy {
      - una propiedad name (string)
      - una propiedad year (number)
   */
-    const artist = this.artists.find(artist => artist.id === artistId );
+    const artist = this.getArtistById(artistId);
     if(!artist.existsAlbum(albumData.name)) {
       const album = new Album(albumData.name, albumData.year, albumData.genre, albumData.author);
       artist.addAlbum(album);
@@ -57,7 +57,6 @@ class UNQfy {
       return console.log("Can't add album "+albumData.name+" because it already exists");
     }
   }
-    
 
   // trackData: objeto JS con los datos necesarios para crear un track
   //   trackData.name (string)
@@ -73,7 +72,7 @@ class UNQfy {
   */
     const artist = this.artists.find(artist =>  artist.contentAlbum(albumId));
     const album = artist.albumes.find(album => album.id === albumId);
-    const track = new Track(trackData.name, parseInt(trackData.duration), trackData.genres, trackData.album, trackData.author);
+    const track = new Track(trackData.name, parseInt(trackData.duration), trackData.genres.split(','), trackData.album, trackData.author);
     album.addTrack(track);
     album.sumDuration(track.duration);
     console.log('The track '+trackData.name+' was added successfully');
@@ -130,9 +129,13 @@ class UNQfy {
   // genres: array de generos(strings)
   // retorna: los tracks que contenga alguno de los generos en el parametro genres
   getTracksMatchingGenres(genres) {
-    const albumesFiltrados = this.artists.map(artist => artist.albumes).filter(album => genres.includes(album.genre));
+    console.log(genres);
+    const albumesFiltrados = this.artists.map(artist => artist.albumes);
+    console.log(albumesFiltrados);
     const tracks = albumesFiltrados.map(album => album.tracks);
+    console.log(tracks);
     const tracksRes = tracks.filter(track => this.contentGenres(track.genres, genres));   
+    console.log(tracksRes);
     return tracksRes;
   }
 
@@ -147,16 +150,17 @@ class UNQfy {
   // artistName: nombre de artista(string)
   // retorna: los tracks interpredatos por el artista con nombre artistName
   getTracksMatchingArtist(artistName) {
-    if(this.contentArtist(artistName)) {
+    if(this.existsArtist(artistName)) {
       let tracksByArtist = [];
       const artist = this.artists.find(artist => artist.name === artistName);
-      tracksByArtist = artist.albumes.forEach(album => tracksByArtist.concat(album.tracks));
+      console.log(artist);
+      tracksByArtist = artist.albumes.forEach(album => console.log(album.tracks)); // tracksByArtist.concat(album.tracks)
       console.log(tracksByArtist);
       return tracksByArtist;
     }
   }
 
-  contentPlaylist(name) {
+  existsPlaylist(name) {
     return this.playlists.some(playlist => playlist.name === name);
   }
 
@@ -171,15 +175,15 @@ class UNQfy {
       * un metodo duration() que retorne la duración de la playlist.
       * un metodo hasTrack(aTrack) que retorna true si aTrack se encuentra en la playlist.
   */
-    if(!this.contentPlaylist(name)) {
-      const playlist = new Playlist(name, maxDuration, genresToInclude);
+    if(!this.existsPlaylist(name)) {
+      const playlist = new Playlist(name, genresToInclude);
       const tracks = this.getTracksMatchingGenres(genresToInclude);
-      while( tracks[0].duration <= playlist.duration) {
-        !playlist.hasTrack(tracks[0]) ? playlist.addTrack(tracks[0]) : [];
-         tracks.shift();
+      while((playlist.duration+tracks[0].duration) <= maxDuration) {
+        playlist.addTrack(tracks[0]);
+        tracks.shift();
       }
+      return playlist;
     }
-    return this.playlist;
   }
 
   searchByName(name) {
