@@ -10,9 +10,12 @@ class Artist {
     generatorId() {
         const prefix = 'a_';
         let seq = 0;
-        seq += 1;
-        const result = prefix + seq;
+        const result = prefix + seq++;
         return  result;    
+    }
+
+    existsAlbum(albumName) {
+        return this.albumes.some(album => album.name === albumName); 
     }
 
     contentAlbum(albumId) {
@@ -23,8 +26,8 @@ class Artist {
         this.albumes.push(album);
     }
 
-    deleteAlbum(album) {
-      const pos = this.albumes.indexOf(album.id);
+    deleteAlbum(albumId) {
+      const pos = this.albumes.indexOf(albumId);
       this.albumes.splice(pos, 1);
     }
 }

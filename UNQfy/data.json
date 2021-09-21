@@ -15,7 +15,7 @@
     },
     "__00003__": {},
     "__00004__": {
-      "id": 0,
+      "id": "a_0",
       "name": "Soda Stereo",
       "country": "Argentina",
       "genre": "Rock",
@@ -26,30 +26,21 @@
     },
     "__00006__": {
       "id": 0,
-      "name": "Dynamo",
+      "name": "Doble Vida",
       "year": "Rock",
       "author": "Soda Stereo",
-      "duration": 536,
+      "duration": 280,
       "tracks": "__00007__"
     },
     "__00007__": {
-      "0": "__00008__",
-      "1": "__00009__"
+      "0": "__00008__"
     },
     "__00008__": {
       "id": 0,
-      "name": "Toma La Ruta",
-      "duration": 268,
+      "name": "En El Borde",
+      "duration": 280,
       "genres": "Rock",
-      "album": "Dynamo",
-      "author": "Soda Stereo"
-    },
-    "__00009__": {
-      "id": 0,
-      "name": "Luna Roja",
-      "duration": 268,
-      "genres": "Rock, Rock-Alternativo",
-      "album": "Dynamo",
+      "album": "Doble Vida",
       "author": "Soda Stereo"
     }
   },
@@ -61,7 +52,6 @@
     "__00005__": "Array",
     "__00006__": "Album",
     "__00007__": "Array",
-    "__00008__": "Track",
-    "__00009__": "Track"
+    "__00008__": "Track"
   }
 }

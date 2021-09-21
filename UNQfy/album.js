@@ -9,8 +9,30 @@ class Album {
         this.tracks = [];
     }
 
-    setDuration(newTrackDuration) {
+    generatorId() {
+        let prefix = 'al_';
+        let seq = 0;
+        return {
+            set_prefix: function (p) {
+                prefix = String(p);
+            },
+            set_seq: function (s) {
+                seq = s;
+            },
+            gensym: function ( ) {
+                const result = prefix + seq;
+                seq += 1;
+                return result;
+            }
+        };
+    }
+
+    sumDuration(newTrackDuration) {
         this.duration += newTrackDuration;
+    }
+
+    subtractDuration(newTrackDuration) {
+        this.duration -= newTrackDuration;
     }
 
     contentTrack(trackId) {
@@ -21,15 +43,11 @@ class Album {
         this.tracks.push(track);
     }
 
-    deleteTracks() {
-        for (let i = 0; i <= this.tracks.length; i++) {
-            this.tracks.splice(i, 1);
-        }
-    }
-
     deleteTrack(track) {
-        const pos =  this.tracks.indexOf(track.id);
+        const pos =  this.tracks.indexOf(track.id); 
         this.tracks.splice(pos, 1);
+        this.subtractDuration(track.duration);
+        
     }
 }
 
