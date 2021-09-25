@@ -1,6 +1,9 @@
+const Generate = require('./generate');
+
+const generateId = new Generate();
 class Track {
     constructor(name, duration, genres, album, autor) {
-        this.id = 0;
+        this.id = 't_' + generateId.generateIdTrack();
         this.name = name;
         this.duration = duration;
         this.genres = genres;

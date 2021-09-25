@@ -6,6 +6,7 @@ const Album = require('./album');
 const Artist = require('./artist'); 
 const Track = require('./track');
 const Playlist = require('./playlist');
+const { Console } = require('console');
 
 class UNQfy {
   constructor() {
@@ -72,7 +73,7 @@ class UNQfy {
   */
     const artist = this.artists.find(artist =>  artist.contentAlbum(albumId));
     const album = artist.albumes.find(album => album.id === albumId);
-    const track = new Track(trackData.name, parseInt(trackData.duration), trackData.genres.split(','), trackData.album, trackData.author);
+    const track = new Track(trackData.name, parseInt(trackData.duration), trackData.genres, trackData.album, trackData.author);
     album.addTrack(track);
     album.sumDuration(track.duration);
     console.log('The track '+trackData.name+' was added successfully');
@@ -129,14 +130,10 @@ class UNQfy {
   // genres: array de generos(strings)
   // retorna: los tracks que contenga alguno de los generos en el parametro genres
   getTracksMatchingGenres(genres) {
-    console.log(genres);
-    const albumesFiltrados = this.artists.map(artist => artist.albumes);
-    console.log(albumesFiltrados);
-    const tracks = albumesFiltrados.map(album => album.tracks);
-    console.log(tracks);
-    const tracksRes = tracks.filter(track => this.contentGenres(track.genres, genres));   
-    console.log(tracksRes);
-    return tracksRes;
+    const albumes = this.artists.flatMap(artist => artist.albumes);  
+    const tracks = albumes.flatMap(album => album.tracks);
+    const resultTrack = tracks.filter(track => this.contentGenres(track.genres, genres) );
+    return resultTrack;
   }
 
   contentGenres(trackGenres, genres) {
@@ -150,14 +147,9 @@ class UNQfy {
   // artistName: nombre de artista(string)
   // retorna: los tracks interpredatos por el artista con nombre artistName
   getTracksMatchingArtist(artistName) {
-    if(this.existsArtist(artistName)) {
-      let tracksByArtist = [];
-      const artist = this.artists.find(artist => artist.name === artistName);
-      console.log(artist);
-      tracksByArtist = artist.albumes.forEach(album => console.log(album.tracks)); // tracksByArtist.concat(album.tracks)
-      console.log(tracksByArtist);
-      return tracksByArtist;
-    }
+    const artist = this.artists.find(artist => artist.name === artistName);
+    const tracksByArtist = artist.albumes.flatMap(album => album.tracks);
+    return tracksByArtist;
   }
 
   existsPlaylist(name) {
@@ -178,36 +170,46 @@ class UNQfy {
     if(!this.existsPlaylist(name)) {
       const playlist = new Playlist(name, genresToInclude);
       const tracks = this.getTracksMatchingGenres(genresToInclude);
-      while((playlist.duration+tracks[0].duration) <= maxDuration) {
-        playlist.addTrack(tracks[0]);
-        tracks.shift();
-      }
+      tracks.forEach( track => { 
+        if (playlist.duration < maxDuration){
+        playlist.addTrack(track);
+        playlist.sumDuration(track.duration);
+        };
+      });
+      this.addPlaylist(playlist);
       return playlist;
     }
+  };
+
+  addPlaylist(playlist){
+    this.playlists.push(playlist)
   }
 
   searchByName(name) {
+    const search = [];
     const artistsByName = this.artists.filter(artist =>  artist.name.includes(name));
-    const albumes = this.artists.map(artist => artist.albumes);
-    const albumesByName = albumes.filter(album => album.name.includes(name));
-    const tracksByName = albumes.map(album => album.tracks).filter(track => track.name.includes(name));
-    const search = [artistsByName + albumesByName + tracksByName];
-    console.log(search);
+    const albumes = this.artists.flatMap(artist => artist.albumes.filter(album=> album.name.includes(name)));
+    const tracks = this.artists.flatMap(artist => artist.albumes.flatMap(album => album.tracks));
+    const tracksF = tracks.filter(track => track.name.includes(name));
+    search.push(artistsByName);
+    search.push(albumes);
+    //search.push(playlist);
+    search.push(tracksF);
+    
     return search;
   }
 
   searchByArtist(artist) {
     const search = [];
-    artist.albumes.forEach(album => search.concat(album.tracks));
-    console.log(search);
+    const arts = this.artists.filter(art => art === artist )
+    search.concat(arts);
     return search;
   }
 
   searchByGenre(genre) {
     const search = [];
-    const albumesByGenre = this.artists.map(artist => artist.albumes).filter(album => album.genre === genre);
+    const albumesByGenre = this.artists.map(artist => artist.albumes.filter(album => album.genre === genre));
     albumesByGenre.forEach(album => search.concat(album.tracks));
-    console.log(search);
     return search;
   }
 

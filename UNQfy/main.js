@@ -85,7 +85,7 @@ function addTrack(unqfy, artistName, albumName, name, duration, genres) {
     const artist = unqfy.artists.find(artist => artist.name === artistName);
     if(artist.existsAlbum(albumName)) {
       const album = artist.albumes.find(album => album.name === albumName);
-      unqfy.addTrack(album.id, {name: name, duration: duration, genres: genres, album: album.name, author: artist.name});
+      unqfy.addTrack(album.id, {name: name, duration: duration, genres: genres.split(','), album: album.name, author: artist.name});
     } else {
       console.log("Can't add track because album "+albumName+" doesn't exist");
     }
@@ -124,6 +124,7 @@ function createPlaylist(unqfy, name, genres, duration) {
 
 function getTracksMatchingArtist(unqfy, artistName) {
   if(unqfy.existsArtist(artistName)) {
+    
     unqfy.getTracksMatchingArtist(artistName)
   } else {
     console.log('The tracks cannot be returned because the artist '+artistName+' does not exist');

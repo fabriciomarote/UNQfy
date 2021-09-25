@@ -1,17 +1,14 @@
+const Generate = require('./generate');
+
+const generateId = new Generate();
 class Artist {
+    
     constructor(name, country, genre) {
-        this.id = this.generatorId();
+        this.id = 'ar_' + generateId.generateIdArtist();
         this.name = name;
         this.country =  country;
         this.genre = genre;
         this.albumes = [];
-    }
-
-    generatorId() {
-        const prefix = 'a_';
-        let seq = 0;
-        const result = prefix + seq++;
-        return  result;    
     }
 
     existsAlbum(albumName) {
