@@ -162,8 +162,9 @@ function contentPlaylist(unqfy, name) {
 }
 
 function contentAlbum(unqfy, name) {
-   if(unqfy.artists.some(artist => artist.existsAlbum(name))) {
-    const album = unqfy.artists.map(artist => artist.albumes.find(album => album.name === name));
+  if(unqfy.artists.some(artist => artist.existsAlbum(name))) {
+    const albumes = unqfy.artists.flatMap(artist => artist.albumes);
+    const album = albumes.find(album => album.name === name);
     unqfy.contentAlbum(album);
   } else {
     console.log("Not exist the album "+name);   
@@ -171,9 +172,10 @@ function contentAlbum(unqfy, name) {
 }
 
 function contentTrack(unqfy, name) {
-  const albumes = unqfy.artists.map(artist => artist.albumes);
-  if(albumes.some(album => album.existsTrack(name))) {
-   const track = albumes.map(album => album.tracks).find(track => track.name === name);
+  const albumes = unqfy.artists.flatMap(artist => artist.albumes);
+  const tracks = albumes.flatMap(album => album.tracks);
+  if(tracks.some(track => track.name === name)) {
+   const track = tracks.find(track => track.name === name);
    unqfy.contentTrack(track);
  } else {
    console.log("Not exist the track "+name);   

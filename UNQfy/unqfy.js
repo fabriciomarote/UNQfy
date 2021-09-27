@@ -221,7 +221,6 @@ class UNQfy {
   }
   
   contentAlbum(album) {
-    console.log(album);
     album.content();
   }
 
