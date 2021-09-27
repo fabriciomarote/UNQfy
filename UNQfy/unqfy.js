@@ -99,7 +99,7 @@ class UNQfy {
       artist.deleteAlbum(album);
     } else {
       album.tracks.forEach(track => this.deleteTrack(album, track));
-      artist.deleteAlbum(album.id);
+      artist.deleteAlbum(album);
     }
     console.log('The album '+album.name+' was deleted successfully');
   }
@@ -182,7 +182,9 @@ class UNQfy {
   }
 
   deletePlaylist(playlist) {
+
     const pos = this.playlists.indexOf(playlist.id);
+    playlist.tracks.forEach (track => playlist.deleteTrack(track))
     this.playlists.splice(pos, 1);
     console.log('The playlist '+playlist.name+' was deleted successfully');
   }
@@ -203,10 +205,8 @@ class UNQfy {
   }
 
   searchByArtist(artist) {
-    const search = [];
-    const arts = this.artists.filter(art => art === artist );
-    search.concat(arts);
-    return search;
+    const tracks = artist.albumes.flatMap(album => album.tracks);
+    return tracks;
   }
 
   searchByGenre(genre) {

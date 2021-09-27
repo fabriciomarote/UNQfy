@@ -1,10 +1,11 @@
 class Generate {
 
     constructor (){
-        this.idAlbum = 1;
         this.idArtist = 1;
+        this.idAlbum = 1;
         this.idTrack = 1;
         this.idPlaylist = 1;
+        //Consulta
         this.idUser = 1;
     }
 

@@ -26,8 +26,8 @@ class Artist {
         this.albumes.push(album);
     }
 
-    deleteAlbum(albumId) {
-      const pos = this.albumes.indexOf(albumId);
+    deleteAlbum(album) {
+      const pos = this.albumes.indexOf(album);
       this.albumes.splice(pos, 1);
     }
 }

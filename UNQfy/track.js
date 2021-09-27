@@ -9,7 +9,7 @@ class Track {
         this.genres = genres;
         this.album = album;
         this.author = autor;
-        this.amountListen = 0;
+        this.amountListened = 0;
     }
 
     content() {
@@ -24,7 +24,7 @@ class Track {
         return genres.includes(genresT[0]);
     }
 
-    amountListen () {
+    sumAmount () {
         this.amountListen + 1;
     }
 }

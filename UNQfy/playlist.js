@@ -22,6 +22,12 @@ class Playlist {
         this.tracks.push(track);
     }
 
+    deleteTrack(track) {
+        const pos =  this.tracks.indexOf(track.id); 
+        this.tracks.splice(pos, 1);
+        this.subtractDuration(track.duration);
+    }
+
     sumDuration(newTrackDuration) {
         this.duration += newTrackDuration;
     }

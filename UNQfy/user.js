@@ -8,26 +8,26 @@ class User {
     constructor(name) {
         this.id = 'u_' + generateId.generateIdUser();
         this.name = name
-        this.listenTracks = []
+        this.listenedTracks = []
         this.unqfy = new UNQfy()
     
     }
 
-    listenToATrack(track){
+    listenToA(track){
         this.unqfy.play(track);
         this.listenTracks.push(track);
     }
 
-    listenTracks(){
-    
+    listenedTracks(){
         return this.withoutRepeats();
     }
 
     withoutRepeats (){
         const withoutRepeats =[]
         this.listTracks.forEach(track => {
-            if (!this.hasTrack(withoutRepeats, track)) { withoutRepeats.push(track)}
+        if (!this.hasTrack(withoutRepeats, track)) { withoutRepeats.push(track)}
         });
+        return withoutRepeats;
     }
 
     hasTrack(list, aTrack) {
