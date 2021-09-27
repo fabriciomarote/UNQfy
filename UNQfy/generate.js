@@ -8,21 +8,21 @@ class Generate {
     }
 
     generateIdAlbum(){
-        return  this.idAlbum++
+        return  this.idAlbum++;
     }
 
     generateIdArtist(){
-        return  this.idArtist++
+        return  this.idArtist++;
     }
 
     generateIdTrack(){
-        return  this.idTrack++
+        return  this.idTrack++;
     }
 
     generateIdPlaylist(){
-        return  this.idPlaylist++
+        return  this.idPlaylist++;
     }
 
-};
+}
 
 module.exports = Generate;

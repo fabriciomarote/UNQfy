@@ -1,8 +1,7 @@
 const Generate = require('./generate');
-
 const generateId = new Generate();
+
 class Artist {
-    
     constructor(name, country, genre) {
         this.id = 'ar_' + generateId.generateIdArtist();
         this.name = name;
@@ -11,11 +10,15 @@ class Artist {
         this.albumes = [];
     }
 
+    content() {
+        console.log(this);
+    }
+
     existsAlbum(albumName) {
         return this.albumes.some(album => album.name === albumName); 
     }
 
-    contentAlbum(albumId) {
+    hasAlbum(albumId) {
         return this.albumes.some(album => album.id === albumId); 
     }
 

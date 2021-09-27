@@ -135,6 +135,51 @@ function getTracksMatchingGenres(unqfy, genres) {
   unqfy.getTracksMatchingGenres(genres);
 }
 
+function deletePlaylist(unqfy, name) {
+  if(unqfy.existsPlaylist(name)) {
+    const playlist = unqfy.playlists.find(playlist => playlist.name === name);
+    unqfy.deletePlaylist(playlist);
+  }
+  console.log("Can't delete playlist because doesn't exist");
+}
+
+function contentArtist(unqfy, name) {
+  if(unqfy.existsArtist(name)) {
+    const artist = unqfy.artists.find(artist => artist.name === name);
+    unqfy.contentArtist(artist);
+  } else {
+    console.log("Not exist the artist "+name);   
+  }  
+}
+
+function contentPlaylist(unqfy, name) {
+  if(unqfy.existsPlaylist(name)) {
+    const playlist = unqfy.playlists.find(playlist => playlist.name === name);
+    unqfy.contentPlaylist(playlist);
+  } else {
+    console.log("Not exist the playlist "+name);   
+  } 
+}
+
+function contentAlbum(unqfy, name) {
+   if(unqfy.artists.some(artist => artist.existsAlbum(name))) {
+    const album = unqfy.artists.map(artist => artist.albumes.find(album => album.name === name));
+    unqfy.contentAlbum(album);
+  } else {
+    console.log("Not exist the album "+name);   
+  } 
+}
+
+function contentTrack(unqfy, name) {
+  const albumes = unqfy.artists.map(artist => artist.albumes);
+  if(albumes.some(album => album.existsTrack(name))) {
+   const track = albumes.map(album => album.tracks).find(track => track.name === name);
+   unqfy.contentTrack(track);
+ } else {
+   console.log("Not exist the track "+name);   
+ } 
+}
+
 function main() {
   const arguments_ = process.argv.splice(2);
   const unqfy = getUNQfy();
@@ -162,6 +207,16 @@ function main() {
     getTracksMatchingArtist(unqfy,arguments_[1]);
   } else if (arguments_[0] === 'getTracksMatchingGenres') {
     getTracksMatchingGenres(unqfy,arguments_[1]);
+  } else if (arguments_[0] === 'deletePlaylist') {
+    deletePlaylist(unqfy,arguments_[1]);
+  } else if (arguments_[0] === 'contentArtist') {
+    contentArtist(unqfy,arguments_[1]);
+  } else if (arguments_[0] === 'contentPlaylist') {
+    contentPlaylist(unqfy,arguments_[1]);
+  } else if (arguments_[0] === 'contentAlbum') {
+    contentAlbum(unqfy,arguments_[1]);
+  } else if (arguments_[0] === 'contentTrack') {
+    contentTrack(unqfy,arguments_[1]);
   }
   saveUNQfy(unqfy);
 }

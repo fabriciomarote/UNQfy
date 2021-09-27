@@ -1,6 +1,6 @@
 const Generate = require('./generate');
-
 const generateId = new Generate();
+
 class Playlist {
     constructor(name, genres) {
         this.id = 'p_' + generateId.generateIdPlaylist();
@@ -8,6 +8,10 @@ class Playlist {
         this.duration = 0;
         this.genres = genres;
         this.tracks = [];
+    }
+
+    content() {
+        console.log(this);
     }
 
     hasTrack(aTrack) {

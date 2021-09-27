@@ -1,6 +1,6 @@
 const Generate = require('./generate');
-
 const generateId = new Generate();
+
 class Album {
     constructor(name, year, genre, author) {
         this.id = 'al_' + generateId.generateIdAlbum();
@@ -12,6 +12,10 @@ class Album {
         this.tracks = [];
     }
 
+    content() {
+        console.log(this);
+    }
+
     sumDuration(newTrackDuration) {
         this.duration += newTrackDuration;
     }
@@ -20,8 +24,8 @@ class Album {
         this.duration -= newTrackDuration;
     }
 
-    contentTrack(trackId) {
-        return this.tracks.some(track => track.id === trackId); 
+    existsTrack(trackName) {
+        return this.tracks.some(track => track === trackName); 
     }
 
     addTrack(track) {

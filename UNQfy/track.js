@@ -1,6 +1,6 @@
 const Generate = require('./generate');
-
 const generateId = new Generate();
+
 class Track {
     constructor(name, duration, genres, album, autor) {
         this.id = 't_' + generateId.generateIdTrack();
@@ -10,6 +10,18 @@ class Track {
         this.album = album;
         this.author = autor;
     }
+
+    content() {
+        console.log(this);
+    }
+
+    hasGenres(genres) {
+        const genresT = this.genres;
+        while(genresT.length !== 0 && !genres.includes(genresT[0])) {
+            genresT.shift();
+        }
+        return genres.includes(genresT[0]);
+      }
 }
 
 module.exports = Track;
