@@ -9,6 +9,7 @@ class Track {
         this.genres = genres;
         this.album = album;
         this.author = autor;
+        this.amountListen = 0;
     }
 
     content() {
@@ -21,7 +22,11 @@ class Track {
             genresT.shift();
         }
         return genres.includes(genresT[0]);
-      }
+    }
+
+    amountListen () {
+        this.amountListen + 1;
+    }
 }
 
 module.exports = Track;

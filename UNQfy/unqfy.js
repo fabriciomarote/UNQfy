@@ -6,6 +6,10 @@ const Album = require('./album');
 const Artist = require('./artist'); 
 const Track = require('./track');
 const Playlist = require('./playlist');
+const User = require('./user');
+
+//¿como manejar los usuarios?
+//const user = new User ()
 
 class UNQfy {
   constructor() {
@@ -226,6 +230,22 @@ class UNQfy {
 
   contentTrack(track) {
     track.content();
+  }
+
+  play(track){
+    //Registros de play/escuchar/usuario esta escuchando
+    track.amountListen();
+  }
+
+  topMostListened(artist){
+    //A que se refiere armar automaticamente / "On The Fly" preguntar 
+    const tracks = this.getTracksMatchingArtist(artist);
+    tracks.sort( function (track1, track2){
+      track1.amountListen >= track2.amountListen;
+    });
+    const top = tracks.slice(0, 3);
+    console.log(top);
+    return top;
   }
 
   save(filename) {
