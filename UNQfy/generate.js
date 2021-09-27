@@ -5,6 +5,7 @@ class Generate {
         this.idArtist = 1;
         this.idTrack = 1;
         this.idPlaylist = 1;
+        this.idUser = 1;
     }
 
     generateIdAlbum(){
@@ -21,6 +22,10 @@ class Generate {
 
     generateIdPlaylist(){
         return  this.idPlaylist++;
+    }
+
+    generateIdUser(){
+        return  this.idUser++;
     }
 
 }

@@ -1,9 +1,17 @@
+const Generate = require('./generate');
+const generateId = new Generate();
 class User {
     
     constructor(name) {
-        this.id =
+        this.id = 'u_' + generateId.generateIdUser();
         this.name = name
-        this.ListenTracks = []
+        this.listenTracks = []
+    }
+
+    listenToATrack(track){
+        //¿Como agrego?
+        this.listenTracks.add(track);
+        
     }
 }
 
