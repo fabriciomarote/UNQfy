@@ -29,4 +29,45 @@ main.js
 ------
 El punto de entrada del programa es el archivo main.js. Para ejecutarlo corra el comando `node main.js`
 
+---
+
+Comando desde la CLI
+
+node main.js addArtist nameArtist "Gun 's Roses" country "USA" genre "Rock"
+
+node main.js addAlbum nameArtist "Guns 'n Roses" nameAlbum "Welcome to the jungle" year "1990" genre "Rock"
+
+node main.js addTrack nameArtist "Guns 'n Roses" nameAlbum "Welcome to the jungle" nameTrack "Welcome to the jungle" genres "Rock, pop"
+
+node main.js deleteArtist nameArtist "Guns 'n Roses"
+
+node main.js deleteAlbum nameArtist "Guns 'n Roses" nameAlbum "Welcome to the jungle"
+
+node main.js deleteTrack nameArtist "Guns 'n Roses" nameAlbum "Welcome to the jungle" nameTrack "Welcome to the jungle"
+
+node main.js searchByName name "Roses"
+
+node main.js searchByArtist nameArtist "Guns 'n Roses"
+
+node main.js searchByGenre genre "Rock"
+
+node main.js createPlaylist namePlaylist "my playlist" genres "pop, rock" duration "1400"
+
+node main.js getTracksMatchingArtist nameArtist "Guns 'n Roses"
+
+node main.js getTracksMatchingGenres genres "pop, rock"
+
+node main.js deletePlaylist namePlaylist "my playlist"
+
+node main.js contentArtist nameArtist "Guns 'n Roses"
+
+node main.js contentPlaylist namePlaylist "my playlist"
+
+node main.js contentAlbum nameAlbum "Welcome to the jungle"
+
+node main.js contentTrack nameTrack "Welcome to the jungle"
+
+
+
+
 
