@@ -1,4 +1,5 @@
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
+const { unzipSync } = require('zlib');
 //const unqfy = require('./unqfy');
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 
@@ -139,8 +140,9 @@ function deletePlaylist(unqfy, name) {
   if(unqfy.existsPlaylist(name)) {
     const playlist = unqfy.playlists.find(playlist => playlist.name === name);
     unqfy.deletePlaylist(playlist);
+  } else {
+    console.log("Can't delete playlist because doesn't exist");
   }
-  console.log("Can't delete playlist because doesn't exist");
 }
 
 function contentArtist(unqfy, name) {
@@ -182,6 +184,11 @@ function contentTrack(unqfy, name) {
  } 
 }
 
+function addUser (unqfy, name){
+ unqfy.addUser(name)
+}
+
+
 function main() {
   const arguments_ = process.argv.splice(2);
   const unqfy = getUNQfy();
@@ -219,7 +226,10 @@ function main() {
     contentAlbum(unqfy,arguments_[1]);
   } else if (arguments_[0] === 'contentTrack') {
     contentTrack(unqfy,arguments_[1]);
+  } else if (arguments_[0] === "addUser") {
+    addUser(unqfy,arguments_[1]);
   }
+
   saveUNQfy(unqfy);
 }
 

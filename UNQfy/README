@@ -33,7 +33,7 @@ El punto de entrada del programa es el archivo main.js. Para ejecutarlo corra el
 
 Comando desde la CLI
 
-node main.js addArtist nameArtist "Gun 's Roses" country "USA" genre "Rock"
+node main.js addArtist nameArtist "Guns 'n Roses" country "USA" genre "Rock"
 
 node main.js addAlbum nameArtist "Guns 'n Roses" nameAlbum "Welcome to the jungle" year "1990" genre "Rock"
 
@@ -66,6 +66,9 @@ node main.js contentPlaylist namePlaylist "my playlist"
 node main.js contentAlbum nameAlbum "Welcome to the jungle"
 
 node main.js contentTrack nameTrack "Welcome to the jungle"
+
+
+
 
 
 

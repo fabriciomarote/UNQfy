@@ -6,7 +6,6 @@ class Artist {
         this.id = 'ar_' + generateId.generateIdArtist();
         this.name = name;
         this.country =  country;
-        this.genre = genre;
         this.albumes = [];
     }
 
