@@ -15,6 +15,7 @@ class UNQfy {
   constructor() {
     this.artists = [];
     this.playlists = [];
+    this.usuarios = [];
   }
  
   // artistData: objeto JS con los datos necesarios para crear un artista
@@ -76,7 +77,7 @@ class UNQfy {
   */
     const artist = this.artists.find(artist =>  artist.hasAlbum(albumId));
     const album = artist.albumes.find(album => album.id === albumId);
-    const track = new Track(trackData.name, parseInt(trackData.duration), trackData.genres, trackData.album, trackData.author);
+    const track = new Track(trackData.name, trackData.duration, trackData.genres, trackData.album, trackData.author);
     album.addTrack(track);
     album.sumDuration(track.duration);
     console.log('The track '+trackData.name+' was added successfully');
@@ -84,8 +85,8 @@ class UNQfy {
   }
 
   deleteArtist(artist) {
-    const pos = this.artists.indexOf(artist.id);
-    if(artist.albumes.length === 0) {
+    const pos = this.artists.indexOf(artist);
+    if(artist.albumes.lentgh === 0) {
       this.artists.splice(pos, 1);
     } else {
       artist.albumes.forEach(album => this.deleteAlbum(artist, album));
@@ -95,18 +96,19 @@ class UNQfy {
   }
 
   deleteAlbum(artist, album) {
-    if(album.tracks.length === 0) {
+    if(album.tracks.lentgh === 0) {
       artist.deleteAlbum(album);
     } else {
       album.tracks.forEach(track => this.deleteTrack(album, track));
       artist.deleteAlbum(album);
-    }
+    }  
     console.log('The album '+album.name+' was deleted successfully');
   }
 
   deleteTrack(album, track){
-    const playL = this.playlists.filter(playlist => playlist.hasTrack(track));
-    playL.forEach(p => p.deleteTrack(track.id));  
+    const playlists = this.playlists.filter(playlist => playlist.hasTrack(track));
+    console.log(playlists);
+    playlists.forEach(playlist => playlist.deleteTrack(track)); 
     album.deleteTrack(track);
     console.log('The track '+track.name+' was deleted successfully');
   }
@@ -135,7 +137,7 @@ class UNQfy {
   getTracksMatchingGenres(genres) {
     const albumes = this.artists.flatMap(artist => artist.albumes);  
     const tracks = albumes.flatMap(album => album.tracks);
-    const resultTrack = tracks.filter(track => track.hasGenres(genres) );
+    const resultTrack = tracks.filter(track => !track.hasGenres(genres));
     return resultTrack;
   }
 
@@ -174,6 +176,8 @@ class UNQfy {
       this.addPlaylist(playlist);
       console.log('The playlist '+playlist.name+' was added successfully');
       return playlist;
+    } else {
+      return console.log("Can't add playlist because it already exists");
     }
   }
 
@@ -182,9 +186,8 @@ class UNQfy {
   }
 
   deletePlaylist(playlist) {
-
-    const pos = this.playlists.indexOf(playlist.id);
-    playlist.tracks.forEach (track => playlist.deleteTrack(track))
+    const pos = this.playlists.indexOf(playlist);
+    playlist.tracks.forEach (track => playlist.deleteTrack(track));
     this.playlists.splice(pos, 1);
     console.log('The playlist '+playlist.name+' was deleted successfully');
   }
@@ -201,19 +204,18 @@ class UNQfy {
       tracks: tracks,
       playlists: playlists,
     }; 
-    return search;
+    return console.log(search);
   }
 
   searchByArtist(artist) {
     const tracks = artist.albumes.flatMap(album => album.tracks);
-    return tracks;
+    return console.log(tracks);
   }
 
   searchByGenre(genre) {
-    const search = [];
-    const albumesByGenre = this.artists.map(artist => artist.albumes.filter(album => album.genre === genre));
-    albumesByGenre.forEach(album => search.concat(album.tracks));
-    return search;
+    const albumesByGenre = this.artists.flatMap(artist => artist.albumes.filter(album => album.genre === genre));
+    const search = albumesByGenre.flatMap(album => album.tracks.filter(track => track.genres.includes(genre)));
+    return console.log(search);
   }
 
   contentArtist(artist) {
@@ -247,6 +249,29 @@ class UNQfy {
     console.log(top);
     return top;
   }
+
+  hasUser(aUser) {
+    this.usuarios.some(user => user === aUser);
+  }
+
+  addUser(name) {
+    const user = new User(name, this);
+    if (!this.hasUser(user)) {
+      this.usuarios.push(user);
+      console.log('The user '+user.name+' was added successfully');
+    } else {
+      console.log("Can't add user "+user.name+" because it already exists");
+    } 
+  }
+  
+  amountListen(user, aTrack) {
+    user.amountListen(aTrack);
+  }
+
+  listenedTracks(user){
+    user.listenedTracks();
+  }
+
 
   save(filename) {
     const serializedData = picklify.picklify(this);

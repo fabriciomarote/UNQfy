@@ -1,16 +1,12 @@
 const Generate = require('./generate');
 const generateId = new Generate();
 
-const UNQfy = require('./unqfy');
-
 class User {
-    
-    constructor(name) {
+    constructor(name, unqfy) {
         this.id = 'u_' + generateId.generateIdUser();
-        this.name = name
-        this.listenedTracks = []
-        this.unqfy = new UNQfy()
-    
+        this.name = name;
+        this.listenedTracks = [];
+        this.unqfy = unqfy;
     }
 
     listenToA(track){
@@ -23,9 +19,11 @@ class User {
     }
 
     withoutRepeats (){
-        const withoutRepeats =[]
+        const withoutRepeats =[];
         this.listTracks.forEach(track => {
-        if (!this.hasTrack(withoutRepeats, track)) { withoutRepeats.push(track)}
+            if (!this.hasTrack(withoutRepeats, track)) { 
+                withoutRepeats.push(track);
+            }
         });
         return withoutRepeats;
     }
@@ -35,13 +33,15 @@ class User {
     }
 
     amountListen(aTrack) {
-        const amount = 0;
+        let amount = 0;
         this.listTracks.forEach(track => {
-            if (aTrack === track) {amount + 1}
+            if (aTrack === track) {
+                amount += 1;
+            }
         });
         return amount;
     }
 
 }
 
-module.exports = User
+module.exports = User;

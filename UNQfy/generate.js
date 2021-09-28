@@ -1,32 +1,31 @@
 class Generate {
 
     constructor (){
-        this.idArtist = 1;
-        this.idAlbum = 1;
-        this.idTrack = 1;
-        this.idPlaylist = 1;
-        //Consulta
-        this.idUser = 1;
+        this.idArtist = 0;
+        this.idAlbum = 0;
+        this.idTrack = 0;
+        this.idPlaylist = 0;
+        this.idUser = 0;
     }
 
     generateIdAlbum(){
-        return  this.idAlbum++;
+        return ++this.idAlbum;
     }
 
     generateIdArtist(){
-        return  this.idArtist++;
+        return ++this.idArtist;
     }
 
     generateIdTrack(){
-        return  this.idTrack++;
+        return ++this.idTrack;
     }
 
     generateIdPlaylist(){
-        return  this.idPlaylist++;
+        return ++this.idPlaylist;
     }
 
     generateIdUser(){
-        return  this.idUser++;
+        return ++this.idUser;
     }
 
 }

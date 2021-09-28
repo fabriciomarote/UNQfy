@@ -33,10 +33,9 @@ class Album {
     }
 
     deleteTrack(track) {
-        const pos =  this.tracks.indexOf(track.id); 
+        const pos = this.tracks.indexOf(track); 
         this.tracks.splice(pos, 1);
         this.subtractDuration(track.duration);
-        
     }
 }
 

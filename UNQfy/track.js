@@ -17,11 +17,12 @@ class Track {
     }
 
     hasGenres(genres) {
-        const genresT = this.genres;
-        while(genresT.length !== 0 && !genres.includes(genresT[0])) {
+        let genresT = [];
+        genresT = genresT.concat(this.genres);
+        while(genresT.length !== 1 && !genres.includes(genresT[0])) {
             genresT.shift();
         }
-        return genres.includes(genresT[0]);
+        return !genres.includes(genresT[0]);
     }
 
     sumAmount () {
