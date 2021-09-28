@@ -188,6 +188,18 @@ function addUser (unqfy, name){
  unqfy.addUser(name)
 }
 
+function thisIs(unqfy, name){
+  if (unqfy.existsArtist(name)){
+    unqfy.thisIs(name)
+  } else {
+    console.log("Not exist the artist "+name);   
+  } 
+}
+
+function play(unqfy, track, user){
+  unqfy.play(track, user)
+}
+
 
 function main() {
   const arguments_ = process.argv.splice(2);
@@ -228,7 +240,12 @@ function main() {
     contentTrack(unqfy,arguments_[1]);
   } else if (arguments_[0] === "addUser") {
     addUser(unqfy,arguments_[1]);
+  } else if (arguments_[0] === "thisIs") {
+    thisIs(unqfy,arguments_[1]);
+  } else if (arguments_[0] === "play") {
+    play(unqfy,arguments_[1], arguments_[2]);
   }
+
 
   saveUNQfy(unqfy);
 }

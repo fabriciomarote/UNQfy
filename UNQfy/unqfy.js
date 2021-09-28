@@ -15,7 +15,7 @@ class UNQfy {
   constructor() {
     this.artists = [];
     this.playlists = [];
-    this.usuarios = [];
+    this.users = [];
   };
 
   /////////////////////////// ARTISTA /////////////////////////////////////////////
@@ -254,16 +254,28 @@ class UNQfy {
     return search;
   };
 
-  play(track){
+  play(trackName, userName){
     //Registros de play/escuchar/usuario esta escuchando
-    track.amountListen();
+    const albumes = this.artists.flatMap(artist => artist.albumes);  
+    const tracks = albumes.flatMap(album => album.tracks);
+    const track = tracks.find(track => track.name === trackName);
+    const user = this.users.find(user => user.name === userName)
+    console.log(this.users)
+    user.listenToA(track);
+    track.sumAmount();
   };
 
-  topMostListened(artist){
+  thisIs(artistName){
     //A que se refiere armar automaticamente / "On The Fly" preguntar 
-    const tracks = this.getTracksMatchingArtist(artist);
-    tracks.sort( function (track1, track2){
-      track1.amountListen >= track2.amountListen;
+    const tracks = this.getTracksMatchingArtist(artistName);
+    tracks.sort( function (a, b){
+      if( a.amountListened < b.amountListened){
+        return 1;
+      }
+      if( a.amountListened > b.amountListened){
+        return -1;
+      }
+      return 0;
     });
     const top = tracks.slice(0, 3);
     console.log(top);
@@ -277,7 +289,7 @@ class UNQfy {
   addUser(name) {
     const user = new User(name, this);
     if (!this.hasUser(user)) {
-      this.usuarios.push(user);
+      this.users.push(user);
       console.log('The user '+user.name+' was added successfully');
     } else {
       console.log("Can't add user "+user.name+" because it already exists");

@@ -25,8 +25,8 @@ class Track {
         return !genres.includes(genresT[0]);
     }
 
-    sumAmount () {
-        this.amountListen + 1;
+    sumAmount() {
+        this.amountListened += 1;
     }
 }
 

@@ -6,11 +6,9 @@ class User {
         this.id = 'u_' + generateId.generateIdUser();
         this.name = name;
         this.listenedTracks = [];
-        this.unqfy = unqfy;
     }
 
     listenToA(track){
-        this.unqfy.play(track);
         this.listenTracks.push(track);
     }
 
