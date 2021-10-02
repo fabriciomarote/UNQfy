@@ -45,8 +45,8 @@ function saveUNQfy(unqfy, filename = 'data.json') {
    4. Guardar el estado de UNQfy (saveUNQfy)
 */
 
-function addArtist(unqfy, name, country, genre){
-  unqfy.addArtist({name:name, country: country, genre:genre});
+function addArtist(unqfy, name, country){
+  unqfy.addArtist({name:name, country: country});
 }
 
 function deleteArtist(unqfy, name) {
@@ -58,10 +58,10 @@ function deleteArtist(unqfy, name) {
   }
 }
 
-function addAlbum(unqfy, artistName, name, year, genre){
+function addAlbum(unqfy, artistName, name, year){
   if(unqfy.existsArtist(artistName)) {
     const artist = unqfy.artists.find(artist => artist.name === artistName);
-    unqfy.addAlbum(artist.id, {name:name, year: parseInt(year), genre: genre, author: artist.name});
+    unqfy.addAlbum(artist.id, {name:name, year: parseInt(year), author: artist.name});
   } else {
     console.log("Can't add album because artist "+artistName+" doesn't exist");
   }
@@ -205,9 +205,9 @@ function main() {
   const arguments_ = process.argv.splice(2);
   const unqfy = getUNQfy();
   if (arguments_[0] === "addArtist"){
-    addArtist(unqfy, arguments_[1], arguments_[2], arguments_[3]);
+    addArtist(unqfy, arguments_[1], arguments_[2]);
   } else if (arguments_[0] === "addAlbum") {
-    addAlbum(unqfy, arguments_[1], arguments_[2], arguments_[3], arguments_[4]);
+    addAlbum(unqfy, arguments_[1], arguments_[2], arguments_[3]);
   } else if (arguments_[0] === "addTrack") {
     addTrack(unqfy, arguments_[1], arguments_[2], arguments_[3], arguments_[4], arguments_[5]);
   } else if (arguments_[0] === "deleteArtist") {

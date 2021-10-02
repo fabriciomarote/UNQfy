@@ -2,7 +2,7 @@ const Generate = require('./generate');
 const generateId = new Generate();
 
 class Artist {
-    constructor(name, country, genre) {
+    constructor(name, country) {
         this.id = 'ar_' + generateId.generateIdArtist();
         this.name = name;
         this.country =  country;

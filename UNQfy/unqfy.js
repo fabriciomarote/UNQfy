@@ -16,7 +16,7 @@ class UNQfy {
     this.artists = [];
     this.playlists = [];
     this.users = [];
-  };
+  }
 
   /////////////////////////// ARTISTA /////////////////////////////////////////////
  
@@ -31,18 +31,18 @@ class UNQfy {
     - una propiedad country (string)
   */
     if(!this.existsArtist(artistData.name)) {
-      const artist = new Artist(artistData.name, artistData.country, artistData.genre);
+      const artist = new Artist(artistData.name, artistData.country);
       this.artists.push(artist);
       console.log('The artist '+artistData.name+' was added successfully');
       return artist; 
     } else {
       return console.log('The artist '+artistData.name+' cannot be added because it already exists');
     }   
-  };
+  }
 
   existsArtist(artistName) {
     return this.artists.some(artist => artist.name === artistName);
-  };
+  }
 
   deleteArtist(artist) {
     const pos = this.artists.indexOf(artist);
@@ -53,16 +53,16 @@ class UNQfy {
       this.artists.splice(pos, 1);
     }
     console.log('The artist '+artist.name+' was deleted successfully');
-  };
+  }
 
   getArtistById(id) {
     return this.artists.find(artist => artist.id === id);
-  };
+  }
 
   searchByArtist(artist) {
     const tracks = artist.albumes.flatMap(album => album.tracks);
     return console.log(tracks);
-  };
+  }
 
   // artistName: nombre de artista(string)
   // retorna: los tracks interpredatos por el artista con nombre artistName
@@ -70,15 +70,13 @@ class UNQfy {
     const artist = this.artists.find(artist => artist.name === artistName);
     const tracksByArtist = artist.albumes.flatMap(album => album.tracks);
     return tracksByArtist;
-  };
+  }
 
   contentArtist(artist) {
     artist.content();
-  };
+  }
 
-
- //////////////////////////////////////////////////ALBUM  ////////////////////////////////////////////
-
+ //////////////////////////////////////////////////   ALBUM  ////////////////////////////////////////////
 
   // albumData: objeto JS con los datos necesarios para crear un album
   // albumData.name (string)
@@ -92,14 +90,14 @@ class UNQfy {
   */
     const artist = this.getArtistById(artistId);
     if(!artist.existsAlbum(albumData.name)) {
-      const album = new Album(albumData.name, albumData.year, albumData.genre, albumData.author);
+      const album = new Album(albumData.name, albumData.year, albumData.author);
       artist.addAlbum(album);
       console.log('The album '+albumData.name+' was added successfully');
       return album; 
     } else {
       return console.log("Can't add album "+albumData.name+" because it already exists");
     }
-  };
+  }
 
   deleteAlbum(artist, album) {
     if(album.tracks.lentgh === 0) {
@@ -109,21 +107,18 @@ class UNQfy {
       artist.deleteAlbum(album);
     }  
     console.log('The album '+album.name+' was deleted successfully');
-  };
+  }
 
   getAlbumById(id) {
     const albumes = this.artists.map(artist => artist.albumes);
     return albumes.find(album => album.id === id);
-  };
+  }
   
   contentAlbum(album) {
     album.content();
-  };
-
-
+  }
 
   ////////////////////////////////// TRACK ///////////////////////////////////////////
-
 
   // trackData: objeto JS con los datos necesarios para crear un track
   // trackData.name (string)
@@ -144,28 +139,26 @@ class UNQfy {
     album.sumDuration(track.duration);
     console.log('The track '+trackData.name+' was added successfully');
     return track;
-  };
+  }
 
   deleteTrack(album, track){
     album.deleteTrack(track);
     const playlists = this.playlists.filter(playlist => playlist.hasTrack(track));
     playlists.forEach(playlist => playlist.deleteTrack(track)); 
     console.log('The track '+track.name+' was deleted successfully');
-  };
+  }
 
   getTrackById(id) {
     const albumes = this.artists.map(artist => artist.albumes);
     const tracks = albumes.map(album => album.tracks);
     return tracks.find( track => track.id === id);
-  };
+  }
 
   contentTrack(track) {
     track.content();
-  };
-
+  }
 
   //////////////////////////////////////// PLAYLIST ////////////////////////////////////;;
-
 
   // name: nombre de la playlist
   // genresToInclude: array de generos
@@ -193,50 +186,51 @@ class UNQfy {
     } else {
       return console.log("Can't add playlist because it already exists");
     }
-  };
+  }
 
   addPlaylist(playlist){
     this.playlists.push(playlist);
-  };
+  }
   
   deletePlaylist(playlist) {
     const pos = this.playlists.indexOf(playlist);
-    if (playlist.tracks.lentgh === 0){
+    if (playlist.tracks.lentgh >= 1 ){
+      playlist.tracks.forEach (track => playlist.deleteTrack(track));
       this.playlists.splice(pos, 1);
     } else {
-      playlist.tracks.forEach (track => playlist.deleteTrack(track));
       this.playlists.splice(pos, 1);
     }
     console.log('The playlist '+playlist.name+' was deleted successfully');
-  };
+  }
 
   getPlaylistById(id) {
     return this.playlists.find(playlist => playlist.id === id);
-  };
+  }
 
   existsPlaylist(name) {
     return this.playlists.some(playlist => playlist.name === name);
-  };
+  }
 
   contentPlaylist(playlist) {
     playlist.content();
-  };
+  }
 
   // genres: array de generos(strings)
   // retorna: los tracks que contenga alguno de los generos en el parametro genres
   getTracksMatchingGenres(genres) {
     const albumes = this.artists.flatMap(artist => artist.albumes);  
     const tracks = albumes.flatMap(album => album.tracks);
-    const resultTrack = tracks.filter(track => !track.hasGenres(genres));
+    const resultTrack = tracks.filter(track => genres.some(genre => track.genres.includes(genre)));
+    console.log(genres);
     return resultTrack;
-  };
+  }
 
   searchByGenre(genre) {
-    const albumesByGenre = this.artists.flatMap(artist => artist.albumes.filter(album => album.genre === genre));
-    const search = albumesByGenre.flatMap(album => album.tracks.filter(track => track.genres.includes(genre)));
+    const albumes = this.artists.flatMap(artist => artist.albumes);
+    const search = albumes.flatMap(album => album.tracks.filter(track => track.genres.includes(genre)));
     console.log(search);
     return search;
-  };
+  }
 
   searchByName(name) {
     const artists = this.artists.filter(artist =>  artist.name.includes(name));
@@ -252,7 +246,7 @@ class UNQfy {
     }; 
     console.log(search);
     return search;
-  };
+  }
 
   play(trackName, userName){
     //Registros de play/escuchar/usuario esta escuchando
@@ -263,7 +257,7 @@ class UNQfy {
     console.log(this.users)
     user.listenToA(track);
     track.sumAmount();
-  };
+  }
 
   thisIs(artistName){
     //A que se refiere armar automaticamente / "On The Fly" preguntar 
@@ -280,11 +274,11 @@ class UNQfy {
     const top = tracks.slice(0, 3);
     console.log(top);
     return top;
-  };
+  }
 
   hasUser(aUser) {
     this.usuarios.some(user => user === aUser);
-  };
+  }
 
   addUser(name) {
     const user = new User(name, this);
@@ -294,15 +288,15 @@ class UNQfy {
     } else {
       console.log("Can't add user "+user.name+" because it already exists");
     } 
-  };
+  }
   
   amountListen(user, aTrack) {
     user.amountListen(aTrack);
-  };
+  }
 
   listenedTracks(user){
     user.listenedTracks();
-  };
+  }
 
   save(filename) {
     const serializedData = picklify.picklify(this);
@@ -315,7 +309,7 @@ class UNQfy {
     const classes = [UNQfy, Artist, Album, Track, Playlist];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
-};
+}
 
 // COMPLETAR POR EL ALUMNO: exportar todas las clases que necesiten ser utilizadas desde un modulo cliente
 module.exports = {

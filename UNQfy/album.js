@@ -2,11 +2,10 @@ const Generate = require('./generate');
 const generateId = new Generate();
 
 class Album {
-    constructor(name, year, genre, author) {
+    constructor(name, year, author) {
         this.id = 'al_' + generateId.generateIdAlbum();
         this.name = name;
         this.year = year;
-        this.genre = genre;
         this.author = author;
         this.duration = 0;
         this.tracks = [];
