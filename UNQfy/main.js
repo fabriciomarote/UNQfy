@@ -1,5 +1,4 @@
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
-const { unzipSync } = require('zlib');
 //const unqfy = require('./unqfy');
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 
@@ -46,7 +45,12 @@ function saveUNQfy(unqfy, filename = 'data.json') {
 */
 
 function addArtist(unqfy, name, country){
-  unqfy.addArtist({name:name, country: country});
+  try {
+    unqfy.addArtist({name:name, country: country}); 
+  } 
+  catch(error) {
+    throw error;
+  }
 }
 
 function deleteArtist(unqfy, name) {
@@ -125,7 +129,6 @@ function createPlaylist(unqfy, name, genres, duration) {
 
 function getTracksMatchingArtist(unqfy, artistName) {
   if(unqfy.existsArtist(artistName)) {
-    
     unqfy.getTracksMatchingArtist(artistName);
   } else {
     console.log('The tracks cannot be returned because the artist '+artistName+' does not exist');
@@ -174,8 +177,7 @@ function contentAlbum(unqfy, name) {
 }
 
 function contentTrack(unqfy, name) {
-  const albumes = unqfy.artists.flatMap(artist => artist.albumes);
-  const tracks = albumes.flatMap(album => album.tracks);
+  const tracks = unqfy.getTracks();
   if(tracks.some(track => track.name === name)) {
    const track = tracks.find(track => track.name === name);
    unqfy.contentTrack(track);
@@ -185,19 +187,19 @@ function contentTrack(unqfy, name) {
 }
 
 function addUser (unqfy, name){
- unqfy.addUser(name)
+ unqfy.addUser(name);
 }
 
 function thisIs(unqfy, name){
   if (unqfy.existsArtist(name)){
-    unqfy.thisIs(name)
+    unqfy.thisIs(name);
   } else {
     console.log("Not exist the artist "+name);   
   } 
 }
 
 function play(unqfy, track, user){
-  unqfy.play(track, user)
+  unqfy.play(track, user);
 }
 
 
@@ -245,7 +247,6 @@ function main() {
   } else if (arguments_[0] === "play") {
     play(unqfy,arguments_[1], arguments_[2]);
   }
-
 
   saveUNQfy(unqfy);
 }

@@ -2,7 +2,7 @@ const Generate = require('./generate');
 const generateId = new Generate();
 
 class User {
-    constructor(name, unqfy) {
+    constructor(name) {
         this.id = 'u_' + generateId.generateIdUser();
         this.name = name;
         this.listenedTracks = [];
@@ -10,6 +10,7 @@ class User {
 
     listenToA(track){
         this.listenTracks.push(track);
+        track.sumAmount();
     }
 
     listenedTracks(){

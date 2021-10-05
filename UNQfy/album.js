@@ -29,6 +29,7 @@ class Album {
 
     addTrack(track) {
         this.tracks.push(track);
+        this.sumDuration(track.duration);
     }
 
     deleteTrack(track) {

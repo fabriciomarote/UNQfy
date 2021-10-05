@@ -1,15 +1,14 @@
 
 const picklify = require('picklify'); // para cargar/guarfar unqfy
 const fs = require('fs'); // para cargar/guarfar unqfy
-
 const Album = require('./album');
 const Artist = require('./artist'); 
 const Track = require('./track');
 const Playlist = require('./playlist');
 const User = require('./user');
-
-//¿como manejar los usuarios?
-//const user = new User ()
+const ArtistError = require('./artistError');
+const AlbumError = require('./albumError');
+const TrackError = require('./trackError'); 
 
 class UNQfy {
   constructor() {
@@ -29,14 +28,12 @@ class UNQfy {
   El objeto artista creado debe soportar (al menos):
     - una propiedad name (string)
     - una propiedad country (string)
-  */
-    if(!this.existsArtist(artistData.name)) {
-      const artist = new Artist(artistData.name, artistData.country);
-      this.artists.push(artist);
-      console.log('The artist '+artistData.name+' was added successfully');
-      return artist; 
-    } else {
-      return console.log('The artist '+artistData.name+' cannot be added because it already exists');
+  */ if(!this.existsArtist(artistData.name)) {
+        const artist = new Artist(artistData.name, artistData.country);
+        this.artists.push(artist);
+        return artist; 
+    } else {   
+      throw new ArtistError();
     }   
   }
 
@@ -52,7 +49,6 @@ class UNQfy {
       artist.albumes.forEach(album => this.deleteAlbum(artist, album));
       this.artists.splice(pos, 1);
     }
-    console.log('The artist '+artist.name+' was deleted successfully');
   }
 
   getArtistById(id) {
@@ -92,7 +88,6 @@ class UNQfy {
     if(!artist.existsAlbum(albumData.name)) {
       const album = new Album(albumData.name, albumData.year, albumData.author);
       artist.addAlbum(album);
-      console.log('The album '+albumData.name+' was added successfully');
       return album; 
     } else {
       return console.log("Can't add album "+albumData.name+" because it already exists");
@@ -106,14 +101,16 @@ class UNQfy {
       album.tracks.forEach(track => this.deleteTrack(album, track));
       artist.deleteAlbum(album);
     }  
-    console.log('The album '+album.name+' was deleted successfully');
   }
 
   getAlbumById(id) {
-    const albumes = this.artists.map(artist => artist.albumes);
-    return albumes.find(album => album.id === id);
+    return this.getAlbumes().find(album => album.id === id);
   }
   
+  getAlbumes() {
+    return this.artists.flatMap(artist => artist.albumes); 
+  }
+
   contentAlbum(album) {
     album.content();
   }
@@ -132,12 +129,9 @@ class UNQfy {
       - una propiedad duration (number),
       - una propiedad genres (lista de strings)
   */
-    const artist = this.artists.find(artist =>  artist.hasAlbum(albumId));
-    const album = artist.albumes.find(album => album.id === albumId);
+    const album = this.getAlbumById(albumId);
     const track = new Track(trackData.name, trackData.duration, trackData.genres, trackData.album, trackData.author);
     album.addTrack(track);
-    album.sumDuration(track.duration);
-    console.log('The track '+trackData.name+' was added successfully');
     return track;
   }
 
@@ -145,17 +139,18 @@ class UNQfy {
     album.deleteTrack(track);
     const playlists = this.playlists.filter(playlist => playlist.hasTrack(track));
     playlists.forEach(playlist => playlist.deleteTrack(track)); 
-    console.log('The track '+track.name+' was deleted successfully');
   }
 
   getTrackById(id) {
-    const albumes = this.artists.map(artist => artist.albumes);
-    const tracks = albumes.map(album => album.tracks);
-    return tracks.find( track => track.id === id);
+    return this.getTracks().find( track => track.id === id);
   }
 
   contentTrack(track) {
     track.content();
+  }
+
+  getTracks() {
+    return this.getAlbumes().flatMap(album => album.tracks);
   }
 
   //////////////////////////////////////// PLAYLIST ////////////////////////////////////;;
@@ -174,17 +169,16 @@ class UNQfy {
     if(!this.existsPlaylist(name)) {
       const playlist = new Playlist(name, genresToInclude);
       const tracks = this.getTracksMatchingGenres(genresToInclude);
-      tracks.forEach( track => { 
-        if (playlist.duration+track.duration <= maxDuration){
-          playlist.addTrack(track);
-          playlist.sumDuration(track.duration);
+      while(tracks.length !== 0 && playlist.duration !== maxDuration) {
+        const track = tracks.shift();
+        if (playlist.duration+track.duration <= maxDuration) {
+          playlist.addTrack(track);  
         }
-      });
+      }
       this.addPlaylist(playlist);
-      console.log('The playlist '+playlist.name+' was added successfully');
       return playlist;
     } else {
-      return console.log("Can't add playlist because it already exists");
+      return console.log("Can't add playlist "+name+" because it already exists");
     }
   }
 
@@ -200,7 +194,6 @@ class UNQfy {
     } else {
       this.playlists.splice(pos, 1);
     }
-    console.log('The playlist '+playlist.name+' was deleted successfully');
   }
 
   getPlaylistById(id) {
@@ -217,17 +210,13 @@ class UNQfy {
 
   // genres: array de generos(strings)
   // retorna: los tracks que contenga alguno de los generos en el parametro genres
-  getTracksMatchingGenres(genres) {
-    const albumes = this.artists.flatMap(artist => artist.albumes);  
-    const tracks = albumes.flatMap(album => album.tracks);
-    const resultTrack = tracks.filter(track => genres.some(genre => track.genres.includes(genre)));
-    console.log(genres);
-    return resultTrack;
+  getTracksMatchingGenres(genres) { 
+    const resultTrack = this.getTracks().filter(track => genres.some(genre => track.genres.includes(genre)));
+    return resultTrack;   ///// FALLA
   }
 
   searchByGenre(genre) {
-    const albumes = this.artists.flatMap(artist => artist.albumes);
-    const search = albumes.flatMap(album => album.tracks.filter(track => track.genres.includes(genre)));
+    const search = this.getAlbumes().flatMap(album => album.tracks.filter(track => track.genres.includes(genre)));
     console.log(search);
     return search;
   }
@@ -244,19 +233,13 @@ class UNQfy {
       tracks: tracks,
       playlists: playlists,
     }; 
-    console.log(search);
     return search;
   }
 
-  play(trackName, userName){
-    //Registros de play/escuchar/usuario esta escuchando
-    const albumes = this.artists.flatMap(artist => artist.albumes);  
-    const tracks = albumes.flatMap(album => album.tracks);
-    const track = tracks.find(track => track.name === trackName);
-    const user = this.users.find(user => user.name === userName)
-    console.log(this.users)
+  play(trackName, userName){ 
+    const track = this.getTracks().find(track => track.name === trackName);
+    const user = this.users.find(user => user.name === userName);
     user.listenToA(track);
-    track.sumAmount();
   }
 
   thisIs(artistName){
@@ -284,7 +267,6 @@ class UNQfy {
     const user = new User(name, this);
     if (!this.hasUser(user)) {
       this.users.push(user);
-      console.log('The user '+user.name+' was added successfully');
     } else {
       console.log("Can't add user "+user.name+" because it already exists");
     } 

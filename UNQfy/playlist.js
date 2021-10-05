@@ -20,6 +20,7 @@ class Playlist {
 
     addTrack(track) {
         this.tracks.push(track);
+        this.sumDuration(track.duration);
     }
 
     deleteTrack(track) {
