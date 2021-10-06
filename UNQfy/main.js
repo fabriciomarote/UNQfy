@@ -45,13 +45,11 @@ function saveUNQfy(unqfy, filename = 'data.json') {
 */
 
 function addArtist(unqfy, name, country){
-  try {
-    unqfy.addArtist({name:name, country: country}); 
-  } 
-  catch(error) {
-    throw error;
+  unqfy.addArtist({name:name, country: country}); 
+      //si esta ultimo no tiene sentido hacer un throw
+      //consolo.log
   }
-}
+
 
 function deleteArtist(unqfy, name) {
   if(unqfy.existsArtist(name)) {
@@ -206,46 +204,50 @@ function play(unqfy, track, user){
 function main() {
   const arguments_ = process.argv.splice(2);
   const unqfy = getUNQfy();
-  if (arguments_[0] === "addArtist"){
-    addArtist(unqfy, arguments_[1], arguments_[2]);
-  } else if (arguments_[0] === "addAlbum") {
-    addAlbum(unqfy, arguments_[1], arguments_[2], arguments_[3]);
-  } else if (arguments_[0] === "addTrack") {
-    addTrack(unqfy, arguments_[1], arguments_[2], arguments_[3], arguments_[4], arguments_[5]);
-  } else if (arguments_[0] === "deleteArtist") {
-    deleteArtist(unqfy, arguments_[1]);
-  } else if (arguments_[0] === "deleteAlbum") {
-    deleteAlbum(unqfy, arguments_[1], arguments_[2]);
-  } else if (arguments_[0] === "deleteTrack") {
-    deleteTrack(unqfy, arguments_[1], arguments_[2], arguments_[3]);
-  } else if (arguments_[0] === 'searchByName') {
-    searchByName(unqfy, arguments_[1]);
-  } else if (arguments_[0] === 'searchByArtist') {
-    searchByArtist(unqfy, arguments_[1]);
-  } else if (arguments_[0] === 'searchByGenre') {
-    searchByGenre(unqfy, arguments_[1]);
-  } else if (arguments_[0] === 'createPlaylist') {
-    createPlaylist(unqfy, arguments_[1], arguments_[2], arguments_[3]);
-  } else if (arguments_[0] === 'getTracksMatchingArtist') {
-    getTracksMatchingArtist(unqfy,arguments_[1]);
-  } else if (arguments_[0] === 'getTracksMatchingGenres') {
-    getTracksMatchingGenres(unqfy,arguments_[1]);
-  } else if (arguments_[0] === 'deletePlaylist') {
-    deletePlaylist(unqfy,arguments_[1]);
-  } else if (arguments_[0] === 'contentArtist') {
-    contentArtist(unqfy,arguments_[1]);
-  } else if (arguments_[0] === 'contentPlaylist') {
-    contentPlaylist(unqfy,arguments_[1]);
-  } else if (arguments_[0] === 'contentAlbum') {
-    contentAlbum(unqfy,arguments_[1]);
-  } else if (arguments_[0] === 'contentTrack') {
-    contentTrack(unqfy,arguments_[1]);
-  } else if (arguments_[0] === "addUser") {
-    addUser(unqfy,arguments_[1]);
-  } else if (arguments_[0] === "thisIs") {
-    thisIs(unqfy,arguments_[1]);
-  } else if (arguments_[0] === "play") {
-    play(unqfy,arguments_[1], arguments_[2]);
+  try {
+    if (arguments_[0] === "addArtist"){
+      addArtist(unqfy, arguments_[1], arguments_[2]);
+    } else if (arguments_[0] === "addAlbum") {
+      addAlbum(unqfy, arguments_[1], arguments_[2], arguments_[3]);
+    } else if (arguments_[0] === "addTrack") {
+      addTrack(unqfy, arguments_[1], arguments_[2], arguments_[3], arguments_[4], arguments_[5]);
+    } else if (arguments_[0] === "deleteArtist") {
+      deleteArtist(unqfy, arguments_[1]);
+    } else if (arguments_[0] === "deleteAlbum") {
+      deleteAlbum(unqfy, arguments_[1], arguments_[2]);
+    } else if (arguments_[0] === "deleteTrack") {
+      deleteTrack(unqfy, arguments_[1], arguments_[2], arguments_[3]);
+    } else if (arguments_[0] === 'searchByName') {
+      searchByName(unqfy, arguments_[1]);
+    } else if (arguments_[0] === 'searchByArtist') {
+      searchByArtist(unqfy, arguments_[1]);
+    } else if (arguments_[0] === 'searchByGenre') {
+      searchByGenre(unqfy, arguments_[1]);
+    } else if (arguments_[0] === 'createPlaylist') {
+      createPlaylist(unqfy, arguments_[1], arguments_[2], arguments_[3]);
+    } else if (arguments_[0] === 'getTracksMatchingArtist') {
+      getTracksMatchingArtist(unqfy,arguments_[1]);
+    } else if (arguments_[0] === 'getTracksMatchingGenres') {
+      getTracksMatchingGenres(unqfy,arguments_[1]);
+    } else if (arguments_[0] === 'deletePlaylist') {
+      deletePlaylist(unqfy,arguments_[1]);
+    } else if (arguments_[0] === 'contentArtist') {
+      contentArtist(unqfy,arguments_[1]);
+    } else if (arguments_[0] === 'contentPlaylist') {
+      contentPlaylist(unqfy,arguments_[1]);
+    } else if (arguments_[0] === 'contentAlbum') {
+      contentAlbum(unqfy,arguments_[1]);
+    } else if (arguments_[0] === 'contentTrack') {
+      contentTrack(unqfy,arguments_[1]);
+    } else if (arguments_[0] === "addUser") {
+      addUser(unqfy,arguments_[1]);
+    } else if (arguments_[0] === "thisIs") {
+      thisIs(unqfy,arguments_[1]);
+    } else if (arguments_[0] === "play") {
+      play(unqfy,arguments_[1], arguments_[2]);
+    }
+  } catch (error) {
+      console.log (error);
   }
 
   saveUNQfy(unqfy);

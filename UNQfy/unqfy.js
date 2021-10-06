@@ -33,7 +33,7 @@ class UNQfy {
         this.artists.push(artist);
         return artist; 
     } else {   
-      throw new ArtistError();
+      throw new ArtistError('The artist '+ artistData.name +' cannot be added because it already exists');
     }   
   }
 
