@@ -6,15 +6,15 @@ const Artist = require('./artist');
 const Track = require('./track');
 const Playlist = require('./playlist');
 const User = require('./user');
-const ArtistError = require('./artistError');
-const AlbumError = require('./albumError');
-const TrackError = require('./trackError'); 
+const Generate = require('./generate');
+const ErrorResponse = require('./errorResponse');
 
 class UNQfy {
   constructor() {
     this.artists = [];
     this.playlists = [];
     this.users = [];
+    this.generate = new Generate();
   }
 
   /////////////////////////// ARTISTA /////////////////////////////////////////////
@@ -28,12 +28,12 @@ class UNQfy {
   El objeto artista creado debe soportar (al menos):
     - una propiedad name (string)
     - una propiedad country (string)
-  */ if(!this.existsArtist(artistData.name)) {
+  */  if(!this.existsArtist(artistData.name)) {
         const artist = new Artist(artistData.name, artistData.country);
         this.artists.push(artist);
         return artist; 
     } else {   
-      throw new ArtistError('The artist '+ artistData.name +' cannot be added because it already exists');
+      throw new ErrorResponse('The artist '+ artistData.name +' cannot be added because it already exists');
     }   
   }
 
@@ -43,11 +43,11 @@ class UNQfy {
 
   deleteArtist(artist) {
     const pos = this.artists.indexOf(artist);
-    if(artist.albumes.lentgh === 0) {
-      this.artists.splice(pos, 1);
+      if(artist.albumes.lentgh === 0) {
+        this.artists.splice(pos, 1);
     } else {
-      artist.albumes.forEach(album => this.deleteAlbum(artist, album));
-      this.artists.splice(pos, 1);
+        artist.albumes.forEach(album => this.deleteAlbum(artist, album));
+        this.artists.splice(pos, 1);
     }
   }
 
@@ -89,8 +89,9 @@ class UNQfy {
       const album = new Album(albumData.name, albumData.year, albumData.author);
       artist.addAlbum(album);
       return album; 
-    } else {
-      return console.log("Can't add album "+albumData.name+" because it already exists");
+    } 
+    else {
+      throw new ErrorResponse("Can't add album "+albumData.name+" because it already exists");
     }
   }
 
@@ -130,9 +131,14 @@ class UNQfy {
       - una propiedad genres (lista de strings)
   */
     const album = this.getAlbumById(albumId);
-    const track = new Track(trackData.name, trackData.duration, trackData.genres, trackData.album, trackData.author);
-    album.addTrack(track);
-    return track;
+    if(!album.existsTrack(trackData.name)) {
+      const track = new Track(trackData.name, trackData.duration, trackData.genres, trackData.album, trackData.author);
+      album.addTrack(track);
+      return track;
+    } 
+    else {
+      throw new ErrorResponse("Can't add track "+trackData.name+" because it already exists");
+    }
   }
 
   deleteTrack(album, track){
@@ -178,7 +184,7 @@ class UNQfy {
       this.addPlaylist(playlist);
       return playlist;
     } else {
-      return console.log("Can't add playlist "+name+" because it already exists");
+      throw new ErrorResponse("Can't add playlist "+name+" because it already exists");
     }
   }
 
@@ -268,7 +274,7 @@ class UNQfy {
     if (!this.hasUser(user)) {
       this.users.push(user);
     } else {
-      console.log("Can't add user "+user.name+" because it already exists");
+      throw new ErrorResponse("Can't add user "+user.name+" because it already exists");
     } 
   }
   

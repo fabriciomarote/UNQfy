@@ -1,6 +1,7 @@
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 //const unqfy = require('./unqfy');
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
+const ErrorResponse = require('./errorResponse');
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename = 'data.json') {
@@ -46,17 +47,14 @@ function saveUNQfy(unqfy, filename = 'data.json') {
 
 function addArtist(unqfy, name, country){
   unqfy.addArtist({name:name, country: country}); 
-      //si esta ultimo no tiene sentido hacer un throw
-      //consolo.log
   }
-
 
 function deleteArtist(unqfy, name) {
   if(unqfy.existsArtist(name)) {
     const artist = unqfy.artists.find(artist => artist.name === name);
     unqfy.deleteArtist(artist);
   } else {
-    console.log("Can't delete artist "+name+" because doesn't exist");
+    throw new ErrorResponse("Can't delete artist "+name+" because doesn't exist");
   }
 }
 
@@ -65,7 +63,7 @@ function addAlbum(unqfy, artistName, name, year){
     const artist = unqfy.artists.find(artist => artist.name === artistName);
     unqfy.addAlbum(artist.id, {name:name, year: parseInt(year), author: artist.name});
   } else {
-    console.log("Can't add album because artist "+artistName+" doesn't exist");
+    throw new ErrorResponse("Can't add album because artist "+artistName+" doesn't exist");
   }
 }  
 
@@ -76,10 +74,10 @@ function deleteAlbum(unqfy, artistName, name) {
       const album = artist.albumes.find(album => album.name === name);
       unqfy.deleteAlbum(artist, album);
     } else {
-      console.log("Can't delete album because doesn't exist");
+      throw new ErrorResponse("Can't delete album because doesn't exist");
     } 
   } else {
-    console.log("Can't delete album because artist "+artistName+" doesn't exist");
+    throw new ErrorResponse("Can't delete album because artist "+artistName+" doesn't exist");
   }
 }
 
@@ -90,10 +88,10 @@ function addTrack(unqfy, artistName, albumName, name, duration, genres) {
       const album = artist.albumes.find(album => album.name === albumName);
       unqfy.addTrack(album.id, {name: name, duration: parseInt(duration), genres: genres.split(','), album: album.name, author: artist.name});
     } else {
-      console.log("Can't add track because album "+albumName+" doesn't exist");
+      throw new ErrorResponse("Can't add track because album "+albumName+" doesn't exist");
     }
   } else {
-    console.log("Can't add track because artist "+artistName+" doesn't exist");
+    throw new ErrorResponse("Can't add track because artist "+artistName+" doesn't exist");
   }
 }
 
@@ -104,7 +102,7 @@ function deleteTrack(unqfy, artistName, albumName, name) {
   if(artist !== undefined && album !== undefined && track !== undefined) {
     unqfy.deleteTrack(album, track);
   } else {
-    console.log("Can't delete track because artist, album or track doesn't exist");
+    throw new ErrorResponse("Can't delete track "+name+" because artist, album or track doesn't exist");
   }  
 }
 
@@ -129,7 +127,7 @@ function getTracksMatchingArtist(unqfy, artistName) {
   if(unqfy.existsArtist(artistName)) {
     unqfy.getTracksMatchingArtist(artistName);
   } else {
-    console.log('The tracks cannot be returned because the artist '+artistName+' does not exist');
+    throw new ErrorResponse('The tracks cannot be returned because the artist '+artistName+' does not exist');
   }   
 }
 
@@ -142,7 +140,7 @@ function deletePlaylist(unqfy, name) {
     const playlist = unqfy.playlists.find(playlist => playlist.name === name);
     unqfy.deletePlaylist(playlist);
   } else {
-    console.log("Can't delete playlist because doesn't exist");
+    throw new ErrorResponse("Can't delete playlist "+name+" because doesn't exist");
   }
 }
 
@@ -151,7 +149,7 @@ function contentArtist(unqfy, name) {
     const artist = unqfy.artists.find(artist => artist.name === name);
     unqfy.contentArtist(artist);
   } else {
-    console.log("Not exist the artist "+name);   
+    throw new ErrorResponse("Not exist the artist "+name);   
   }  
 }
 
@@ -160,7 +158,7 @@ function contentPlaylist(unqfy, name) {
     const playlist = unqfy.playlists.find(playlist => playlist.name === name);
     unqfy.contentPlaylist(playlist);
   } else {
-    console.log("Not exist the playlist "+name);   
+    throw new ErrorResponse("Not exist the playlist "+name);   
   } 
 }
 
@@ -170,7 +168,7 @@ function contentAlbum(unqfy, name) {
     const album = albumes.find(album => album.name === name);
     unqfy.contentAlbum(album);
   } else {
-    console.log("Not exist the album "+name);   
+    throw new ErrorResponse("Not exist the album "+name);   
   } 
 }
 
@@ -180,7 +178,7 @@ function contentTrack(unqfy, name) {
    const track = tracks.find(track => track.name === name);
    unqfy.contentTrack(track);
  } else {
-   console.log("Not exist the track "+name);   
+  throw new ErrorResponse("Not exist the track "+name);   
  } 
 }
 
@@ -192,7 +190,7 @@ function thisIs(unqfy, name){
   if (unqfy.existsArtist(name)){
     unqfy.thisIs(name);
   } else {
-    console.log("Not exist the artist "+name);   
+    throw new ErrorResponse("Not exist the artist "+name);   
   } 
 }
 
@@ -246,8 +244,8 @@ function main() {
     } else if (arguments_[0] === "play") {
       play(unqfy,arguments_[1], arguments_[2]);
     }
-  } catch (error) {
-      console.log (error);
+  } catch(error) {
+      console.log(error);
   }
 
   saveUNQfy(unqfy);
