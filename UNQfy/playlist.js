@@ -36,6 +36,14 @@ class Playlist {
     subtractDuration(newTrackDuration) {
         this.duration -= newTrackDuration;
     }
+
+    getDuration(){
+        return this.duration;
+    }
+
+    getTracks(){
+        return this.tracks;
+    }
 }
 
 module.exports = Playlist;

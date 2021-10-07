@@ -19,6 +19,10 @@ class Track {
     sumAmount() {
         this.amountListened += 1;
     }
+
+    getDuration(){
+        return this.duration;
+    }
 }
 
 module.exports = Track;

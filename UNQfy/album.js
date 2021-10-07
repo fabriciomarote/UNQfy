@@ -37,6 +37,10 @@ class Album {
         this.tracks.splice(pos, 1);
         this.subtractDuration(track.duration);
     }
+
+    getTracks() {
+        return this.tracks;
+    }
 }
 
 module.exports = Album;
