@@ -8,6 +8,7 @@ const Playlist = require('./playlist');
 const User = require('./user');
 const Generate = require('./generate');
 const ErrorResponse = require('./errorResponse');
+const rp = require('request-promise');
 
 class UNQfy {
   constructor() {
@@ -300,6 +301,47 @@ class UNQfy {
 
   listenedTracks(user){
     user.listenedTracks();
+  }
+
+  getYear(string) {
+    const newString = string;
+    return newString.split('-')[0];
+  }
+
+  populateAlbumsForArtist(artistName) {
+    
+    const token = 'BQDBeef7rTMfBLzC2puJIymZGOLaki22I1zgiG61Qza8H3RlYzaOLv32DdkNOhFYcmdtg0-xZc386xt2JZuRysjzbD9NyX0qAYYi7YfUQBy-M8MyhMbwra_9O4L6dPElvbAxJLKLQZSWS5NpEac3xOPQyQx7';
+    const options = {
+     url: `https://api.spotify.com/v1/search?q=${artistName}&type=artist`,
+     headers: { Authorization: 'Bearer ' + token},
+     json: true,
+    };
+
+    rp.get(options).then((response) => {
+        const artistSpotify = response.artists.items[0];
+
+        const getAlbums = {
+          url: `https://api.spotify.com/v1/artists/${artistSpotify.id}/albums`,
+          headers: { Authorization: 'Bearer ' + token},
+          json: true,
+         };
+
+         rp.get(getAlbums).then((responseAlbums) => 
+         responseAlbums.items.forEach(element => {
+            const artist = this.getArtistByName(artistSpotify.name);
+            const album = new Album(element.name, parseInt(this.getYear(element.release_date)) ,artistSpotify.name);
+            artist.addAlbum(album);
+        }));
+    });
+  }
+
+  getAlbumsForArtist(artistName) {
+     const artist = this.getArtistByName(artistName);
+     return artist.getAlbumes();
+  }
+
+  getLyrics(track) {
+    return track.getLyrics();
   }
 
   save(filename) {

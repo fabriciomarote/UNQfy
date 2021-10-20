@@ -2,6 +2,7 @@ const fs = require('fs'); // necesitado para guardar/cargar unqfy
 //const unqfy = require('./unqfy');
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 const ErrorResponse = require('./errorResponse');
+const unqfy = require('./unqfy');
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename = 'data.json') {
@@ -69,7 +70,7 @@ function addAlbum(unqfy, artistName, name, year){
 
 function deleteAlbum(unqfy, artistName, name) {
   if(unqfy.existsArtist(artistName)) {
-    const artist = unqfy.getArtistByName(artistName);;
+    const artist = unqfy.getArtistByName(artistName);
     if(artist.existsAlbum(name)) {
       const album = artist.getAlbumesByName(name);
       unqfy.deleteAlbum(artist, album);
@@ -197,6 +198,34 @@ function play(unqfy, track, user){
   unqfy.play(track, user);
 }
 
+function getLyrics(unqfy, trackName) {
+  const tracks = unqfy.getTracks();
+  if(tracks.some(track => track.name === trackName)) {
+   const track = tracks.find(track => track.name === trackName);
+   unqfy.getLyrics(track);
+  } else {
+  throw new ErrorResponse("Not exist the track "+trackName);   
+  } 
+}
+
+function populateAlbumsForArtist(unqfy, artistName) {
+  if(unqfy.existsArtist(artistName)) {
+    unqfy.populateAlbumsForArtist(artistName);
+  } else {
+    throw new ErrorResponse("The artist "+artistName+" not exist");
+  }
+    
+}
+
+function getAlbumsForArtist(unqfy, artistName) {
+  if(unqfy.existsArtist(artistName)) {
+    unqfy.getAlbumsForArtist(artistName);
+  } else {
+    throw new ErrorResponse("The artist "+artistName+" not exist");
+  } 
+}
+
+
 
 function main() {
   const arguments_ = process.argv.splice(2);
@@ -223,25 +252,31 @@ function main() {
     } else if (arguments_[0] === 'createPlaylist') {
       createPlaylist(unqfy, arguments_[1], arguments_[2], arguments_[3]);
     } else if (arguments_[0] === 'getTracksMatchingArtist') {
-      getTracksMatchingArtist(unqfy,arguments_[1]);
+      getTracksMatchingArtist(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'getTracksMatchingGenres') {
-      getTracksMatchingGenres(unqfy,arguments_[1]);
+      getTracksMatchingGenres(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'deletePlaylist') {
-      deletePlaylist(unqfy,arguments_[1]);
+      deletePlaylist(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'contentArtist') {
-      contentArtist(unqfy,arguments_[1]);
+      contentArtist(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'contentPlaylist') {
-      contentPlaylist(unqfy,arguments_[1]);
+      contentPlaylist(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'contentAlbum') {
-      contentAlbum(unqfy,arguments_[1]);
+      contentAlbum(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'contentTrack') {
-      contentTrack(unqfy,arguments_[1]);
+      contentTrack(unqfy, arguments_[1]);
     } else if (arguments_[0] === "addUser") {
-      addUser(unqfy,arguments_[1]);
+      addUser(unqfy, arguments_[1]);
     } else if (arguments_[0] === "thisIs") {
-      thisIs(unqfy,arguments_[1]);
+      thisIs(unqfy, arguments_[1]);
     } else if (arguments_[0] === "play") {
-      play(unqfy,arguments_[1], arguments_[2]);
+      play(unqfy, arguments_[1], arguments_[2]);
+    } else if (arguments_[0] === "getLyrics") {
+      getLyrics(unqfy, arguments_[1]);
+    } else if (arguments_[0] === "populateAlbumsForArtist") {
+      populateAlbumsForArtist(unqfy, arguments_[1]);
+    } else if (arguments_[0] === "getAlbumsForArtist") {
+      getAlbumsForArtist(unqfy, arguments_[1]);
     }
   } catch(error) {
       console.log(error);
