@@ -201,10 +201,10 @@ function play(unqfy, track, user){
 function getLyrics(unqfy, trackName) {
   const tracks = unqfy.getTracks();
   if(tracks.some(track => track.name === trackName)) {
-   const track = tracks.find(track => track.name === trackName);
-   unqfy.getLyrics(track);
+    const track = tracks.find(track => track.name === trackName);
+    unqfy.getLyrics(track);
   } else {
-  throw new ErrorResponse("Not exist the track "+trackName);   
+    throw new ErrorResponse("The track "+trackName+" not exist");   
   } 
 }
 

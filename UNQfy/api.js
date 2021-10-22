@@ -1,6 +1,5 @@
 const express = require('express');
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
-const unqfy = require('./unqfy');
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
@@ -16,7 +15,7 @@ function saveUNQfy(unqfy, filename = 'data.json') {
   unqfy.save(filename);
 }
 
-const unqify = new unqmod.UNQfy();
+const unqfy = new unqmod.UNQfy();
 
 const errors = require('./errors');
 const bodyParser = require('body-parser');
@@ -35,33 +34,70 @@ app.use(express.json());
 
 app.use('/api', artists, albums, tracks);
 app.listen(port,
-    () => console.log(`Puerto ${port} escuchando`)
+    () => console.log(`Puerto ${port} Ok`)
 );
 
 artists.route('/artists')
 .post((req, res) => {
-    const newArtist = unqify.addArtist(req.body);
-    res.status(201).json(newArtist);
+    try{
+        const artistData = {name: req.body.name,
+                        country:req.body.country};
+        const newArtist = unqfy.addArtist(artistData); 
+        res.status(201).json(newArtist);
+    } catch (error) {
+        const errorResponse = {
+            status: 409,
+            errorCode: "RESOURCE_ALREADY_EXISTS"
+        };
+        res.status(409).json(errorResponse);
+    }
 });
-//e ejemplo = api/artists?name=guns
+
 artists.route('/artists/search')
 .get((req, res) => {
-    const artistName =  req.query.name;
-    const artists = unqify.searchArtistsByName(artistName);
-    res.status(200).json(artists);
+    try {
+        const artistName =  req.query.name;
+        const artists = unqfy.searchArtistsByName(artistName);
+        res.status(200).json(artists);
+    }
+    catch(error) {
+        const errorResponse = {
+            status: 404,
+            errorCode: "RESOURCE_NOT_FOUND"
+        };
+        res.status(404).json(errorResponse);
+    }
 });
 
 artists.route('/artists/:artistId')
 .get((req, res) => {
-    const artistId = req.params.artistId;
-    const artist = unqify.getArtistById(artistId);
-    res.status(200).json(artist);
+    try {
+        const artistId = req.params.artistId;
+        const artist = unqfy.getArtistById(artistId);
+        res.status(200).json(artist);
+    } 
+    catch(error) {
+        const errorResponse = {
+            status: 404,
+            errorCode: "RESOURCE_NOT_FOUND"
+        };
+        res.status(404).json(errorResponse);
+    }
 })
 .delete((req, res) => {
-    const artistId = req.params.artistId;
-    const artist = unqify.getArtistById(artistId);
-    unqify.deleteArtist(artist);
-    res.status(204);
+    try {
+        const artistId = req.params.artistId;
+        const artist = unqfy.getArtistById(artistId);
+        unqfy.deleteArtist(artist);
+        res.status(204);
+    }
+    catch(error) {
+        const errorResponse = {
+            status: 404,
+            errorCode: "RESOURCE_NOT_FOUND"
+        };
+        res.status(404).json(errorResponse);
+    }
      
 })
 .patch((req, res) => {
@@ -70,29 +106,66 @@ artists.route('/artists/:artistId')
 
 albums.route('/albums')
 .post((req, res) => {
-    const artistId = req.body.artistId;
-    const newAlbum = unqify.addAlbum(artistId, req.body);
-    res.status(201).json(newAlbum);
+    try {
+        const artistId = req.body.artistId;
+        const albumData = { name: req.body.name, year: req.body.year};
+        const newAlbum = unqfy.addAlbum(artistId, albumData);
+        res.status(201).json(newAlbum);
+    } 
+    catch (error) {
+        const errorResponse = {
+            status: 404,
+            errorCode: "RELATED_RESOURCE_NOT_FOUND"
+        };
+        res.status(404).json(errorResponse);
+    }
 });
 
 albums.route('/albums/search')
 .get((req, res) => {
-    const albumName =  req.query;
-    const albums = unqify.searchAlbumsByName(albumName);
-    res.status(200).json(albums);
+    try {
+        const albumName =  req.query;
+        const albums = unqfy.searchAlbumsByName(albumName);
+        res.status(200).json(albums);
+    }
+    catch(error) {
+        const errorResponse = {
+            status: 404,
+            errorCode: "RESOURCE_NOT_FOUND"
+        };
+        res.status(404).json(errorResponse);
+    }
 });
 
 albums.route('/albums/:albumId')
 .get((req, res) => {
-    const albumId = req.params.albumId;
-    const album = unqify.getAlbumById(albumId);
-    res.status(200).json(album);
+    try {
+        const albumId = req.params.albumId;
+        const album = unqfy.getAlbumById(albumId);
+        res.status(200).json(album);
+    }   
+    catch(error) {
+        const errorResponse = {
+            status: 404,
+            errorCode: "RESOURCE_NOT_FOUND"
+        };
+        res.status(404).json(errorResponse);
+    }
 })
 .delete((req, res) => {
-    const albumId = req.params.albumId;
-    const album = unqify.getAlbumById(albumId);
-    unqify.deleteAlbum(album);
-    res.status(204);
+    try {
+        const albumId = req.params.albumId;
+        const album = unqfy.getAlbumById(albumId);
+        unqfy.deleteAlbum(album);
+        res.status(204);
+    }
+    catch(error) {
+        const errorResponse = {
+            status: 404,
+            errorCode: "RESOURCE_NOT_FOUND"
+        };
+        res.status(404).json(errorResponse);
+    }
 })
 .patch((req, res) => {
 
@@ -101,17 +174,23 @@ albums.route('/albums/:albumId')
 tracks.route('/tracks/trackId/lyrics')
 .get((req, res) => {
     const trackId = req.params.trackId;
-    if(unqfy.getTracks().some(track => track.id === trackId)) {
-        const track = unqfy.getTrackById(trackId);
-        const response = {
-        Name: track.name,
-        lyrics: unqfy.getLyrics(track)
-        };
-
-        res.status(200).json(response);
-    } else {
-        res.status(404);
-    }
+    try {
+        if(unqfy.getTracks().some(track => track.id === trackId)) {
+            const track = unqfy.getTrackById(trackId);
+            const response = {
+            name: track.name,
+            lyrics: unqfy.getLyrics(track)
+            };
+            res.status(200).json(response);
+           }
+        }   
+        catch (error) {
+            const errorResponse = {
+                status: 404,
+                errorCode: "RESOURCE_NOT_FOUND"
+            };
+            res.status(404).json(errorResponse);
+        }
 });
 
 playlists.route('/playlists')
@@ -122,20 +201,42 @@ playlists.route('/playlists')
     
 })
 .get((req, res) => {
-    
+    const name = req.body.name;
+    const maxDuration = req.body.maxDuration;
+    const genres = req.body.name;
+    const playlist = unqfy.createPlaylist(name, genres, maxDuration);
+    res.status(201).json(playlist);
 });
 
 playlists.route('/playlists/:playlistId')
 .get((req, res) => {
+    try {
     const playlistId = req.params.playlistId;
     const playlist = unqfy.getPlaylistById(playlistId);
     res.status(200).json(playlist);
+    }
+    catch(error) {
+        const errorResponse = {
+            status: 404,
+            errorCode: "RESOURCE_NOT_FOUND"
+        };
+        res.status(404).json(errorResponse);
+    }
 })
 .delete((req, res) => {
-    const playlistId = req.params.playlistId;
-    const playlist = unqfy.getPlaylistById(playlistId);
-    unqfy.deleteAlbum(playlist);
-    res.status(204);
+    try {
+        const playlistId = req.params.playlistId;
+        const playlist = unqfy.getPlaylistById(playlistId);
+        unqfy.deleteAlbum(playlist);
+        res.status(204);
+    }
+    catch(error) {
+        const errorResponse = {
+            status: 404,
+            errorCode: "RESOURCE_NOT_FOUND"
+        };
+        res.status(404).json(errorResponse);
+    }
 });
 
 function errorHandler(err, req, res, next) {

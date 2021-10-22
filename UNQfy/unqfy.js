@@ -53,8 +53,12 @@ class UNQfy {
   }
 
   getArtistById(id) {
-    const artist = this.artists.find(artist => artist.id === id);
-    return artist;
+    if (this.artists.some(artist => artist.id === id)) {
+      const artist = this.artists.find(artist => artist.id === id);
+      return artist;
+    } else {
+      throw new ErrorResponse("The artist "+id+" does not exist");  
+    }  
   }
 
   getArtists() {
@@ -62,7 +66,11 @@ class UNQfy {
   }
 
   getArtistByName(name) {
-    this.artists.find(artist => artist.name === name);
+    if (this.artists.some(artist => artist.name === name)) {
+      return this.artists.find(artist => artist.name === name);
+    } else {
+      throw new ErrorResponse("The artist "+name+" does not exist");  
+    } 
   }
 
   searchByArtist(artist) {
@@ -115,8 +123,13 @@ class UNQfy {
   }
 
   getAlbumById(id) {
-    const album = this.getAlbumes().find(album => album.id === id);
-    return album;
+    if (this.getAlbumes().some(album => album.id === id)) {
+      const album = this.getAlbumes().find(album => album.id === id);
+      return album;
+    } else {
+      throw new ErrorResponse("The album "+id+" does not exist");  
+    }   
+
   }
   
   getAlbumes() {
@@ -159,7 +172,11 @@ class UNQfy {
   }
 
   getTrackById(id) {
-    return this.getTracks().find( track => track.id === id);
+    if (this.getTracks().some(track => track.id === id)) {
+      return this.getTracks().find( track => track.id === id);
+    } else {
+      throw new ErrorResponse("The track "+id+" does not exist"); 
+    }  
   }
 
   contentTrack(track) {
@@ -214,7 +231,11 @@ class UNQfy {
   }
 
   getPlaylistById(id) {
+    if (this.playlists.some(playlist => playlist.id === id)) {
     return this.playlists.find(playlist => playlist.id === id);
+  } else {
+    throw new ErrorResponse("The album "+id+" does not exist"); 
+    }
   }
 
   getPlaylists() {
