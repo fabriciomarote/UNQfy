@@ -53,7 +53,8 @@ class UNQfy {
   }
 
   getArtistById(id) {
-    return this.artists.find(artist => artist.id === id);
+    const artist = this.artists.find(artist => artist.id === id);
+    return artist;
   }
 
   getArtists() {
@@ -95,7 +96,7 @@ class UNQfy {
   */
     const artist = this.getArtistById(artistId);
     if(!artist.existsAlbum(albumData.name)) {
-      const album = new Album(albumData.name, albumData.year, albumData.author);
+      const album = new Album(albumData.name, albumData.year, artist.name);
       artist.addAlbum(album);
       return album; 
     } 
@@ -114,7 +115,8 @@ class UNQfy {
   }
 
   getAlbumById(id) {
-    return this.getAlbumes().find(album => album.id === id);
+    const album = this.getAlbumes().find(album => album.id === id);
+    return album;
   }
   
   getAlbumes() {
@@ -308,8 +310,7 @@ class UNQfy {
     return newString.split('-')[0];
   }
 
-  populateAlbumsForArtist(artistName) {
-    
+  populateAlbumsForArtist(artistName) { 
     const token = 'BQDBeef7rTMfBLzC2puJIymZGOLaki22I1zgiG61Qza8H3RlYzaOLv32DdkNOhFYcmdtg0-xZc386xt2JZuRysjzbD9NyX0qAYYi7YfUQBy-M8MyhMbwra_9O4L6dPElvbAxJLKLQZSWS5NpEac3xOPQyQx7';
     const options = {
      url: `https://api.spotify.com/v1/search?q=${artistName}&type=artist`,
@@ -342,6 +343,22 @@ class UNQfy {
 
   getLyrics(track) {
     return track.getLyrics();
+  }
+
+  searchArtistsByName(artistName) {
+    const artists = this.artists.filter(artist =>  artist.name.includes(artistName));
+    const search = {
+      artists: artists,
+    }; 
+    return search;
+  }
+
+  searchAlbumsByName(albumName) {
+    const albums = this.artists.flatMap(artist => artist.getAlbumes().filter(album=> album.name.includes(albumName)));
+    const search = {
+      albums: albums,
+    }; 
+    return search;
   }
 
   save(filename) {

@@ -62,7 +62,7 @@ function deleteArtist(unqfy, name) {
 function addAlbum(unqfy, artistName, name, year){
   if(unqfy.existsArtist(artistName)) {
     const artist = unqfy.getArtistByName(name);
-    unqfy.addAlbum(artist.id, {name:name, year: parseInt(year), author: artist.name});
+    unqfy.addAlbum(artist.id, {name:name, year: parseInt(year)});
   } else {
     throw new ErrorResponse("Can't add album because artist "+artistName+" doesn't exist");
   }

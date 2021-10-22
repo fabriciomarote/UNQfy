@@ -7,7 +7,6 @@ class Artist {
         this.name = name;
         this.country =  country;
         this.albumes = [];
-        this.albumsBySpotify = [];
     }
 
     content() {
