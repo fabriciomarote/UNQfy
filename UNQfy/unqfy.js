@@ -44,10 +44,10 @@ class UNQfy {
 
   deleteArtist(artist) {
     const pos = this.artists.indexOf(artist);
-      if(artist.getAlbumes().lentgh === 0) {
+      if(artist.getAlbums().lentgh === 0) {
         this.artists.splice(pos, 1);
     } else {
-        artist.getAlbumes().forEach(album => this.deleteAlbum(artist, album));
+        artist.getAlbums().forEach(album => this.deleteAlbum(artist, album));
         this.artists.splice(pos, 1);
     }
   }
@@ -74,16 +74,20 @@ class UNQfy {
   }
 
   searchByArtist(artist) {
-    const tracks = artist.getAlbumes().flatMap(album => album.tracks);
+    const tracks = artist.getAlbums().flatMap(album => album.tracks);
     return console.log(tracks);
   }
 
   // artistName: nombre de artista(string)
   // retorna: los tracks interpredatos por el artista con nombre artistName
   getTracksMatchingArtist(artistName) {
-    const artist = this.artists.find(artist => artist.name === artistName);
-    const tracksByArtist = artist.getAlbumes().flatMap(album => album.tracks);
-    return tracksByArtist;
+    if (this.artists.some(artist => artist.name === artistName)) { 
+      const artist = this.artists.find(artist => artist.name === artistName);
+      const tracksByArtist = artist.getAlbums().flatMap(album => album.tracks);
+      return tracksByArtist;
+    } else {
+      throw new ErrorResponse("The artist "+artistName+" does not exist"); 
+    }  
   }
 
   contentArtist(artist) {
@@ -123,8 +127,8 @@ class UNQfy {
   }
 
   getAlbumById(id) {
-    if (this.getAlbumes().some(album => album.id === id)) {
-      const album = this.getAlbumes().find(album => album.id === id);
+    if (this.getAlbums().some(album => album.id === id)) {
+      const album = this.getAlbums().find(album => album.id === id);
       return album;
     } else {
       throw new ErrorResponse("The album "+id+" does not exist");  
@@ -132,8 +136,8 @@ class UNQfy {
 
   }
   
-  getAlbumes() {
-    return this.artists.flatMap(artist => artist.albumes); 
+  getAlbums() {
+    return this.artists.flatMap(artist => artist.albums); 
   }
 
   contentAlbum(album) {
@@ -184,7 +188,7 @@ class UNQfy {
   }
 
   getTracks() {
-    return this.getAlbumes().flatMap(album => album.tracks);
+    return this.getAlbums().flatMap(album => album.tracks);
   }
 
   //////////////////////////////////////// PLAYLIST ////////////////////////////////////;;
@@ -243,7 +247,11 @@ class UNQfy {
   }
 
   getPlaylistByName(name) {
-    return this.playlists.find(playlist => playlist.name === name);
+    if (this.playlists.some(playlist => playlist.name === name)) {
+      return this.playlists.find(playlist => playlist.name === name);
+    } else {
+      throw new ErrorResponse("The playlist "+name+" does not exist"); 
+    } 
   }
 
   existsPlaylist(name) {
@@ -262,15 +270,15 @@ class UNQfy {
   }
 
   searchByGenre(genre) {
-    const search = this.getAlbumes().flatMap(album => album.getTracks().filter(track => track.genres.includes(genre)));
+    const search = this.getAlbums().flatMap(album => album.getTracks().filter(track => track.genres.includes(genre)));
     console.log(search);
     return search;
   }
 
   searchByName(name) {
     const artists = this.artists.filter(artist =>  artist.name.includes(name));
-    const albums = this.artists.flatMap(artist => artist.getAlbumes().filter(album=> album.name.includes(name)));
-    const allTracks = this.artists.flatMap(artist => artist.getAlbumes().flatMap(album => album.getTracks()));
+    const albums = this.artists.flatMap(artist => artist.getAlbums().filter(album=> album.name.includes(name)));
+    const allTracks = this.artists.flatMap(artist => artist.getAlbums().flatMap(album => album.getTracks()));
     const tracks = allTracks.filter(track => track.name.includes(name));
     const playlists = this.playlists.filter(playlist => playlist.name.includes(name));
     const search = {
@@ -359,7 +367,7 @@ class UNQfy {
 
   getAlbumsForArtist(artistName) {
      const artist = this.getArtistByName(artistName);
-     return artist.getAlbumes();
+     return artist.getAlbums();
   }
 
   getLyrics(track) {
@@ -375,7 +383,7 @@ class UNQfy {
   }
 
   searchAlbumsByName(albumName) {
-    const albums = this.artists.flatMap(artist => artist.getAlbumes().filter(album=> album.name.includes(albumName)));
+    const albums = this.artists.flatMap(artist => artist.getAlbums().filter(album=> album.name.includes(albumName)));
     const search = {
       albums: albums,
     }; 

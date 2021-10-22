@@ -72,7 +72,7 @@ function deleteAlbum(unqfy, artistName, name) {
   if(unqfy.existsArtist(artistName)) {
     const artist = unqfy.getArtistByName(artistName);
     if(artist.existsAlbum(name)) {
-      const album = artist.getAlbumesByName(name);
+      const album = artist.getAlbumsByName(name);
       unqfy.deleteAlbum(artist, album);
     } else {
       throw new ErrorResponse("Can't delete album because doesn't exist");
@@ -86,7 +86,7 @@ function addTrack(unqfy, artistName, albumName, name, duration, genres) {
   if(unqfy.existsArtist(artistName)) {
     const artist = unqfy.getArtistByName(artistName);
     if(artist.existsAlbum(albumName)) {
-      const album = artist.getAlbumesByName(albumName);
+      const album = artist.getAlbumsByName(albumName);
       unqfy.addTrack(album.id, {name: name, duration: parseInt(duration), genres: genres.split(','), album: album.name, author: artist.name});
     } else {
       throw new ErrorResponse("Can't add track because album "+albumName+" doesn't exist");
@@ -98,7 +98,7 @@ function addTrack(unqfy, artistName, albumName, name, duration, genres) {
 
 function deleteTrack(unqfy, artistName, albumName, name) {
   const artist = unqfy.getArtistByName(artistName);
-  const album = artist.getAlbumesByName(albumName);
+  const album = artist.getAlbumsByName(albumName);
   const track = album.getTracks().find(track => track.name === name);
   if(artist !== undefined && album !== undefined && track !== undefined) {
     unqfy.deleteTrack(album, track);
@@ -165,7 +165,7 @@ function contentPlaylist(unqfy, name) {
 
 function contentAlbum(unqfy, name) {
   if(unqfy.getArtists().some(artist => artist.existsAlbum(name))) {
-    const album = unqfy.getAlbumes().find(album => album.name === name);
+    const album = unqfy.getAlbums().find(album => album.name === name);
     unqfy.contentAlbum(album);
   } else {
     throw new ErrorResponse("Not exist the album "+name);   

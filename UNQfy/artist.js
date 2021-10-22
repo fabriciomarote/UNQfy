@@ -5,8 +5,8 @@ class Artist {
     constructor(name, country) {
         this.id = 'ar_' + generateId.generateIdArtist();
         this.name = name;
+        this.albums = [];
         this.country =  country;
-        this.albumes = [];
     }
 
     content() {
@@ -14,28 +14,28 @@ class Artist {
     }
 
     existsAlbum(albumName) {
-        return this.albumes.some(album => album.name === albumName); 
+        return this.albums.some(album => album.name === albumName); 
     }
 
     hasAlbum(albumId) {
-        return this.albumes.some(album => album.id === albumId); 
+        return this.albums.some(album => album.id === albumId); 
     }
 
     addAlbum(album) {
-        this.albumes.push(album);
+        this.albums.push(album);
     }
 
     deleteAlbum(album) {
-      const pos = this.albumes.indexOf(album);
-      this.albumes.splice(pos, 1);
+      const pos = this.albums.indexOf(album);
+      this.albums.splice(pos, 1);
     }
 
-    getAlbumes(){
-        return this.albumes;
+    getAlbums(){
+        return this.albums;
     }
 
-    getAlbumesByName(name){
-        return this.getAlbumes().find(album => album.name === name);
+    getAlbumsByName(name){
+        return this.getAlbums().find(album => album.name === name);
     }
 }
 
