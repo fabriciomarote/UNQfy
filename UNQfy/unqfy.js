@@ -6,7 +6,6 @@ const Artist = require('./artist');
 const Track = require('./track');
 const Playlist = require('./playlist');
 const User = require('./user');
-const Generate = require('./generate');
 const ErrorResponse = require('./errorResponse');
 const rp = require('request-promise');
 
@@ -15,7 +14,6 @@ class UNQfy {
     this.artists = [];
     this.playlists = [];
     this.users = [];
-    this.generate = new Generate();
   }
 
   /////////////////////////// ARTISTA /////////////////////////////////////////////
@@ -36,6 +34,27 @@ class UNQfy {
     } else {   
       throw new ErrorResponse('The artist '+ artistData.name +' cannot be added because it already exists');
     }   
+  }
+
+  editArtist(artistId, artistData) {
+    if (this.artists.some(artist => artist.id === artistId)) {
+      const artist = this.getArtistById(artistId);
+      artist.setName(artistData.name);
+      artist.setCountry(artistData.country);
+      return artist;
+    } else {
+      throw new ErrorResponse("The artist "+artistId+" does not exist");
+    }  
+  }
+
+  editAlbum(albumId, albumYear) {
+    if (this.getAlbums().some(album => album.id === albumId)) {
+      const album = this.getAlbumById(albumId);
+      album.setYear(albumYear);
+      return album;
+    } else {
+      throw new ErrorResponse("The album "+albumId+" does not exist");
+    }  
   }
 
   existsArtist(artistName) {
@@ -75,7 +94,7 @@ class UNQfy {
 
   searchByArtist(artist) {
     const tracks = artist.getAlbums().flatMap(album => album.tracks);
-    return console.log(tracks);
+    return tracks;
   }
 
   // artistName: nombre de artista(string)
@@ -137,7 +156,8 @@ class UNQfy {
   }
   
   getAlbums() {
-    return this.artists.flatMap(artist => artist.albums); 
+    const albums = this.artists.flatMap(artist => artist.albums);
+    return albums; 
   }
 
   contentAlbum(album) {
@@ -271,7 +291,6 @@ class UNQfy {
 
   searchByGenre(genre) {
     const search = this.getAlbums().flatMap(album => album.getTracks().filter(track => track.genres.includes(genre)));
-    console.log(search);
     return search;
   }
 
@@ -375,11 +394,8 @@ class UNQfy {
   }
 
   searchArtistsByName(artistName) {
-    const artists = this.artists.filter(artist =>  artist.name.includes(artistName));
-    const search = {
-      artists: artists,
-    }; 
-    return search;
+    const artists = this.artists.filter(artist => artist.name.includes(artistName));
+    return artists;
   }
 
   searchAlbumsByName(albumName) {

@@ -61,7 +61,7 @@ function deleteArtist(unqfy, name) {
 
 function addAlbum(unqfy, artistName, name, year){
   if(unqfy.existsArtist(artistName)) {
-    const artist = unqfy.getArtistByName(name);
+    const artist = unqfy.getArtistByName(artistName);
     unqfy.addAlbum(artist.id, {name:name, year: parseInt(year)});
   } else {
     throw new ErrorResponse("Can't add album because artist "+artistName+" doesn't exist");
@@ -225,7 +225,13 @@ function getAlbumsForArtist(unqfy, artistName) {
   } 
 }
 
+function searchArtistsByName(unqfy, name) {
+  unqfy.searchArtistsByName(name);
+}
 
+function getArtists(unqfy) {
+  unqfy.getArtists();
+}
 
 function main() {
   const arguments_ = process.argv.splice(2);
@@ -277,6 +283,10 @@ function main() {
       populateAlbumsForArtist(unqfy, arguments_[1]);
     } else if (arguments_[0] === "getAlbumsForArtist") {
       getAlbumsForArtist(unqfy, arguments_[1]);
+    } else if (arguments_[0] === "searchArtistsByName") {
+      searchArtistsByName(unqfy, arguments_[1]);
+    } else if (arguments_[0] === "getArtists") {
+      getArtists(unqfy);
     }
   } catch(error) {
       console.log(error);

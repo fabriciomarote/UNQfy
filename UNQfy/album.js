@@ -41,6 +41,10 @@ class Album {
     getTracks() {
         return this.tracks;
     }
+
+    setYear(newYear) {
+        this.year = newYear;
+    }
 }
 
 module.exports = Album;

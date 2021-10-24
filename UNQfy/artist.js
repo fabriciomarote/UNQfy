@@ -6,7 +6,7 @@ class Artist {
         this.id = 'ar_' + generateId.generateIdArtist();
         this.name = name;
         this.albums = [];
-        this.country =  country;
+        this.country = country;
     }
 
     content() {
@@ -36,6 +36,14 @@ class Artist {
 
     getAlbumsByName(name){
         return this.getAlbums().find(album => album.name === name);
+    }
+
+    setName(newName) {
+        this.name = newName;
+    }
+
+    setCountry(newCountry) {
+        this.country = newCountry;
     }
 }
 
