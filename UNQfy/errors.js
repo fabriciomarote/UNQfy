@@ -8,7 +8,6 @@ class APIError extends Error {
     }
  }
 
- 
  class InvalidError extends APIError {   //JSON invalido, falta un parametro al agregar/modificar
     constructor() {
       super('InvalidInputError', 400, 'BAD_REQUEST');
@@ -43,7 +42,11 @@ class APIError extends Error {
     // body-parser error para JSON invalido
     res.status(err.status);
     res.json({status: err.status, errorCode: 'INVALID_JSON'});
-  } else if (err instanceof InvalidError){
+  } else if (err instanceof ResourceNotFoundError){
+    // body-parser error para JSON invalido
+    res.status(err.status);
+    res.json({status: err.status, errorCode: err.errorCode});
+  } else if (err instanceof RelatedResourceNotFoundError){
     // body-parser error para JSON invalido
     res.status(err.status);
     res.json({status: err.status, errorCode: err.errorCode});
@@ -59,8 +62,8 @@ class APIError extends Error {
  
  module.exports = {
     errorHandler,
-    ResourceNotFoundError: ResourceNotFoundError,
-    ResourceAlreadyExistsError: ResourceAlreadyExistsError,
-    RelatedResourceNotFoundError: RelatedResourceNotFoundError,
-    InvalidError: InvalidError,
+    ResourceNotFoundError,
+    ResourceAlreadyExistsError,
+    RelatedResourceNotFoundError,
+    InvalidError,
 };

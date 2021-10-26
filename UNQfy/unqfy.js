@@ -400,10 +400,7 @@ class UNQfy {
 
   searchAlbumsByName(albumName) {
     const albums = this.artists.flatMap(artist => artist.getAlbums().filter(album=> album.name.includes(albumName)));
-    const search = {
-      albums: albums,
-    }; 
-    return search;
+    return albums;
   }
 
   save(filename) {
