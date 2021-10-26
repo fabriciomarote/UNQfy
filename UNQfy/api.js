@@ -1,6 +1,4 @@
 const express = require('express');
-const validations = require('./validates');
-const errorHandler = require('./errors');
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 
@@ -20,6 +18,9 @@ function saveUNQfy(unqfy, filename = 'data.json') {
 const unqfy = getUNQfy();
 
 const errors = require('./errors');
+const errorHandler = errors.errorHandler;
+const resourceNotFoundError = errors.ResourceNotFoundError;
+const resourceAlreadyExistsError = errors.ResourceAlreadyExistsError;
 //const bodyParser = require('body-parser');
 const app = express();
 const artists = express();
@@ -47,12 +48,10 @@ artists.route('/artists')//
                             country:req.body.country};
         const newArtist = unqfy.addArtist(artistData); 
         res.status(201).json(newArtist);
-    } catch (error) {
-        const errorResponse = {
-            status: 409,
-            errorCode: "RESOURCE_ALREADY_EXISTS"
-        };
-        res.status(409).json(errorResponse);
+    } catch(error) {
+        res.status(resourceAlreadyExistsError.status)
+        .json({ status : resourceAlreadyExistsError.status,
+        errorCode: resourceAlreadyExistsError.errorCode});
     }
 });
 
@@ -73,18 +72,16 @@ artists.route('/artists')
 });
 
 artists.route('/artists/:artistId')
-.get((req, res) => {
+.get(function (req, res) {
     try {
         const artistId = req.params.artistId;
         const artist = unqfy.getArtistById(artistId);
         res.status(200).json(artist);
     } 
     catch(error) {
-        const errorResponse = {
-            status: 404,
-            errorCode: "RESOURCE_NOT_FOUND"
-        };
-        res.status(404).json(errorResponse);
+        res.status(resourceNotFoundError.status)
+        .json({ status : resourceNotFoundError.status,
+                errorCode: resourceNotFoundError.errorCode});
     }
 })
 .delete((req, res) => {
@@ -95,12 +92,10 @@ artists.route('/artists/:artistId')
         res.status(204).json({});
     }
     catch(error) {
-        const errorResponse = {
-            status: 404,
-            errorCode: "RESOURCE_NOT_FOUND"
-        };
-        res.status(404).json(errorResponse);
-    }   
+        res.status(resourceNotFoundError.status)
+        .json({ status : resourceNotFoundError.status,
+                errorCode: resourceNotFoundError.errorCode});
+    }
 })
 .put((req, res) => {
     try {
@@ -109,12 +104,10 @@ artists.route('/artists/:artistId')
                              country: req.body.country};
         const artistEdited = unqfy.editArtist(artistId, artistData);      
         res.status(200).json(artistEdited);               
-    } catch (error) {
-        const errorResponse = {
-            status: 404,
-            errorCode: "RESOURCE_NOT_FOUND"
-        };
-        res.status(404).json(errorResponse);
+    } catch(error) {
+        res.status(resourceNotFoundError.status)
+        .json({ status : resourceNotFoundError.status,
+                errorCode: resourceNotFoundError.errorCode});
     }
 });
 
@@ -203,7 +196,7 @@ albums.route('/albums/:albumId')
         res.status(404).json(errorResponse);
     }
 });
-
+/*
 tracks.route('/tracks/:trackId/lyrics')
 .get((req, res) => {
     const trackId = req.params.trackId;
@@ -225,7 +218,7 @@ tracks.route('/tracks/:trackId/lyrics')
             res.status(404).json(errorResponse);
         }
 });
-
+*/
 playlists.route('/playlists')
 .post((req, res) => {
     try{
@@ -300,4 +293,4 @@ playlists.route('/playlists/:playlistId')
     }
 });
 
-// app.use(errorHandler);
+app.use(errorHandler);
