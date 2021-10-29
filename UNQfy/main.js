@@ -1,8 +1,7 @@
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 //const unqfy = require('./unqfy');
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
-const ErrorResponse = require('./errorResponse');
-const unqfy = require('./unqfy');
+const ErrorResponse = require('./responses');
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename = 'data.json') {
@@ -213,8 +212,7 @@ function populateAlbumsForArtist(unqfy, artistName) {
     unqfy.populateAlbumsForArtist(artistName);
   } else {
     throw new ErrorResponse("The artist "+artistName+" not exist");
-  }
-    
+  } 
 }
 
 function getAlbumsForArtist(unqfy, artistName) {

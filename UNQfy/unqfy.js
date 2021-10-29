@@ -6,7 +6,7 @@ const Artist = require('./artist');
 const Track = require('./track');
 const Playlist = require('./playlist');
 const User = require('./user');
-const ErrorResponse = require('./errorResponse');
+const { ErrorResponse, DuplicatedError } = require('./responses');
 const rp = require('request-promise');
 
 class UNQfy {
@@ -132,7 +132,7 @@ class UNQfy {
       return album; 
     } 
     else {
-      throw new ErrorResponse("Can't add album "+albumData.name+" because it already exists");
+      throw new DuplicatedError("Can't add album "+albumData.name+" because it already exists");
     }
   }
 
@@ -359,7 +359,7 @@ class UNQfy {
   }
 
   populateAlbumsForArtist(artistName) { 
-    const token = 'BQDBeef7rTMfBLzC2puJIymZGOLaki22I1zgiG61Qza8H3RlYzaOLv32DdkNOhFYcmdtg0-xZc386xt2JZuRysjzbD9NyX0qAYYi7YfUQBy-M8MyhMbwra_9O4L6dPElvbAxJLKLQZSWS5NpEac3xOPQyQx7';
+    const token = 'BQC2iHAKiA8dIwZO4WwGRnvPQAUNEx4uq1ONKXpfGkI37TqQQGv5NFcONGy31bO-Wgi4ekULbwqpkKc3GDeSR9aYpT2xhNmB6UiRtJxHsxIKBp1iAPIzW_WGGjeCOSxWWh75Gg1ZPJR8ynfGJiop81_RcD7r';
     const options = {
      url: `https://api.spotify.com/v1/search?q=${artistName}&type=artist`,
      headers: { Authorization: 'Bearer ' + token},
@@ -375,12 +375,15 @@ class UNQfy {
           json: true,
          };
 
-         rp.get(getAlbums).then((responseAlbums) => 
-         responseAlbums.items.forEach(element => {
-            const artist = this.getArtistByName(artistSpotify.name);
-            const album = new Album(element.name, parseInt(this.getYear(element.release_date)) ,artistSpotify.name);
-            artist.addAlbum(album);
-        }));
+         rp.get(getAlbums).then((responseAlbums) => {
+          responseAlbums.items.forEach(element => {
+              const artist = this.getArtistByName(artistSpotify.name);
+              const album = new Album(element.name, parseInt(this.getYear(element.release_date)) ,artistSpotify.name);
+              artist.addAlbum(album); 
+          });
+          this.save('data.json');
+        });
+        
     });
   }
 
@@ -394,12 +397,13 @@ class UNQfy {
   }
 
   searchArtistsByName(artistName) {
-    const artists = this.artists.filter(artist => artist.name.includes(artistName));
+    const artists = this.artists.filter(artist => 
+      (artist.name.toLowerCase()).includes(artistName.toLowerCase()));
     return artists;
   }
 
   searchAlbumsByName(albumName) {
-    const albums = this.artists.flatMap(artist => artist.getAlbums().filter(album=> album.name.includes(albumName)));
+    const albums = this.artists.flatMap(artist => artist.getAlbums().filter(album=> (album.name.toLowerCase()).includes(albumName.toLowerCase())));
     return albums;
   }
 

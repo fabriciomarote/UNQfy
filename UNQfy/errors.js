@@ -8,11 +8,17 @@ class APIError extends Error {
     }
  }
 
- class InvalidError extends APIError {   //JSON invalido, falta un parametro al agregar/modificar
+ class InvalidURLError extends APIError { 
     constructor() {
-      super('InvalidInputError', 400, 'BAD_REQUEST');
+      super('InvalidURLError', 404, 'RESOURCE_NOT_FOUND');
     }  
  }
+
+ class BadRequestError extends APIError { 
+  constructor() {
+    super('InvalidURLError', 400, 'BAD_REQUEST');
+  }  
+}
 
  class RelatedResourceNotFoundError extends APIError {
   constructor() {
@@ -22,7 +28,7 @@ class APIError extends Error {
 
  class ResourceNotFoundError extends APIError {  //InvalidUrlError, no existe la cancion buscada
   constructor() {
-    super('ResourceNotFound', 400, 'RESOURCE_NOT_FOUND');
+    super('ResourceNotFound', 404, 'RESOURCE_NOT_FOUND');
   }  
  }
 
@@ -35,25 +41,30 @@ class APIError extends Error {
  function errorHandler(err, req, res, next) {
   console.error(err); // imprimimos el error en consola
   // Chequeamos que tipo de error es y actuamos en consecuencia
-  if (err instanceof InvalidError){
+  if (err instanceof InvalidURLError){
     res.status(err.status);
     res.json({status: err.status, errorCode: err.errorCode});
   } else if (err.type === 'entity.parse.failed'){
     // body-parser error para JSON invalido
     res.status(err.status);
-    res.json({status: err.status, errorCode: 'INVALID_JSON'});
-  } else if (err instanceof ResourceNotFoundError){
-    // body-parser error para JSON invalido
+    res.json({status: err.status, errorCode: 'BAD_REQUEST'});
+  }
+  else if (err instanceof BadRequestError){
     res.status(err.status);
     res.json({status: err.status, errorCode: err.errorCode});
-  } else if (err instanceof RelatedResourceNotFoundError){
-    // body-parser error para JSON invalido
+  }
+  else if (err instanceof RelatedResourceNotFoundError){
     res.status(err.status);
-    res.json({status: err.status, errorCode: err.errorCode});
-  } else if (err instanceof ResourceAlreadyExistsError){
-    // body-parser error para JSON invalido
+    res.json({status: err.status, errorCode: err.errorCode});  
+  }
+  else if (err instanceof ResourceNotFoundError){
     res.status(err.status);
-    res.json({status: err.status, errorCode: err.errorCode});
+    res.json({status: err.status, errorCode: err.errorCode});  
+  }
+  else if (err instanceof ResourceAlreadyExistsError){
+    res.status(err.status);
+    res.json({status: err.status, errorCode: err.errorCode});  
+     
   } else {
     // continua con el manejador de errores por defecto
     next(err);
@@ -65,5 +76,6 @@ class APIError extends Error {
     ResourceNotFoundError,
     ResourceAlreadyExistsError,
     RelatedResourceNotFoundError,
-    InvalidError,
+    InvalidURLError,
+    BadRequestError,
 };
