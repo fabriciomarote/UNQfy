@@ -33,15 +33,9 @@ app.listen(port,
 artists.route('/artists')
 .get((req, res) => {
     if(req.query.name !== undefined ) {
-        try {
-            const artistName = req.query.name;
-            const artists = unqfy.searchArtistsByName(artistName);
-            res.status(200).json(artists);
-        }
-        catch(error) {
-            const resourceNotFound = new ResourceNotFoundError();
-            res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
-        }
+        const artistName = req.query.name;
+        const artists = unqfy.searchArtistsByName(artistName);
+        res.status(200).json(artists);
     } else {    
         const artists = unqfy.getArtists();
         res.status(200).json(artists);
@@ -61,7 +55,7 @@ artists.route('/artists')
         }                    
     } catch (error) {
         const resourceAlreadyExistsError = new ResourceAlreadyExistsError();
-        res.status(409).json({status: resourceAlreadyExistsError.status, errorCode: resourceAlreadyExistsError.errorCode});
+        res.status(resourceAlreadyExistsError.status).json({status: resourceAlreadyExistsError.status, errorCode: resourceAlreadyExistsError.errorCode});
     }
 });
 
@@ -74,7 +68,7 @@ artists.route('/artists/:artistId')
     } 
     catch (error) {
         const resourceNotFound = new ResourceNotFoundError();
-        res.status(404).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
+        res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
     }
 })
 .delete((req, res) => {
@@ -87,7 +81,7 @@ artists.route('/artists/:artistId')
     }
     catch(error) {
         const resourceNotFound = new ResourceNotFoundError();
-        res.status(404).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
+        res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
 }
 })
 .put((req, res) => {
@@ -105,7 +99,7 @@ artists.route('/artists/:artistId')
         }               
     } catch(error) {
         const resourceNotFound = new ResourceNotFoundError();
-        res.status(404).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
+        res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
     }    
 });
 
@@ -119,7 +113,7 @@ albums.route('/albums')
         }
         catch(error) {
             const resourceNotFound = new ResourceNotFoundError();
-        res.status(404).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
+        res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
         }
     } else {
         const albums = unqfy.getAlbums();
@@ -145,7 +139,7 @@ albums.route('/albums')
             res.status(404).json({status: relatedResourceNotFoundError.status, errorCode: relatedResourceNotFoundError.errorCode});   
         } else if (error instanceof DuplicatedError ) {
             const resourceAlreadyExistsError = new ResourceAlreadyExistsError();
-            res.status(409).json({status: resourceAlreadyExistsError.status, errorCode: resourceAlreadyExistsError.errorCode}); 
+            res.status(resourceAlreadyExistsError.status).json({status: resourceAlreadyExistsError.status, errorCode: resourceAlreadyExistsError.errorCode}); 
         }   
     }
 });
@@ -159,7 +153,7 @@ albums.route('/albums/:albumId')
     }   
     catch(error) {
         const resourceNotFound = new ResourceNotFoundError();
-        res.status(404).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
+        res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
     }
 })
 .delete((req, res) => {
@@ -173,7 +167,7 @@ albums.route('/albums/:albumId')
     }
     catch(error) {
         const resourceNotFound = new ResourceNotFoundError();
-        res.status(404).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
+        res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
     }
 })
 .patch((req, res) => {
@@ -190,25 +184,36 @@ albums.route('/albums/:albumId')
         }            
     } catch (error) {
         const resourceNotFound = new ResourceNotFoundError();
-        res.status(404).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
+        res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
     }
+});
+
+tracks.route('/tracks')
+.get((req, res) => {
+        const tracks = unqfy.getTracks();
+        res.status(200).json(tracks);
+});
+
+tracks.route('/tracks/:trackId')
+.get((req, res) => {
+        const trackId = (req.params.trackId);
+        const track = unqfy.getTrackById(trackId);
+        res.status(200).json(track);
+       
 });
 
 tracks.route('/tracks/:trackId/lyrics')
 .get((req, res) => {
-    const trackId = req.params.trackId;
     try {
-        if(unqfy.getTracks().some(track => track.id === trackId)) {
-            const track = unqfy.getTrackById(trackId);
-            unqfy.getLyrcis(track).then((lyrics) => {
-                res.status(200).json(
-                    { name: track.name, lyrics: lyrics});
-             });
-        }
-    }   
+        const trackId = (req.params.trackId);
+        const track = unqfy.getTrackById(trackId);
+        unqfy.getLyrics(track).then((lyrics) => {
+            res.status(200).json({ name: track.name, lyrics: lyrics});
+         });
+    }     
     catch (error) {
         const resourceNotFound = new ResourceNotFoundError();
-        res.status(404).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
+        res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
     }
 });
 
@@ -227,11 +232,8 @@ playlists.route('/playlists')
             res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
         }    
     } catch (error) {
-        const errorResponse = {
-            status: 409,
-            errorCode: "RESOURCE_ALREADY_EXISTS"
-        };
-        res.status(409).json(errorResponse);
+        const resourceAlreadyExistsError = new ResourceAlreadyExistsError();
+        res.status(resourceAlreadyExistsError.status).json({status: resourceAlreadyExistsError.status, errorCode: resourceAlreadyExistsError.errorCode});
     } 
 })
 .get((req, res) => {
@@ -242,7 +244,7 @@ playlists.route('/playlists')
     }
     catch(error) {
         const resourceNotFound = new ResourceNotFoundError();
-        res.status(404).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
+        res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
     }
 });
 
@@ -255,7 +257,7 @@ playlists.route('/playlists/:playlistId')
     }
     catch(error) {
         const resourceNotFound = new ResourceNotFoundError();
-        res.status(404).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
+        res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
     }
 })
 .delete((req, res) => {
@@ -267,7 +269,7 @@ playlists.route('/playlists/:playlistId')
     }
     catch(error) {
         const resourceNotFound = new ResourceNotFoundError();
-        res.status(404).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
+        res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
     }
 });
 

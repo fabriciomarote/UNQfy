@@ -247,50 +247,52 @@ function main() {
       deleteAlbum(unqfy, arguments_[1], arguments_[2]);
     } else if (arguments_[0] === "deleteTrack") {
       deleteTrack(unqfy, arguments_[1], arguments_[2], arguments_[3]);
-    } else if (arguments_[0] === 'searchByName') {
+    } else if (arguments_[0] === 'createPlaylist') {
+      createPlaylist(unqfy, arguments_[1], arguments_[2], arguments_[3]);
+    } else if (arguments_[0] === 'deletePlaylist') {
+      deletePlaylist(unqfy, arguments_[1]);
+    } else if (arguments_[0] === "addUser") {
+      addUser(unqfy, arguments_[1]);
+    } else if (arguments_[0] === "play") {
+      play(unqfy, arguments_[1], arguments_[2]);
+    } 
+    //saveUNQfy(unqfy);
+
+    if (arguments_[0] === 'searchByName') {
       searchByName(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'searchByArtist') {
       searchByArtist(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'searchByGenre') {
       searchByGenre(unqfy, arguments_[1]);
-    } else if (arguments_[0] === 'createPlaylist') {
-      createPlaylist(unqfy, arguments_[1], arguments_[2], arguments_[3]);
     } else if (arguments_[0] === 'getTracksMatchingArtist') {
       getTracksMatchingArtist(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'getTracksMatchingGenres') {
       getTracksMatchingGenres(unqfy, arguments_[1]);
-    } else if (arguments_[0] === 'deletePlaylist') {
-      deletePlaylist(unqfy, arguments_[1]);
-    } else if (arguments_[0] === 'contentArtist') {
-      contentArtist(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'contentPlaylist') {
       contentPlaylist(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'contentAlbum') {
       contentAlbum(unqfy, arguments_[1]);
     } else if (arguments_[0] === 'contentTrack') {
       contentTrack(unqfy, arguments_[1]);
-    } else if (arguments_[0] === "addUser") {
-      addUser(unqfy, arguments_[1]);
+    }  else if (arguments_[0] === 'contentArtist') {
+      contentArtist(unqfy, arguments_[1]);
     } else if (arguments_[0] === "thisIs") {
       thisIs(unqfy, arguments_[1]);
-    } else if (arguments_[0] === "play") {
-      play(unqfy, arguments_[1], arguments_[2]);
     } else if (arguments_[0] === "getLyrics") {
       getLyrics(unqfy, arguments_[1]);
-    } else if (arguments_[0] === "populateAlbumsForArtist") {
-      populateAlbumsForArtist(unqfy, arguments_[1]);
     } else if (arguments_[0] === "getAlbumsForArtist") {
       getAlbumsForArtist(unqfy, arguments_[1]);
     } else if (arguments_[0] === "searchArtistsByName") {
       searchArtistsByName(unqfy, arguments_[1]);
     } else if (arguments_[0] === "getArtists") {
       getArtists(unqfy);
-    }
+    } else if (arguments_[0] === "populateAlbumsForArtist") {
+      populateAlbumsForArtist(unqfy, arguments_[1]);
+    } 
   } catch(error) {
       console.log(error);
   }
-
-  saveUNQfy(unqfy);
+ 
 }
 
 main();

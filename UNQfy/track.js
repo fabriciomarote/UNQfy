@@ -27,9 +27,10 @@ class Track {
     }
 
     getLyrics() {
+   //return new Promise((resolve, reject) => {
         if(this.lyrics.length === 0) {
             const BASE_URL = 'http://api.musixmatch.com/ws/1.1';
-            const searchTrack = {
+            let searchTrack = {
             uri: BASE_URL + '/track.search',
             qs: {
                 apikey: '27eb6e88a480d6a3fbd0a2c100ac87ea',
@@ -42,15 +43,14 @@ class Track {
             rp.get(
                 searchTrack
             ).then((response) => {
-                const header = response.message.header;
-                const body = response.message.body;
+                let header = response.message.header;
+                let body = response.message.body;
                 if (header.status_code !== 200){
                     throw new Error('status code != 200');
                 }
                 const trackId = body.track_list[0].track.track_id;
-
                 const BASE_URL = 'http://api.musixmatch.com/ws/1.1';
-                    const trackLyric = {
+                    let trackLyric = {
                     uri: BASE_URL + '/track.lyrics.get',
                     qs: {
                         apikey: '27eb6e88a480d6a3fbd0a2c100ac87ea',
@@ -62,8 +62,8 @@ class Track {
                     rp.get(
                     trackLyric
                     ).then((response) => {
-                    const headerLyrics = response.message.header;
-                    const bodyLyrics = response.message.body;
+                    let headerLyrics = response.message.header;
+                    let bodyLyrics = response.message.body;
                     if (headerLyrics.status_code !== 200){
                         throw new Error('status code != 200');
                     }
@@ -75,7 +75,8 @@ class Track {
         }  else {
             return this.lyrics;  
         } 
-    }    
+    //});   
+    }
 }
 
 module.exports = Track;

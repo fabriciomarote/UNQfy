@@ -30,7 +30,9 @@ class UNQfy {
   */  if(!this.existsArtist(artistData.name)) {
         const artist = new Artist(artistData.name, artistData.country);
         this.artists.push(artist);
+        this.save('data.json');
         return artist; 
+        
     } else {   
       throw new ErrorResponse('The artist '+ artistData.name +' cannot be added because it already exists');
     }   
@@ -41,6 +43,7 @@ class UNQfy {
       const artist = this.getArtistById(artistId);
       artist.setName(artistData.name);
       artist.setCountry(artistData.country);
+      this.save('data.json');
       return artist;
     } else {
       throw new ErrorResponse("The artist "+artistId+" does not exist");
@@ -51,6 +54,7 @@ class UNQfy {
     if (this.getAlbums().some(album => album.id === albumId)) {
       const album = this.getAlbumById(albumId);
       album.setYear(albumYear);
+      this.save('data.json');
       return album;
     } else {
       throw new ErrorResponse("The album "+albumId+" does not exist");
@@ -69,6 +73,7 @@ class UNQfy {
         artist.getAlbums().forEach(album => this.deleteAlbum(artist, album));
         this.artists.splice(pos, 1);
     }
+    this.save('data.json');
   }
 
   getArtistById(id) {
@@ -129,11 +134,13 @@ class UNQfy {
     if(!artist.existsAlbum(albumData.name)) {
       const album = new Album(albumData.name, albumData.year, artist.name);
       artist.addAlbum(album);
+      this.save('data.json');
       return album; 
     } 
     else {
       throw new DuplicatedError("Can't add album "+albumData.name+" because it already exists");
     }
+    
   }
 
   deleteAlbum(artist, album) {
@@ -143,6 +150,7 @@ class UNQfy {
       album.getTracks().forEach(track => this.deleteTrack(album, track));
       artist.deleteAlbum(album);
     }  
+    this.save('data.json');
   }
 
   getAlbumById(id) {
@@ -182,6 +190,7 @@ class UNQfy {
     if(!album.existsTrack(trackData.name)) {
       const track = new Track(trackData.name, trackData.duration, trackData.genres, trackData.album, trackData.author);
       album.addTrack(track);
+      this.save('data.json');
       return track;
     } 
     else {
@@ -193,6 +202,7 @@ class UNQfy {
     album.deleteTrack(track);
     const playlists = this.playlists.filter(playlist => playlist.hasTrack(track));
     playlists.forEach(playlist => playlist.deleteTrack(track)); 
+    this.save('data.json');
   }
 
   getTrackById(id) {
@@ -234,6 +244,7 @@ class UNQfy {
         }
       }
       this.addPlaylist(playlist);
+      this.save('data.json');
       return playlist;
     } else {
       throw new ErrorResponse("Can't add playlist "+name+" because it already exists");
@@ -242,6 +253,7 @@ class UNQfy {
 
   addPlaylist(playlist){
     this.playlists.push(playlist);
+    this.save('data.json');
   }
   
   deletePlaylist(playlist) {
@@ -252,6 +264,7 @@ class UNQfy {
     } else {
       this.playlists.splice(pos, 1);
     }
+    this.save('data.json');
   }
 
   getPlaylistById(id) {
@@ -313,6 +326,7 @@ class UNQfy {
     const track = this.getTracks().find(track => track.name === trackName);
     const user = this.users.find(user => user.name === userName);
     user.listenToA(track);
+    this.save('data.json');
   }
 
   thisIs(artistName){
@@ -340,6 +354,7 @@ class UNQfy {
     const user = new User(name, this);
     if (!this.hasUser(user)) {
       this.users.push(user);
+      this.save('data.json');
     } else {
       throw new ErrorResponse("Can't add user "+user.name+" because it already exists");
     } 
@@ -359,7 +374,7 @@ class UNQfy {
   }
 
   populateAlbumsForArtist(artistName) { 
-    const token = 'BQC2iHAKiA8dIwZO4WwGRnvPQAUNEx4uq1ONKXpfGkI37TqQQGv5NFcONGy31bO-Wgi4ekULbwqpkKc3GDeSR9aYpT2xhNmB6UiRtJxHsxIKBp1iAPIzW_WGGjeCOSxWWh75Gg1ZPJR8ynfGJiop81_RcD7r';
+    const token = 'BQCBQYTFQH_-5dlFVMYubVPXsnT9p9rHa4HMu6NAfsA-7hZvmu9X8QT-9__prZ4UUGSSq6lCkZDETYnxMhJ3ucpM_7AVWBQJWKIysS9GAy7OknGbKvb35v_tnmL24yfU5h-G1UkysNGpo1vfy_1FYeIFPC9c';
     const options = {
      url: `https://api.spotify.com/v1/search?q=${artistName}&type=artist`,
      headers: { Authorization: 'Bearer ' + token},
@@ -368,7 +383,7 @@ class UNQfy {
 
     rp.get(options).then((response) => {
         const artistSpotify = response.artists.items[0];
-
+        
         const getAlbums = {
           url: `https://api.spotify.com/v1/artists/${artistSpotify.id}/albums`,
           headers: { Authorization: 'Bearer ' + token},
@@ -376,9 +391,10 @@ class UNQfy {
          };
 
          rp.get(getAlbums).then((responseAlbums) => {
-          responseAlbums.items.forEach(element => {
+          
+          responseAlbums.items.forEach(alb => {
               const artist = this.getArtistByName(artistSpotify.name);
-              const album = new Album(element.name, parseInt(this.getYear(element.release_date)) ,artistSpotify.name);
+              const album = new Album(alb.name, parseInt(this.getYear(alb.release_date)), artistSpotify.name);
               artist.addAlbum(album); 
           });
           this.save('data.json');
