@@ -13,8 +13,8 @@ function getUNQfy(filename = 'data.json') {
 
 const unqfy = getUNQfy();
 
-const {errorHandler, InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError} = require('./errors');
-const {ErrorResponse, DuplicatedError }= require('./responses');
+const { errorHandler, InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError} = require('./errors');
+const { ErrorResponse, DuplicatedError }= require('./responses');
 const app = express();
 const artists = express();
 const albums = express();
@@ -208,7 +208,7 @@ tracks.route('/tracks/:trackId/lyrics')
         const trackId = (req.params.trackId);
         const track = unqfy.getTrackById(trackId);
         unqfy.getLyrics(track).then((lyrics) => {
-            res.status(200).json({ name: track.name, lyrics: lyrics});
+                 res.status(200).json({ name: track.name, lyrics: lyrics});
          });
     }     
     catch (error) {

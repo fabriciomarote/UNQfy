@@ -374,7 +374,7 @@ class UNQfy {
   }
 
   populateAlbumsForArtist(artistName) { 
-    const token = 'BQCBQYTFQH_-5dlFVMYubVPXsnT9p9rHa4HMu6NAfsA-7hZvmu9X8QT-9__prZ4UUGSSq6lCkZDETYnxMhJ3ucpM_7AVWBQJWKIysS9GAy7OknGbKvb35v_tnmL24yfU5h-G1UkysNGpo1vfy_1FYeIFPC9c';
+    const token = 'BQAbaZnjMrcd7jUV0IWMR_SlXsUULuTNA532xYc064P-03j8eI00DNkWWXG2VUIObpsn9MRhpVIznz15443kNrMmfkIZICh9ioUled7VZ8vGk-T9r_pAANZfgNQQWUiwb5pZ0ervH0YQt_ACH0rJXAinKvB3';
     const options = {
      url: `https://api.spotify.com/v1/search?q=${artistName}&type=artist`,
      headers: { Authorization: 'Bearer ' + token},

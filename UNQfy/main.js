@@ -256,7 +256,6 @@ function main() {
     } else if (arguments_[0] === "play") {
       play(unqfy, arguments_[1], arguments_[2]);
     } 
-    //saveUNQfy(unqfy);
 
     if (arguments_[0] === 'searchByName') {
       searchByName(unqfy, arguments_[1]);

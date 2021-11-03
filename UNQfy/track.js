@@ -27,7 +27,6 @@ class Track {
     }
 
     getLyrics() {
-   //return new Promise((resolve, reject) => {
         if(this.lyrics.length === 0) {
             const BASE_URL = 'http://api.musixmatch.com/ws/1.1';
             let searchTrack = {
@@ -40,7 +39,7 @@ class Track {
             json: true
             };
 
-            rp.get(
+            return rp.get(
                 searchTrack
             ).then((response) => {
                 let header = response.message.header;
@@ -59,7 +58,7 @@ class Track {
                     json: true
                     }; 
 
-                    rp.get(
+                    return rp.get(
                     trackLyric
                     ).then((response) => {
                     let headerLyrics = response.message.header;
@@ -69,11 +68,11 @@ class Track {
                     }
 
                     this.lyrics = bodyLyrics.lyrics.lyrics_body;
+                    return this.lyrics;  
                 });
-            });  
-            return this.lyrics;  
+            });   
         }  else {
-            return this.lyrics;  
+            return Promise.resolve(this.lyrics); 
         } 
     //});   
     }
