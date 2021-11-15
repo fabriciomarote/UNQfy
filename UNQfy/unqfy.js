@@ -14,6 +14,15 @@ class UNQfy {
     this.artists = [];
     this.playlists = [];
     this.users = [];
+    this.observers = [];
+  }
+
+  addObserver(observer) {
+    this.observers.push(observer);
+  }
+
+  notifyObservers(param) {
+    this.observers.forEach(observer => observer.notify(param));
   }
 
   /////////////////////////// ARTISTA /////////////////////////////////////////////
@@ -31,6 +40,7 @@ class UNQfy {
         const artist = new Artist(artistData.name, artistData.country);
         this.artists.push(artist);
         this.save('data.json');
+        this.notifyObservers(artist);
         return artist; 
         
     } else {   
