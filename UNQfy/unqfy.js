@@ -145,6 +145,7 @@ class UNQfy {
       const album = new Album(albumData.name, albumData.year, artist.name);
       artist.addAlbum(album);
       this.save('data.json');
+      this.notifyObservers(album);
       return album; 
     } 
     else {

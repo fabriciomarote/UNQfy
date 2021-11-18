@@ -5,11 +5,25 @@ class Newsletter {
         this.subscribers = [];
     }
 
-    addSubscriber(suscriber, artist) {
-        const pair = (suscriber, artist);
-        this.subscribers.push(pair);
+    addSubscriber(suscriber) {
+        this.subscribers.push(suscriber);
         console.log(this.subscribers);
-    }        
+    }   
+    
+    deleteSubscriber(suscriber){
+        const subs = this.subscribers.find(subs => subs === suscriber);
+        if (subs !== undefined){
+            this.subscribers.pop(subs);
+        }
+    }
+
+    hasEmail(email){
+        this.subscribers.some(subscriber => subscriber.email === email);
+    }
+
+    getSubscriber(email){
+        return this.subscribers.find(subscriber => subscriber.email === email);
+    }
 
     notify(artistName, albumName) {
         const subscribers = this.subscribers.filter((subscriber, artist) => artist === artistName);

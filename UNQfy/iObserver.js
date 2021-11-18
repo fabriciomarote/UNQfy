@@ -2,8 +2,6 @@
 
 class IObserver {
 
-
-
     notify(param) {
     }
 
