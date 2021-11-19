@@ -27,7 +27,7 @@ class Newsletter {
 
     notify(artistName, albumName) {
         const subscribers = this.subscribers.filter((subscriber, artist) => artist === artistName);
-        subscribers.forEach( (subscriber, artist) => subscriber)
+        subscribers.forEach( (subscriber, artist) => subscriber);
     }
 
 }

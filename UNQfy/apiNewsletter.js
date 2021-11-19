@@ -1,11 +1,12 @@
 const { application } = require('express');
 const express = require('express');
 const Newsletter = require('./newsletter');
-const subscribers = express();
+const fetch = require('cross-fetch');
 
 const { errorHandler, InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError} = require('./errors');
 const port = process.env.PORT || 3000;
 const app = express();
+const subscribers = express();
 
 function getNewsletter() {
     let newsletter = new Newsletter();
@@ -27,19 +28,24 @@ subscribers.route('/subscribe')
         const body = {artistId: req.body.artistId,
                       email:req.body.email};
         if(body.artistId !== undefined && body.email !== undefined){
-            fetch(`https://localhost:8080/api/artists/:${body.artistId}`)
-            .then(response => {
+            console.log("entra en la promesa");
+            const artist = fetch(`https://localhost:8080/api/artists/:${body.artistId}`);
+            artist.then(response => {
+                console.log("Se cumplio la primera sigue la segunda");
+            })
+            .then( artists => {
+                console.log("cumple la promesa");
                 const artist = JSON.parse(response);
                 const interested = new Interested(body.email, artist.name);
                 newsletter.addSubscriber(interested);
-                res.status(200).json({});
+                return res.status(200).json({artists});
                 })
             .catch(error => console.log(error));
         }else {
             const badRequest = new BadRequestError();
-            res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
+            return res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
         }
-})
+});
 
 subscribers.route('/unsuscribe')
 .post((req, res)=> {
@@ -51,13 +57,13 @@ subscribers.route('/unsuscribe')
             if(newsletter.hasEmail(body.email)){
                 const interested = newsletter.getSubscriber(body.email);
                 newsletter.deleteSubscriber(interested);
-                res.status(200).json({});
+                return res.status(200).json({});
             }
         })
-        .catch(error => console.log(error))
+        .catch(error => console.log(error));
     }else{
         const badRequest = new BadRequestError();
-        res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
+        return res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
     }
 });
 
