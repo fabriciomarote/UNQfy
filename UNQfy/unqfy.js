@@ -25,6 +25,10 @@ class UNQfy {
     this.observers.forEach(observer => observer.notify(param));
   }
 
+  notifyDeleteArtist(artistId) {
+    this.observers.forEach(observer => observer.deleteInterested(artistId));
+  }
+
   /////////////////////////// ARTISTA /////////////////////////////////////////////
  
   // artistData: objeto JS con los datos necesarios para crear un artista
@@ -83,6 +87,7 @@ class UNQfy {
         artist.getAlbums().forEach(album => this.deleteAlbum(artist, album));
         this.artists.splice(pos, 1);
     }
+    this.notifyDeleteArtist(artist.id);
     this.save('data.json');
   }
 

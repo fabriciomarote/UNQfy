@@ -14,7 +14,7 @@ function getUNQfy(filename = 'data.json') {
 const unqfy = getUNQfy();
 
 const { errorHandler, InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError} = require('./errors');
-const { ErrorResponse, DuplicatedError }= require('./responses');
+const { ErrorResponse, DuplicatedError } = require('./responses');
 const app = express();
 const artists = express();
 const albums = express();

@@ -11,6 +11,10 @@ class ObserverNewsletter extends IObserver{
         }
     }
 
+    notifyDeleteArtist(artist) {
+        newsletter.deleteInterested(artist);
+    }
+
 }
 
 module.exports = ObserverNewsletter;

@@ -1,8 +1,9 @@
 class Interested {
 
-    constructor(email, nameArtist){
+    constructor(email, artistId) {
         this.email = email;
-        this.nameArtist = nameArtist;
+        this.artistId = artistId;
     }
-    
 }
+
+module.exports = Interested;

@@ -25,9 +25,28 @@ class Newsletter {
         return this.subscribers.find(subscriber => subscriber.email === email);
     }
 
+    getSubscribersByArtist(artistId) {
+        const subsFiltered = [];
+        this.subscribers.forEach(subscriber => {
+            if(subscriber.artistId === artistId) {
+                subsFiltered.push(subscriber.email);
+            }
+        });
+        return subsFiltered;
+    }
+
     notify(artistName, albumName) {
         const subscribers = this.subscribers.filter((subscriber, artist) => artist === artistName);
         subscribers.forEach( (subscriber, artist) => subscriber);
+    }
+
+    deleteInterested(artistId) {
+        this.subscribers.forEach(subscriber => {
+            if(subscriber.artistId === artistId) {
+                const pos = this.subscribers.indexOf(subscriber);
+                this.subscribers.splice(pos, 1);
+            }
+        });
     }
 
 }
