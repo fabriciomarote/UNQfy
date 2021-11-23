@@ -25,7 +25,7 @@ class Newsletter {
         return this.subscribers.find(subscriber => subscriber.email === email);
     }
 
-    getSubscribersByArtist(artistId) {
+    getEmailsSubscribersByArtist(artistId) {
         const subsFiltered = [];
         this.subscribers.forEach(subscriber => {
             if(subscriber.artistId === artistId) {
