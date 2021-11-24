@@ -12,8 +12,7 @@ function getNewsletter() {
     return newsletter;
 }
 
-const { errorHandler, InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError} = require('./errors');
-const { ErrorResponse, DuplicatedError } = require('./responses');  
+const { errorHandler, InvalidURLError, BadRequestError, RelatedResourceNotFoundError} = require('./errors'); 
 const GMailAPIClient = require('./GMailAPIClient');
 const newsletter = getNewsletter();
 
@@ -36,50 +35,59 @@ function checkArtist(artistId){
 
 subscribers.route('/subscribe')
 .post((req, res) =>{
-    try{
-        const body = {artistId: req.body.artistId,
-                      email:req.body.email};
-        if(body.artistId === undefined && body.email === undefined ){
-            checkArtist(body.artistId)
-            .then(response => {
-                if (response.status < 400) {
-                    const interested = new Interested(body.email, body.artistId);
-                    newsletter.addSubscriber(interested);
-                    return res.status(200).json({});
-                }else{
-                    const errorResponse = new ResourceNotFoundError();
-                    return res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
-                }
-            }).catch(error => console.log(error));
-        } else {
-            const badRequest = new BadRequestError();
-            return res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
-        }
-    } catch (error) {
-        const resourceAlreadyExistsError = new ResourceAlreadyExistsError();
-        res.status(resourceAlreadyExistsError.status).json({status: resourceAlreadyExistsError.status, errorCode: resourceAlreadyExistsError.errorCode});
+    const body = { artistId: req.body.artistId, email: req.body.email};
+    //console.log(body.artistId);
+    //console.log(body.email);              
+    if(body.artistId !== null && body.email !== null) {
+        checkArtist(body.artistId)
+        .then(response => {
+            if (response.status < 400) {
+                const interested = new Interested(body.email, body.artistId);
+                newsletter.addSubscriber(interested);
+                res.status(200).json({});
+            } else {
+                const errorResponse = new RelatedResourceNotFoundError();
+                res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
+            }
+        }).catch( error => {
+            console.log(error);
+        });
+    } else {
+        const badRequest = new BadRequestError();
+        res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
     }
 });
 
-subscribers.route('/unsuscribe')
+subscribers.route('/unsubscribe')
 .post((req, res)=> {
-    const body = {artistId: req.body.artistId,
-                  email: req.body.email};
-    if(body.artistId !== undefined && body.email !== undefined){
-        checkArtist(body.artistId).then(response => {
-            if(newsletter.hasEmail(body.email) && response.status < 400 ){
-                const interested = newsletter.getSubscriber(body.email);
-                newsletter.deleteSubscriber(interested);
-                return res.status(200).json({});
-            }else{
-                res.status(response.status).json(error.errorCode);
-            }
-        })
-        .catch(error => res.status(error.status).json(error.errorCode));
-    } else {
-        const badRequest = new BadRequestError();
-        return res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
-    }
+        const body = {artistId: req.body.artistId,
+                    email: req.body.email};
+        if(body.artistId !== undefined && body.email !== undefined) {
+            checkArtist(body.artistId)
+            .then(response => {
+                if(response.status < 400 ){
+                    return response.json(); 
+                }
+            })
+            .then( response => {  
+                console.log(response);  
+                if(newsletter.hasEmail(body.email)){
+                    const interested = newsletter.getSubscriber(body.email);
+                    console.log(interested);
+                    newsletter.deleteSubscriber(interested);
+                    res.status(200).json({});
+                }else {
+                    res.status(response.status).json(response.statusText);
+                }
+            })
+            .catch( error => {
+                const errorResponse = new RelatedResourceNotFoundError();
+                res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
+            });
+        } else {
+            const badRequest = new BadRequestError();
+            res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
+        }
 });
 
 subscribers.route('/notify')
@@ -88,59 +96,74 @@ subscribers.route('/notify')
                     subject: req.body.subject,
                     message: req.body.message}; 
     if(body.artistId !== undefined && body.subject !== undefined && body.message !== undefined){
-        checkArtist(bosy.artistId).then(response =>{
-            if (response.status < 400){
-                newsletter.getEmailsSubscribersByArtist(body.artistId).forEach(recipientEmail => 
-                new GMailAPIClient().send_mail( body.subject, body.message, recipientEmail, 'enadialopez@gmail.com'));
+        checkArtist(body.artistId)
+        .then(response =>{
+            if (response.status < 400) {
+                newsletter.notify(body.artistId, body.subject, body.message);
+                res.status(200).json({});
             } else {
-                res.status(response.status).json(errorCode);
+                res.status(response.status).json(response.statusText);
             }
         })
-        .catch(error => res.status(error.status).json(error.errorCode));
+        .catch( error => {
+            const errorResponse = new RelatedResourceNotFoundError();
+            res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
+        });
     }else{
-        res.status(response.status).json(errorCode);
+        //res.status(response.status).json(response.statusText);
     }
 });
 
-subscribers.route('/subscriptions?:artistId=artistID')
+subscribers.route('/subscriptions')
 .get((req, res) => {
-    const artistId = req.params.artistId;
+    const artistId = req.query.artistId;
+    console.log(artistId);
     if(artistId !== undefined) {
-        checkArtist(body.artistId).then(response => {
+        checkArtist(artistId).then(response => {
             if (response.status < 400){
-                const emails = newsletter.getSubscribersByArtist(artistId);
+                const emails = newsletter.getEmailsSubscribersByArtist(artistId);
                 const resBody = {
                     artistId: artistId, 
                     subscriptors: emails 
                 };
-                res.status(200).json(resBody);
+                if(resBody.artistId !== undefined && resBody.subscriptors !== undefined) {
+                    res.status(200).json(resBody);
+                } else {
+                    const badRequest = new BadRequestError();
+                    res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
+                }
             }else{
-                res.status(response.status).json(errorCode);
+                const errorResponse = new RelatedResourceNotFoundError();
+                res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
             }
         })
-        .catch(error => res.status(error.status).json(error.errorCode));
+        .catch(error => console.log(error));        
     } else {
         const badRequest = new BadRequestError();
-        return res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
+        res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
     }  
-});
-
-subscribers.route('/subscriptions')
+})
 .delete((req, res) => {
     const body = {artistId: req.body.artistId};
+    console.log(body.artistId);
     if(body.artistId !== undefined) {
-        checkArtist(body.artistId).then(response => {
+        checkArtist(body.artistId)
+        .then(response => {
             if (response.status < 400){
                 newsletter.deleteInterested(body.artistId);
                 res.status(200).json({});
             }else{
-                res.status(response.status).json(errorCode);
+                const errorResponse = new RelatedResourceNotFoundError();
+                res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
             }
         })
-        .catch(error => res.status(error.status).json(error.errorCode));
+        .catch(error => {
+            const errorResponse = new RelatedResourceNotFoundError();
+            res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
+        });
     } else {
         const badRequest = new BadRequestError();
-        return res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
+        res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
     }      
 });
 

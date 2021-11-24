@@ -13,7 +13,7 @@ class GMailAPIClient {
         }
         this.credentials_file = credentials_path;
         this.token_file = token_path;
-        this._client = this._buildGmailClient()
+        this._client = this._buildGmailClient();
     }
 
     send_mail(subject, bodyLines, receiver, sender) {

@@ -11,8 +11,8 @@ class ObserverNewsletter extends IObserver{
         }
     }
 
-    notifyDeleteArtist(artist) {
-        newsletter.deleteInterested(artist);
+    notifyDeleteArtist(artistId) {
+        newsletter.deleteInterested(artistId);
     }
 
 }

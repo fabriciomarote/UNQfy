@@ -24,7 +24,7 @@ class Album {
     }
 
     existsTrack(trackName) {
-        return this.tracks.some(track => track === trackName); 
+        return this.tracks.some(track => track.name === trackName); 
     }
 
     addTrack(track) {

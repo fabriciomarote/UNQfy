@@ -1,3 +1,4 @@
+const GMailAPIClient = require('./GMailAPIClient');
 
 class Newsletter {
 
@@ -6,22 +7,22 @@ class Newsletter {
     }
 
     addSubscriber(subscriber) {
-        let susbs = this.subscribers.find(sub => sub.email === subscriber.email);
-        if(susbs === undefined){
-            this.subscribers.push(suscriber);
-        }
+        if(!this.hasEmail(subscriber.email)) {
+            this.subscribers.push(subscriber);
+        }  
         console.log(this.subscribers);
     }   
     
+    hasEmail(email){
+        return this.subscribers.some(subscriber => subscriber.email === email);
+    }
+
     deleteSubscriber(subscriber){
         const subs = this.subscribers.find(subs => subs === subscriber);
         if (subs !== undefined){
             this.subscribers.pop(subs);
         }
-    }
-
-    hasEmail(email){
-        this.subscribers.some(subscriber => subscriber.email === email);
+        console.log(this.subscribers);
     }
 
     getSubscriber(email){
@@ -38,21 +39,20 @@ class Newsletter {
         return subsFiltered;
     }
 
-    notify(artistName, albumName) {
-        const subscribers = this.subscribers.filter((subscriber, artist) => artist === artistName);
-        subscribers.forEach( (subscriber, artist) => subscriber);
-    }
-
-    deleteInterested(artistId) {
-        this.subscribers.forEach(subscriber => {
-            if(subscriber.artistId === artistId) {
-                const pos = this.subscribers.indexOf(subscriber);
-                this.subscribers.splice(pos, 1);
-            }
+    notify(artistName, albumName, artistId, subject, message) {
+        this.getEmailsSubscribersByArtist(artistId).forEach( receiverEmail => {
+            new GMailAPIClient().send_mail(subject, message, {name:"", email: receiverEmail}, {name:"", email: "enadialopez@gmail.com"});
         });
     }
 
+    deleteInterested(artistId) {
+        const subscribers = this.subscribers.filter( suscriber => suscriber.artistId === artistId);
+        subscribers.forEach(subscriber => {
+            const pos = this.subscribers.indexOf(subscriber);
+            this.subscribers.splice(pos, 1);
+        });
+        console.log(this.subscribers);
+    }
 }
-
 
 module.exports = Newsletter;
