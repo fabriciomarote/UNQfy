@@ -1,6 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
+const credential = require ('./credentials.json');
 
 // If modifying these scopes, delete token.json.
 const SCOPES = [

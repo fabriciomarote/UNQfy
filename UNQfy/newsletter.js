@@ -5,13 +5,16 @@ class Newsletter {
         this.subscribers = [];
     }
 
-    addSubscriber(suscriber) {
-        this.subscribers.push(suscriber);
+    addSubscriber(subscriber) {
+        let susbs = this.subscribers.find(sub => sub.email === subscriber.email);
+        if(susbs === undefined){
+            this.subscribers.push(suscriber);
+        }
         console.log(this.subscribers);
     }   
     
-    deleteSubscriber(suscriber){
-        const subs = this.subscribers.find(subs => subs === suscriber);
+    deleteSubscriber(subscriber){
+        const subs = this.subscribers.find(subs => subs === subscriber);
         if (subs !== undefined){
             this.subscribers.pop(subs);
         }

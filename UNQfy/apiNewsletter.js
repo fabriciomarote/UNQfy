@@ -26,38 +26,39 @@ app.listen(port,
 );
 
 function checkArtist(artistId){
-    return fetch(`https://localhost:8080/api/artists/` + artistId,{
+    return fetch(`http://localhost:8080/api/artists/` + artistId,{
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
-    })
-    .then(response => { 
-       return response.json();
     });
 }
 
 subscribers.route('/subscribe')
 .post((req, res) =>{
+    try{
         const body = {artistId: req.body.artistId,
                       email:req.body.email};
-        if(body.artistId !== undefined && body.email !== undefined ){
-            console.log("entra en la promesa");
-            checkArtist(body.artistId).then(response => {
-                console.log(response);
-                if (response.status < 400){
+        if(body.artistId === undefined && body.email === undefined ){
+            checkArtist(body.artistId)
+            .then(response => {
+                if (response.status < 400) {
                     const interested = new Interested(body.email, body.artistId);
                     newsletter.addSubscriber(interested);
                     return res.status(200).json({});
                 }else{
-                    res.status(response.status).json(errorCode);
+                    const errorResponse = new ResourceNotFoundError();
+                    return res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
                 }
-            })
-            .catch(error => console.log(error));
+            }).catch(error => console.log(error));
         } else {
             const badRequest = new BadRequestError();
             return res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
         }
+    } catch (error) {
+        const resourceAlreadyExistsError = new ResourceAlreadyExistsError();
+        res.status(resourceAlreadyExistsError.status).json({status: resourceAlreadyExistsError.status, errorCode: resourceAlreadyExistsError.errorCode});
+    }
 });
 
 subscribers.route('/unsuscribe')
@@ -71,7 +72,7 @@ subscribers.route('/unsuscribe')
                 newsletter.deleteSubscriber(interested);
                 return res.status(200).json({});
             }else{
-                res.status(response.status).json(errorCode);
+                res.status(response.status).json(error.errorCode);
             }
         })
         .catch(error => res.status(error.status).json(error.errorCode));
