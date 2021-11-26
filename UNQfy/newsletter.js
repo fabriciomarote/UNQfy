@@ -1,11 +1,11 @@
-const GMailAPIClient = require('./GMailAPIClient');
+const GMailAPIClient = require('./gmail_tools/get-token/GMailAPIClient');
 
 class Newsletter {
 
     constructor(){
         this.subscribers = [
-            {email: 'fabrii.cai93@gmail.com', artistId: 'ar_1'},
-            {email: 'enadialopez@gmail.com', artistId: 'ar_1'},
+            {email: "fabrii.cai93@gmail.com", artistId: 'ar_1'},
+            {email: "enadialopez@gmail.com", artistId: 'ar_1'},
         ];
     }
 
@@ -43,10 +43,11 @@ class Newsletter {
     }
 
     notify(artistId, from, subject, message) {
-        console.log(artistId);
-        console.log(message);
+        const gmail = new GMailAPIClient();
+        console.log(from);
         this.getEmailsSubscribersByArtist(artistId).forEach( receiverEmail => {
-            new GMailAPIClient().send_mail(subject, message, {name:"", email: receiverEmail}, {name:"", email: from});
+            gmail.send_mail(subject, [message], {"name":"", "email": receiverEmail}, {"name":"", "email": from});
+            
         });
     }
 

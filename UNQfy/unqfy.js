@@ -10,7 +10,7 @@ const User = require('./user');
 const { ErrorResponse, DuplicatedError } = require('./responses');
 const rp = require('request-promise');
 
-const observerNewsletter = new ObserverNewsletter;
+const observerNewsletter = new ObserverNewsletter();
 
 class UNQfy {
   constructor() {

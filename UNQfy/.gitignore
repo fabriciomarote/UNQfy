@@ -1,6 +1,4 @@
 
-/node_modules
+node_modules
 
-/gmail_tools
-
-/GMailAPIClient.js
+gmail_tools

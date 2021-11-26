@@ -25,19 +25,9 @@ class ObserverNewsletter extends IObserver{
             method: 'POST',
             body: {
                 artistId: artistId,
-                from: from,
                 subject: subject,
                 message: message
             }
-        }).then(response => {
-            console.log(response);
-            if(response.status < 400 ){
-                return response.json(); 
-            }
-        })    
-        .then(response => {
-            console.log(response);
-            newsletter.notify(response.body.artistId, response.body.from, response.body.subject, response.body.message);
         });
     }
 

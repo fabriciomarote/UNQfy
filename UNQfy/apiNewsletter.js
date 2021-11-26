@@ -13,7 +13,7 @@ function getNewsletter() {
 }
 
 const { errorHandler, InvalidURLError, BadRequestError, RelatedResourceNotFoundError} = require('./errors'); 
-const GMailAPIClient = require('./GMailAPIClient');
+const GMailAPIClient = require('./gmail_tools/get-token/GMailAPIClient');
 const newsletter = getNewsletter();
 
 app.use(express.json());
@@ -99,7 +99,7 @@ subscribers.route('/notify')
         checkArtist(body.artistId)
         .then(response =>{
             if (response.status < 400) {
-                newsletter.notify(body.artistId, body.subject, body.message);
+                newsletter.notify(body.artistId, 'enadialopez@gmail.com', body.subject, body.message);
                 res.status(200).json({});
             } else {
                 res.status(response.status).json(response.statusText);
