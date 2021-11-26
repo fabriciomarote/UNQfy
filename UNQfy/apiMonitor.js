@@ -1,6 +1,6 @@
 const express = require('express');
-const Logging = require('../logging');
-const Interested = require('../interested');
+const Monitor = require('./monitor');
+const Interested = require('./interested');
 const fetch = require('cross-fetch');
 
 const port = process.env.PORT || 5000;
@@ -13,7 +13,7 @@ function getMonitor() {
 }
 
 const { errorHandler, InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError} = require('../errors');
-const { ErrorResponse, DuplicatedError } = require('../responses');  
+const { ErrorResponse, DuplicatedError } = require('./responses');  
 const monitor = getMonitor();
 
 app.use(express.json());

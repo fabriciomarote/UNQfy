@@ -3,7 +3,10 @@ const GMailAPIClient = require('./GMailAPIClient');
 class Newsletter {
 
     constructor(){
-        this.subscribers = [];
+        this.subscribers = [
+            {email: 'fabrii.cai93@gmail.com', artistId: 'ar_1'},
+            {email: 'enadialopez@gmail.com', artistId: 'ar_1'},
+        ];
     }
 
     addSubscriber(subscriber) {
@@ -39,9 +42,11 @@ class Newsletter {
         return subsFiltered;
     }
 
-    notify(artistName, albumName, artistId, subject, message) {
+    notify(artistId, from, subject, message) {
+        console.log(artistId);
+        console.log(message);
         this.getEmailsSubscribersByArtist(artistId).forEach( receiverEmail => {
-            new GMailAPIClient().send_mail(subject, message, {name:"", email: receiverEmail}, {name:"", email: "enadialopez@gmail.com"});
+            new GMailAPIClient().send_mail(subject, message, {name:"", email: receiverEmail}, {name:"", email: from});
         });
     }
 

@@ -23,7 +23,6 @@ class Artist {
 
     addAlbum(album) {
         this.albums.push(album);
-        
     }
 
     deleteAlbum(album) {

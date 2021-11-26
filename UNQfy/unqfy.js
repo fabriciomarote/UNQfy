@@ -5,24 +5,27 @@ const Album = require('./album');
 const Artist = require('./artist'); 
 const Track = require('./track');
 const Playlist = require('./playlist');
+const ObserverNewsletter = require('./observerNewsletter');
 const User = require('./user');
 const { ErrorResponse, DuplicatedError } = require('./responses');
 const rp = require('request-promise');
+
+const observerNewsletter = new ObserverNewsletter;
 
 class UNQfy {
   constructor() {
     this.artists = [];
     this.playlists = [];
     this.users = [];
-    this.observers = [];
+    this.observers = [observerNewsletter];
   }
 
   addObserver(observer) {
     this.observers.push(observer);
   }
 
-  notifyObservers(param) {
-    this.observers.forEach(observer => observer.notify(param));
+  notifyObservers(nameFunction, param) {
+    this.observers.forEach(observer => observer.notify(nameFunction, param));
   }
 
   notifyDeleteArtist(artistId) {
@@ -43,10 +46,9 @@ class UNQfy {
   */  if(!this.existsArtist(artistData.name)) {
         const artist = new Artist(artistData.name, artistData.country);
         this.artists.push(artist);
+        this.notifyObservers("addArtist", artist);
         this.save('data.json');
-        this.notifyObservers(artist);
         return artist; 
-        
     } else {   
       throw new ErrorResponse('The artist '+ artistData.name +' cannot be added because it already exists');
     }   
@@ -87,7 +89,7 @@ class UNQfy {
         artist.getAlbums().forEach(album => this.deleteAlbum(artist, album));
         this.artists.splice(pos, 1);
     }
-    this.notifyDeleteArtist(artist.id);
+    this.notifyObservers("deleteArtist", artist);
     this.save('data.json');
   }
 
@@ -149,8 +151,8 @@ class UNQfy {
     if(!artist.existsAlbum(albumData.name)) {
       const album = new Album(albumData.name, albumData.year, artist.name);
       artist.addAlbum(album);
+      this.notifyObservers("addAlbum", {artist: artist, album: album});
       this.save('data.json');
-      this.notifyObservers(album);
       return album; 
     } 
     else {
@@ -166,6 +168,7 @@ class UNQfy {
       album.getTracks().forEach(track => this.deleteTrack(album, track));
       artist.deleteAlbum(album);
     }  
+    this.notifyObservers("deleteAlbum", album);
     this.save('data.json');
   }
 
@@ -206,6 +209,7 @@ class UNQfy {
     if(!album.existsTrack(trackData.name)) {
       const track = new Track(trackData.name, trackData.duration, trackData.genres, trackData.album, trackData.author);
       album.addTrack(track);
+      this.notifyObservers("addTrack", track);
       this.save('data.json');
       return track;
     } 
@@ -218,6 +222,7 @@ class UNQfy {
     album.deleteTrack(track);
     const playlists = this.playlists.filter(playlist => playlist.hasTrack(track));
     playlists.forEach(playlist => playlist.deleteTrack(track)); 
+    this.notifyObservers("deleteTrack", track);
     this.save('data.json');
   }
 
@@ -447,7 +452,7 @@ class UNQfy {
   static load(filename) {
     const serializedData = fs.readFileSync(filename, {encoding: 'utf-8'});
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist, Album, Track, Playlist];
+    const classes = [UNQfy, Artist, Album, Track, Playlist, ObserverNewsletter];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 }

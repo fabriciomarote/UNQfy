@@ -2,7 +2,7 @@
 
 class IObserver {
 
-    notify(param) {
+    notify(nameFunction, param) {
     }
 
 }

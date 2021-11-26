@@ -6,17 +6,23 @@ const writeFile = util.promisify(fs.writeFile);
 let winston  = require('winston');
 let {Loggly} = require('winston-loggly-bulk');
 
-function sendLoggin (msj, type){
-    winston.add(new Loggly({
-    token: "f066c974-c1da-43ed-9073-c116dcaea9e5",
-    subdomain: "enadialopez",
-    tags: ["Winston-NodeJS"],
-    json: true
-    }));
-    winston.log('info', "Hello World from Api.js!");
-}
+    function sendLoggin(type, msg){
+        winston.add(new Loggly({
+        token: "f066c974-c1da-43ed-9073-c116dcaea9e5",
+        subdomain: "enadialopez",
+        tags: ["Winston-NodeJS"],
+        json: true
+        }));
+        winston.log(type, msg);
+    }
 
-function saveLogText (msj, type) {
+    function sendNotify(msg, type) {
+        sendLoggin(type, msg);
+        //saveLogArchive(msg, type);
+    }
+
+/*
+function saveLogArchive(msj, type) {
     let content = msj + type;
     readFile('archivo', data)
     .then((data) =>{
@@ -30,3 +36,4 @@ function saveLogText (msj, type) {
         console.log('Ocurrio un error');
     });
 }
+*/
