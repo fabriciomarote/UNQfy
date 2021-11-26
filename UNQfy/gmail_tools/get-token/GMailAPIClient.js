@@ -79,5 +79,4 @@ class GMailAPIClient {
     }
 }
 
-
 module.exports = GMailAPIClient;

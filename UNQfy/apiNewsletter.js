@@ -13,7 +13,6 @@ function getNewsletter() {
 }
 
 const { errorHandler, InvalidURLError, BadRequestError, RelatedResourceNotFoundError} = require('./errors'); 
-const GMailAPIClient = require('./gmail_tools/get-token/GMailAPIClient');
 const newsletter = getNewsletter();
 
 app.use(express.json());

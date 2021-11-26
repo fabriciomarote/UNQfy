@@ -1,4 +1,9 @@
-const GMailAPIClient = require('./gmail_tools/get-token/GMailAPIClient');
+const GMailAPIClient = require('./gmail_tools/get-token/GMailAPIClient.js');
+
+function getGmail() {
+    const gmail = new GMailAPIClient();
+    return gmail;
+}
 
 class Newsletter {
 
@@ -39,14 +44,14 @@ class Newsletter {
                 subsFiltered.push(subscriber.email);
             }
         });
+        console.log(subsFiltered);
         return subsFiltered;
     }
 
     notify(artistId, from, subject, message) {
-        const gmail = new GMailAPIClient();
         console.log(from);
         this.getEmailsSubscribersByArtist(artistId).forEach( receiverEmail => {
-            gmail.send_mail(subject, [message], {"name":"", "email": receiverEmail}, {"name":"", "email": from});
+            getGmail.send_Mail(subject, [message], {"name":"", "email": receiverEmail}, {"name":"", "email": from});
             
         });
     }
