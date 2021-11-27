@@ -1,6 +1,5 @@
 const express = require('express');
 const Logging = require('./logging');
-const fetch = require('cross-fetch');
 
 const port = process.env.PORT || 4000;
 const app = express();
@@ -10,7 +9,7 @@ function getLogging() {
     return logging;
 }
 
-const { errorHandler, InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError} = require('./errors'); 
+const { errorHandler, InvalidURLError} = require('./errors'); 
 const logging = getLogging();
 
 app.use(express.json());

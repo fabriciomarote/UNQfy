@@ -21,7 +21,7 @@ class ObserverNewsletter extends IObserver{
     notifyUser(artistId, from, subject, message) {
         console.log(artistId);
         console.log(message);
-        fetch('http://localhost:3000/api/notify',{
+        return fetch('http://localhost:3000/api/notify',{
             method: 'POST',
             body: {
                 artistId: artistId,

@@ -3,10 +3,12 @@ const util = require('util');
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 
-let winston  = require('winston');
-let {Loggly} = require('winston-loggly-bulk');
+const winston  = require('winston');
+const {Loggly} = require('winston-loggly-bulk');
 
-    function sendLoggin(type, msg){
+class Logging {
+
+    sendLoggin(type, msg){
         winston.add(new Loggly({
         token: "f066c974-c1da-43ed-9073-c116dcaea9e5",
         subdomain: "enadialopez",
@@ -16,8 +18,8 @@ let {Loggly} = require('winston-loggly-bulk');
         winston.log(type, msg);
     }
 
-    function sendNotify(msg, type) {
-        sendLoggin(type, msg);
+    sendNotify(msg, type) {
+        this.sendLoggin(type, msg);
         //saveLogArchive(msg, type);
     }
 
@@ -37,3 +39,6 @@ function saveLogArchive(msj, type) {
     });
 }
 */
+}
+
+module.exports = Logging;

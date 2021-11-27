@@ -1,10 +1,9 @@
 const fs = require('fs');
 const {google} = require('googleapis');
 
-
 class GMailAPIClient {
 
-    constructor(credentials_path='./credentials.json', token_path='./token.json') {
+    constructor(credentials_path='./gmail_tools/get-token/credentials.json', token_path='./gmail_tools/get-token/token.json') {
         if (!fs.existsSync(credentials_path)) {
             throw new Error(`Credentials file not found: ${credentials_path}`);
         }
@@ -52,7 +51,6 @@ class GMailAPIClient {
         return encodedMessage;
     }
 
-
     _buildGmailClient() {
         const credentials = fs.readFileSync(this.credentials_file);
         const token = fs.readFileSync(this.token_file);
@@ -78,5 +76,9 @@ class GMailAPIClient {
         return oAuth2Client;
     }
 }
+
+new GMailAPIClient().send_mail("Mi primer email ", [" Hello world! "] ,
+    {"name": "Nadia" , "email" :"enadialopez@gmail.com"},
+    {"name": "Lopez" , "email" :"enadialopez@gmail.com"} );
 
 module.exports = GMailAPIClient;
