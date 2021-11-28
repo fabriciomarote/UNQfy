@@ -1,15 +1,9 @@
-const fs = require('fs');
-const util = require('util');
-const readFile = util.promisify(fs.readFile);
-const writeFile = util.promisify(fs.writeFile);
-
-const winston  = require('winston');
-const {Loggly} = require('winston-loggly-bulk');
+const fetch = require('cross-fetch');
 
 class Logging {
 
     sendNotify(message, type) {
-        return fetch('http://localhost:3000/api/notify',{
+        return fetch('http://localhost:4000/api/log',{
             method: 'POST',
             body: JSON.stringify({
                 message: message, 
@@ -20,7 +14,6 @@ class Logging {
             } 
         });
     }
-    
 }
 
 module.exports = Logging;

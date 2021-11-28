@@ -10,7 +10,7 @@ class ObserverLogging extends IObserver{
         } else if(nameFunction === "addAlbum") {
             logging.sendNotify('The artist '+data.artist.name+' added the album '+data.album.name, 'info');
         } else if(nameFunction === "addTrack") {
-            logging.sendNotify('The artist '+data.author+ 'added the track '+data.name+ 'in the album '+data.album, 'info');
+            logging.sendNotify('The artist '+data.author+ ' added the track '+data.name+ 'in the album '+data.album, 'info');
         } else if(nameFunction === "deleteArtist") {
             logging.sendNotify('The artist '+data.name+' has been removed', 'info');
         } else if(nameFunction === "deleteAlbum") {
@@ -19,6 +19,7 @@ class ObserverLogging extends IObserver{
             logging.sendNotify('the track '+data.name+' from the album '+data.album+' from the artist '+data.author+' has been removed', 'info');  
         }
     }
+
 }
 
 module.exports = ObserverLogging;

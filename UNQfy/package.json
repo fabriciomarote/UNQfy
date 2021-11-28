@@ -11,6 +11,7 @@
     "jshint": "^2.13.1",
     "node-fetch": "^3.1.0",
     "picklify": "github:lwoites/picklify",
+    "ping-monitor": "^0.6.2",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "winston-loggly-bulk": "^3.2.1",
