@@ -5,31 +5,16 @@ const Album = require('./album');
 const Artist = require('./artist'); 
 const Track = require('./track');
 const Playlist = require('./playlist');
-const ObserverNewsletter = require('./observerNewsletter');
 const User = require('./user');
 const { ErrorResponse, DuplicatedError } = require('./responses');
 const rp = require('request-promise');
-
-const observerNewsletter = new ObserverNewsletter();
+const ObserverNewsletter = require('./observerNewsletter');
 
 class UNQfy {
   constructor() {
     this.artists = [];
     this.playlists = [];
     this.users = [];
-    this.observers = [observerNewsletter];
-  }
-
-  addObserver(observer) {
-    this.observers.push(observer);
-  }
-
-  notifyObservers(nameFunction, param) {
-    this.observers.forEach(observer => observer.notify(nameFunction, param));
-  }
-
-  notifyDeleteArtist(artistId) {
-    this.observers.forEach(observer => observer.deleteInterested(artistId));
   }
 
   /////////////////////////// ARTISTA /////////////////////////////////////////////
@@ -46,7 +31,7 @@ class UNQfy {
   */  if(!this.existsArtist(artistData.name)) {
         const artist = new Artist(artistData.name, artistData.country);
         this.artists.push(artist);
-        this.notifyObservers("addArtist", artist);
+        //logging
         this.save('data.json');
         return artist; 
     } else {   
@@ -89,7 +74,7 @@ class UNQfy {
         artist.getAlbums().forEach(album => this.deleteAlbum(artist, album));
         this.artists.splice(pos, 1);
     }
-    this.notifyObservers("deleteArtist", artist);
+    //logging
     this.save('data.json');
   }
 
@@ -151,7 +136,7 @@ class UNQfy {
     if(!artist.existsAlbum(albumData.name)) {
       const album = new Album(albumData.name, albumData.year, artist.name);
       artist.addAlbum(album);
-      this.notifyObservers("addAlbum", {artist: artist, album: album});
+      //logging
       this.save('data.json');
       return album; 
     } 
@@ -168,7 +153,7 @@ class UNQfy {
       album.getTracks().forEach(track => this.deleteTrack(album, track));
       artist.deleteAlbum(album);
     }  
-    this.notifyObservers("deleteAlbum", album);
+    //logging
     this.save('data.json');
   }
 
@@ -209,7 +194,7 @@ class UNQfy {
     if(!album.existsTrack(trackData.name)) {
       const track = new Track(trackData.name, trackData.duration, trackData.genres, trackData.album, trackData.author);
       album.addTrack(track);
-      this.notifyObservers("addTrack", track);
+      //logging
       this.save('data.json');
       return track;
     } 
@@ -222,7 +207,7 @@ class UNQfy {
     album.deleteTrack(track);
     const playlists = this.playlists.filter(playlist => playlist.hasTrack(track));
     playlists.forEach(playlist => playlist.deleteTrack(track)); 
-    this.notifyObservers("deleteTrack", track);
+    //logging
     this.save('data.json');
   }
 

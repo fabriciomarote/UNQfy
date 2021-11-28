@@ -97,10 +97,10 @@ subscribers.route('/notify')
     if(validate(body.artistId) && validate(body.subject) && validate(body.message)){
         checkArtist(body.artistId)
         .then(response =>{
-            console.log(response);
             if (response.status < 400) {
-                newsletter.notify(body.artistId, 'enadialopez@gmail.com', body.subject, body.message);
-                console.log(body.message);
+                newsletter.getEmailsSubscribersByArtist(body.artistId).forEach( receiverEmail => {
+                    newsletter.notify(receiverEmail, body.subject, body.message);
+                });    
                 res.status(200).json({});
             } else {
                 res.status(response.status).json(response.statusText);

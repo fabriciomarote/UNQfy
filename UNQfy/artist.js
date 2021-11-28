@@ -1,5 +1,7 @@
 const Generate = require('./generate');
 const generateId = new Generate();
+const ObserverNewsletter = require('./observerNewsletter');
+const observerNewsletter = new ObserverNewsletter();
 
 class Artist {
     constructor(name, country) {
@@ -7,7 +9,16 @@ class Artist {
         this.name = name;
         this.albums = [];
         this.country = country;
+        this.observers = [observerNewsletter];
     }
+
+    addObserver(observer) {
+        this.observers.push(observer);
+      }
+
+    notifyObservers(nameFunction, param) {
+        this.observers.forEach(observer => observer.notify(nameFunction, param));
+      }
 
     content() {
         console.log(this);
@@ -23,6 +34,7 @@ class Artist {
 
     addAlbum(album) {
         this.albums.push(album);
+        this.notifyObservers("addAlbum", {artist: this, album: album});
     }
 
     deleteAlbum(album) {

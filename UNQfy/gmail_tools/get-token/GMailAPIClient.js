@@ -77,8 +77,4 @@ class GMailAPIClient {
     }
 }
 
-new GMailAPIClient().send_mail("Mi primer email ", [" Hello world! "] ,
-    {"name": "Nadia" , "email" :"enadialopez@gmail.com"},
-    {"name": "Lopez" , "email" :"enadialopez@gmail.com"} );
-
 module.exports = GMailAPIClient;

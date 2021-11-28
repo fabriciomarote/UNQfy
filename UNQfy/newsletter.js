@@ -43,15 +43,11 @@ class Newsletter {
         return subsFiltered;
     }
 
-    notify(artistId, from, subject, message) {
-        console.log(message);
-        console.log(subject);
-        console.log(artistId);
-        console.log(from);
-        this.getEmailsSubscribersByArtist(artistId).forEach( receiverEmail => {
-            console.log(receiverEmail);
-            //new GMailAPIClient().send_Mail(subject, [message], {"name":"", "email": receiverEmail}, {"name":"", "email": from});
-        });
+    notify(receiverEmail, subject, message) {
+        console.log(receiverEmail);
+        new GMailAPIClient().send_mail(subject, [message] ,
+                                        {"name": "Nadia" , "email" : receiverEmail},
+                                        {"name": "Lopez" , "email" :""} );
     }
 
     deleteInterested(artistId) {
