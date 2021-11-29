@@ -71,6 +71,7 @@ artists.route('/artists/:artistId')
         res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
     }
 })
+
 .delete((req, res) => {
     try {
         const artistId = req.params.artistId;
@@ -84,6 +85,7 @@ artists.route('/artists/:artistId')
         res.status(resourceNotFound.status).json({status: resourceNotFound.status, errorCode: resourceNotFound.errorCode});
 }
 })
+
 .put((req, res) => {
     try {
         const artistId = req.params.artistId;

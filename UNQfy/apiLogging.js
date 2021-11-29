@@ -44,15 +44,32 @@ logs.route('/active')
 .get((req, res) => {
     if (!isActive){
         isActive = !isActive;
+        res.status(200).json("The service has been activated");
+    } else {
+        res.status(200).json("The service is already activated");
     }
 });
-
-logs.route('/desactive')
+logs.route('/dissable')
 .get((req, res) => {
     if (isActive){
         isActive = !isActive;
+        res.status(200).json("The service has been dissabled");
+    } else {
+        res.status(200).json("The service is already dissabled");
     }
+});
 
+logs.route('/log')
+.post((req, res) => {
+    if(isActive) {
+        const body = {  message: req.body.message, 
+                        type: req.body.type };
+        sendLog(body.message, body.type);
+        saveLog(body.message, body.type);
+        res.status(200).json({});
+    } else {
+        res.status(400).json("Cannot send a log since the service is deactivated");
+    }
 });
 
 logs.route('/log')

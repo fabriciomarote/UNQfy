@@ -15,6 +15,4 @@ class Monitor {
     }
 }
 
-//new Monitor().send("Primer mensaje a discord");
-
 module.exports = Monitor;

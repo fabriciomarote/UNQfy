@@ -1,9 +1,8 @@
 const fetch = require('cross-fetch');
-
 class Logging {
 
     sendNotify(message, type) {
-        return fetch('http://localhost:4000/api/log',{
+        return fetch(`http://localhost:4000/api/log`,{
             method: 'POST',
             body: JSON.stringify({
                 message: message, 
