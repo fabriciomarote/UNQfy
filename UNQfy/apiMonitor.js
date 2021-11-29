@@ -1,6 +1,6 @@
 const express = require('express');
-
-const Monitor = require('ping-monitor');
+const Monitor = require('./monitor');
+const Monitor2 = require('ping-monitor');
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -21,25 +21,23 @@ app.listen(port,
     () => console.log(`Puerto ${port} Ok`)
 );
 
-const myMonitor = new Monitor({
-    website: 'http://localhost:5000/api',
-    title: 'Raging Flame',
-    interval: 0.30 // seconds
+const myMonitor = new Monitor2({
+    website: 'http://localhost:4000/api',
+    title: 'apiLogging',
+    interval: 0.30, // seconds
+
+    expect: {
+        statusCode: 200
+      }
 });
 
-monitor.route('/stateServices')
-.get((req, res) => { 
+myMonitor.on('down', function (res, state) {
+    new Monitor().send(new Date().toLocaleTimeString() + ' El servicio ' + myMonitor.title + ' ha vuelto a la normalidad');
 
 });
 
-monitor.route('/active')
-.get((req, res) => { 
-
-});
-
-monitor.route('/desactive')
-.get((req, res) => { 
-
+myMonitor.on('error', function (error, res) {
+    new Monitor().send(new Date().toLocaleTimeString() + ' El servicio ' + myMonitor.title + ' ha dejado de funcionar');
 });
 
 app.use('*', function(req, res) {
