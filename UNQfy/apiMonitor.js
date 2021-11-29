@@ -28,51 +28,61 @@ app.listen(port,
     () => console.log(`Puerto ${port} Ok`)
 );
 
-/*const servicioLogging = new Monitor2({
+const serviceLogging = new Monitor2({
     website: 'http://localhost:4000/api',
-    title: 'Log',
-    interval: 0.30, // seconds
+    title: 'Logging',
+    interval: 1, // seconds
 });
 
-const servicioNewsletter = new Monitor2({
+const serviceNewsletter = new Monitor2({
     website: 'http://localhost:3000/api',
     title: 'Newsletter',
     interval: 1, // seconds
 });
 
-const servicioUNQfy = new Monitor2({
+const serviceUNQfy = new Monitor2({
     website: 'http://localhost:8080/api',
     title: 'UNQfy',
     interval: 1, // seconds
-});*/
+});
 
-function servicioON(servicio, status){
-    servicio.on('down', function (res, state) {
-        getMonitor().send(new Date().toLocaleTimeString() + ' El servicio ' + servicio.title + ' ha vuelto a la normalidad');
-        status = "on";
+function serviceON(service){
+    service.on('down', function (res, state) {
+        getMonitor().send(new Date().toLocaleTimeString() + ' The service ' + service.title + ' is back to normal');
+        setStatus(service.title, "on");
     });
 }
 
-function servicioOFF(servicio, status){
-    servicio.on('error', function (error, res) {
-        getMonitor().send(new Date().toLocaleTimeString() + ' El servicio ' + servicio.title + ' ha dejado de funcionar');
-        status = "off";
+function serviceOFF(service){
+    service.on('error', function (error, res) {
+        getMonitor().send(new Date().toLocaleTimeString() + ' The service ' + service.title + ' has stopped working');
+        setStatus(service.title, "off");
     });
+}
+
+function setStatus(title, status){
+    if (title === "Newsletter"){
+        statusService.statusNewsletter = status;
+    } else if (title === "Logging"){
+        statusService.statusLogging = status;
+    } else if (title === "UNQfy"){
+        statusService.statusUnqfy = status;
+    }
 }
 
 function runMonitor (){
     if (isActive){
-        servicioON(servicioLogging, statusService.statusLogging);
-        servicioON(servicioNewsletter, statusService.statusNewsletter);
-        servicioON(servicioUNQfy, statusService.statusUNQfy);
+        serviceON(serviceLogging);
+        serviceON(serviceNewsletter);
+        serviceON(serviceUNQfy);
 
-        servicioOFF(servicioLogging, statusService.statusLogging);
-        servicioOFF(servicioNewsletter, statusService.statusNewsletter);
-        servicioOFF(servicioUNQfy, statusService.statusUNQfy);
+        serviceOFF(serviceLogging);
+        serviceOFF(serviceNewsletter);
+        serviceOFF(serviceUNQfy);
     }
 }
 
-//runMonitor();
+runMonitor();
 
 monitor.route('/stateServices')
 .get((req, res) => { 
