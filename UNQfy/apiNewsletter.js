@@ -12,9 +12,8 @@ function getNewsletter() {
     return newsletter;
 }
 
-const { errorHandler, InvalidURLError, BadRequestError, RelatedResourceNotFoundError} = require('./errors'); 
+const { errorHandler, InvalidURLError, BadRequestError, RelatedResourceNotFoundError, InternalServerError} = require('./errors'); 
 const newsletter = getNewsletter();
-
 app.use(express.json());
 
 app.use('/api', subscribers);
@@ -71,8 +70,8 @@ subscribers.route('/unsubscribe')
                 }
             })
             .then( response => {  
-                if(newsletter.hasEmail(body.email)){
-                    const interested = newsletter.getSubscriber(body.email);
+                if(newsletter.hasSubscriberToArtist(body.artistId, body.email)){
+                    const interested = newsletter.getSubscriber(body.email, body.artistId);
                     newsletter.deleteSubscriber(interested);
                     res.status(200).json({});
                 }else {
@@ -98,17 +97,23 @@ subscribers.route('/notify')
         checkArtist(body.artistId)
         .then(response =>{
             if (response.status < 400) {
-                newsletter.getEmailsSubscribersByArtist(body.artistId).forEach( receiverEmail => {
-                    newsletter.notify(receiverEmail, body.subject, body.message);
-                });    
-                res.status(200).json({});
+                if (newsletter.getEmailsSubscribersByArtist(body.artistId).length !== 0) {
+                    newsletter.getEmailsSubscribersByArtist(body.artistId).forEach( receiverEmail => {
+                        newsletter.notify(receiverEmail, body.subject, body.message);
+                    });    
+                    res.status(200).json({});
+                } else {
+                    const internalServerError = new InternalServerError();
+                    res.status(internalServerError.status).json({status: internalServerError.status, errorCode: internalServerError.errorCode});
+                }
             } else {
-                res.status(response.status).json(response.statusText);
+                const errorResponse = new RelatedResourceNotFoundError();
+                res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
             }
         })
         .catch( error => {
-            const errorResponse = new RelatedResourceNotFoundError();
-            res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
+            const internalServerError = new InternalServerError();
+            res.status(internalServerError.status).json({status: internalServerError.status, errorCode: internalServerError.errorCode});
         });
     }else{
         const badRequest = new BadRequestError();

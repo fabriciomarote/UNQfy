@@ -38,6 +38,12 @@ class APIError extends Error {
     } 
   }
 
+  class InternalServerError extends APIError {
+    constructor() {
+      super('InternalServerError', 500, 'INTERNAL_SERVER_ERROR');
+    } 
+  }
+
  function errorHandler(err, req, res, next) {
   console.error(err); // imprimimos el error en consola
   // Chequeamos que tipo de error es y actuamos en consecuencia
@@ -78,4 +84,5 @@ class APIError extends Error {
     RelatedResourceNotFoundError,
     InvalidURLError,
     BadRequestError,
+    InternalServerError
 };

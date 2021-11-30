@@ -31,33 +31,30 @@ app.listen(port,
 const serviceLogging = new Monitor2({
     website: 'http://localhost:4000/api',
     title: 'Logging',
-    interval: 1, // seconds
+    interval: 0.3, // seconds
 });
 
 const serviceNewsletter = new Monitor2({
     website: 'http://localhost:3000/api',
     title: 'Newsletter',
-    interval: 1, // seconds
+    interval: 0.3, // seconds
 });
 
 const serviceUNQfy = new Monitor2({
     website: 'http://localhost:8080/api',
     title: 'UNQfy',
-    interval: 1, // seconds
+    interval: 0.3, // seconds
 });
 
-function serviceON(service){
-    service.on('down', function (res, state) {
-        getMonitor().send(new Date().toLocaleTimeString() + ' The service ' + service.title + ' is back to normal');
-        setStatus(service.title, "on");
-    });
-}
-
-function serviceOFF(service){
-    service.on('error', function (error, res) {
-        getMonitor().send(new Date().toLocaleTimeString() + ' The service ' + service.title + ' has stopped working');
-        setStatus(service.title, "off");
-    });
+function services(service){
+        service.on('down', function (res, state) {
+            getMonitor().send(new Date().toLocaleTimeString() + ' The service ' + service.title + ' is back to normal');
+            setStatus(service.title, "on");
+        });
+        service.on('error', function (error, res) {
+            getMonitor().send(new Date().toLocaleTimeString() + ' The service ' + service.title + ' has stopped working');
+            setStatus(service.title, "off");
+        }); 
 }
 
 function setStatus(title, status){
@@ -70,33 +67,33 @@ function setStatus(title, status){
     }
 }
 
-function runMonitor (){
+function isAlive (){
     if (isActive){
-        serviceON(serviceLogging);
-        serviceON(serviceNewsletter);
-        serviceON(serviceUNQfy);
-
-        serviceOFF(serviceLogging);
-        serviceOFF(serviceNewsletter);
-        serviceOFF(serviceUNQfy);
+        services(serviceLogging);
+        services(serviceNewsletter);
+        services(serviceUNQfy);
+    }
+    else {
+        console.log("Failure, the service is disabled");
     }
 }
 
-runMonitor();
+isAlive();
 
 monitor.route('/stateServices')
 .get((req, res) => { 
     if(isActive){
         res.status(200).json(statusService);
     } else {
-        res.status(500).json("The service has been dissabled");
+        res.status(500).json("Failure, the service is disabled");
     }   
 });
 
 monitor.route('/active')
 .get((req, res) => {
     if (!isActive){
-        isActive = !isActive;
+        isActive = true;
+        //isAlive();
         res.status(200).json("The service has been activated");
     } else {
         res.status(200).json("The service is already activated");
@@ -106,7 +103,8 @@ monitor.route('/active')
 monitor.route('/dissable')
 .get((req, res) => {
     if (isActive){
-        isActive = !isActive;
+        isActive = false;
+        //isAlive();
         res.status(200).json("The service has been dissabled");
     } else {
         res.status(500).json("The service is already dissabled");

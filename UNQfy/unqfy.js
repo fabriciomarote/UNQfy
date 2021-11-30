@@ -9,7 +9,6 @@ const User = require('./user');
 const { ErrorResponse, DuplicatedError } = require('./responses');
 const rp = require('request-promise');
 const ObserverLogging = require('./observerLogging');
-const observerLogging = new ObserverLogging();
 const ObserverNewsletter = require('./observerNewsletter');
 
 class UNQfy {
@@ -17,12 +16,20 @@ class UNQfy {
     this.artists = [];
     this.playlists = [];
     this.users = [];
-    this.observers = [observerLogging];
+    this.observers = [];
+  }
+
+  addObserver(observer) {
+    this.observers.push(observer);
+  }
+
+  addObserverToArtists(observer) {
+    this.artists.forEach( artist => artist.addObserver(observer));
   }
 
   notifyObservers(nameFunction, param) {
-    //this.observers.forEach(observer => observer.notify(nameFunction, param));
-    observerLogging.notify(nameFunction, param);
+    this.observers.forEach(observer => observer.notify(nameFunction, param));
+    //observerLogging.notify(nameFunction, param);
     
   }
 

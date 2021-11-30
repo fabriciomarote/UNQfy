@@ -1,36 +1,39 @@
 const GMailAPIClient = require('./gmail_tools/get-token/GMailAPIClient');
-//const gmail = new GMailAPIClient();
 
 class Newsletter {
 
     constructor(){
-        this.subscribers = [
-            {email: "fabrii.cai93@gmail.com", artistId: 'ar_1'},
-            {email: "enadialopez@gmail.com", artistId: 'ar_1'},
-        ];
+        this.subscribers = [];
     }
 
     addSubscriber(subscriber) {
-        if(!this.hasEmail(subscriber.email)) {
+        if(!this.hasSubscriber(subscriber)) {
             this.subscribers.push(subscriber);
         }  
-        console.log(this.subscribers);
     }   
+
+    hasSubscriber(subscriber){
+        return this.subscribers.some(subs => subs === subscriber);
+    }
     
+    hasSubscriberToArtist(artistId, email) {
+        console.log(artistId);
+        console.log(email);
+        const subscribers = this.subscribers.filter( subscriber => subscriber.artistId === artistId);
+        return subscribers.some(subscriber => subscriber.email === email);
+    }
+
     hasEmail(email){
         return this.subscribers.some(subscriber => subscriber.email === email);
     }
 
     deleteSubscriber(subscriber){
-        const subs = this.subscribers.find(subs => subs === subscriber);
-        if (subs !== undefined){
-            this.subscribers.pop(subs);
-        }
-        console.log(this.subscribers);
+        const pos = this.subscribers.indexOf(subscriber);
+        this.subscribers.splice(pos, 1);
     }
 
-    getSubscriber(email){
-        return this.subscribers.find(subscriber => subscriber.email === email);
+    getSubscriber(email, artistId){
+        return this.subscribers.find(subscriber => subscriber.email === email && subscriber.artistId === artistId);
     }
 
     getEmailsSubscribersByArtist(artistId) {
@@ -46,8 +49,8 @@ class Newsletter {
     notify(receiverEmail, subject, message) {
         console.log(receiverEmail);
         new GMailAPIClient().send_mail(subject, [message] ,
-                                        {"name": "Nadia" , "email" : receiverEmail},
-                                        {"name": "Lopez" , "email" :""} );
+                                        {"name": "" , "email" : receiverEmail},
+                                        {"name": "" , "email" :""} );
     }
 
     deleteInterested(artistId) {

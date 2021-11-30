@@ -68,7 +68,7 @@ logs.route('/log')
         saveLog(body.message, body.type);
         res.status(200).json({});
     } else {
-        res.status(400).json("Cannot send a log since the service is deactivated");
+        res.status(400).json("Cannot send a log since the service is dissabled");
     }
 });
 

@@ -1,7 +1,7 @@
 const Generate = require('./generate');
 const generateId = new Generate();
 const ObserverNewsletter = require('./observerNewsletter');
-const observerNewsletter = new ObserverNewsletter();
+
 
 class Artist {
     constructor(name, country) {
@@ -9,7 +9,7 @@ class Artist {
         this.name = name;
         this.albums = [];
         this.country = country;
-        this.observers = [observerNewsletter];
+        this.observers = [];
     }
 
     addObserver(observer) {

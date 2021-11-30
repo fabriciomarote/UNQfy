@@ -1,6 +1,10 @@
 const express = require('express');
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
+const ObserverLogging = require('./observerLogging');
+const observerLogging = new ObserverLogging();
+const ObserverNewsletter = require('./observerNewsletter');
+const observerNewsletter = new ObserverNewsletter();
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
 function getUNQfy(filename = 'data.json') {
@@ -12,6 +16,9 @@ function getUNQfy(filename = 'data.json') {
 }
 
 const unqfy = getUNQfy();
+
+unqfy.addObserver(observerLogging);
+unqfy.addObserverToArtists(observerNewsletter);
 
 const { errorHandler, InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError} = require('./errors');
 const { ErrorResponse, DuplicatedError } = require('./responses');
