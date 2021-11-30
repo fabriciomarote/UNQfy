@@ -78,8 +78,6 @@ function isAlive (){
     }
 }
 
-//isAlive();
-
 monitor.route('/stateServices')
 .get((req, res) => { 
     if(isActive){
@@ -99,6 +97,7 @@ monitor.route('/active')
 monitor.route('/dissable')
 .get((req, res) => {
     isActive = false;
+    isAlive();
     res.status(200).json("The service has been dissabled");
 });
 
