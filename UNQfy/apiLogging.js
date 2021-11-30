@@ -1,5 +1,4 @@
 const express = require('express');
-const Logging = require('./logging');
 const fs = require('fs');
 
 const winston  = require('winston');
@@ -9,12 +8,20 @@ const port = process.env.PORT || 4000;
 const app = express();
 const logs = express();
 
-function getLogging() {
-    const logging = new Logging();
-    return logging;
-}
+const {InvalidURLError} = require('./errors'); 
 
-const { errorHandler, InvalidURLError} = require('./errors'); 
+function errorHandler(err, req, res, next) {
+    console.error(err); // imprimimos el error en consola
+    // Chequeamos que tipo de error es y actuamos en consecuencia
+    if (err instanceof InvalidURLError){
+      res.status(err.status);
+      res.json({status: err.status, errorCode: err.errorCode});
+    } else {
+      // continua con el manejador de errores por defecto
+      next(err);
+    }
+  }
+
 let isActive = true;
 
 app.use(express.json());
@@ -44,18 +51,18 @@ logs.route('/active')
 .get((req, res) => {
     if (!isActive){
         isActive = !isActive;
-        res.status(200).json("The service has been activated");
+        res.status(200).json({"message" : "The service has been activated"});
     } else {
-        res.status(200).json("The service is already activated");
+        res.status(200).json({"message" : "The service is already activated"});
     }
 });
 logs.route('/dissable')
 .get((req, res) => {
     if (isActive){
         isActive = !isActive;
-        res.status(200).json("The service has been dissabled");
+        res.status(200).json({"message" : "The service has been dissabled"});
     } else {
-        res.status(200).json("The service is already dissabled");
+        res.status(200).json({"message" : "The service is already dissabled"});
     }
 });
 
@@ -68,7 +75,7 @@ logs.route('/log')
         saveLog(body.message, body.type);
         res.status(200).json({});
     } else {
-        res.status(400).json("Cannot send a log since the service is dissabled");
+        res.status(400).json({"message" :"Cannot send a log since the service is dissabled"});
     }
 });
 
@@ -84,9 +91,8 @@ logs.route('/log')
         res.status(200).res.json({});
 });
 
-app.use('*', function(req, res) {
-    const invalidError = new InvalidURLError();
-    res.status(invalidError.status).json({status: invalidError.status, errorCode: invalidError.errorCode});
+app.use('*', function(req, res, next) {
+    next ( new InvalidURLError());
 });
 
 app.use(errorHandler);

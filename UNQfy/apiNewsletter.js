@@ -12,14 +12,49 @@ function getNewsletter() {
     const newsletter = new Newsletter();
     return newsletter;
 }
-
+/*
 const fabri = new Interested("fabrii.cai93@gmail.com", "ar_1");
 const nadia = new Interested("enadialopez@gmail.com", "ar_1");
 
 newsletter.addSubscriber(fabri);
 newsletter.addSubscriber(nadia);
+*/
 
-const { errorHandler, InvalidURLError, BadRequestError, RelatedResourceNotFoundError, InternalServerError} = require('./errors'); 
+
+const {InvalidURLError, BadRequestError, RelatedResourceNotFoundError, InternalServerError, ResourceNotFoundError, ResourceAlreadyExistsError} = require('./errors'); 
+
+function errorHandler(err, req, res, next) {
+    console.error(err); // imprimimos el error en consola
+    // Chequeamos que tipo de error es y actuamos en consecuencia
+    if (err instanceof InvalidURLError){
+      res.status(err.status);
+      res.json({status: err.status, errorCode: err.errorCode});
+    } else if (err.type === 'entity.parse.failed'){
+      // body-parser error para JSON invalido
+      res.status(err.status);
+      res.json({status: err.status, errorCode: 'BAD_REQUEST'});
+    }
+    else if (err instanceof BadRequestError){
+      res.status(err.status);
+      res.json({status: err.status, errorCode: err.errorCode});
+    }
+    else if (err instanceof RelatedResourceNotFoundError){
+      res.status(err.status);
+      res.json({status: err.status, errorCode: err.errorCode});  
+    }
+    else if (err instanceof ResourceNotFoundError){
+      res.status(err.status);
+      res.json({status: err.status, errorCode: err.errorCode});  
+    }
+    else if (err instanceof ResourceAlreadyExistsError){
+      res.status(err.status);
+      res.json({status: err.status, errorCode: err.errorCode});  
+       
+    } else {
+      // continua con el manejador de errores por defecto
+      next(err);
+    }
+  }
 
 app.use(express.json());
 
@@ -43,7 +78,7 @@ function checkArtist(artistId){
 }
 
 subscribers.route('/subscribe')
-.post((req, res) =>{
+.post((req, res, next) =>{
     const body = { artistId: req.body.artistId, email: req.body.email};           
     if(validate(body.artistId) && validate(body.email)) {
         checkArtist(body.artistId)
@@ -53,20 +88,18 @@ subscribers.route('/subscribe')
                 newsletter.addSubscriber(interested);
                 res.status(200).json({});
             } else {
-                const errorResponse = new RelatedResourceNotFoundError();
-                res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
+                next (new RelatedResourceNotFoundError());
             }
         }).catch( error => {
             console.log(error);
         });
     } else {
-        const badRequest = new BadRequestError();
-        res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
+        next (new BadRequestError());
     }
 });
 
 subscribers.route('/unsubscribe')
-.post((req, res)=> {
+.post((req, res, next)=> {
         const body = {artistId: req.body.artistId,
                     email: req.body.email};
         if(validate(body.artistId) && validate(body.email)) {
@@ -86,17 +119,15 @@ subscribers.route('/unsubscribe')
                 }
             })
             .catch( error => {
-                const errorResponse = new RelatedResourceNotFoundError();
-                res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
+                next (new RelatedResourceNotFoundError());
             });
         } else {
-            const badRequest = new BadRequestError();
-            res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
+            next (new BadRequestError());
         }
 });
 
 subscribers.route('/notify')
-.post((req, res) => {
+.post((req, res, next) => {
     const body = {  artistId: req.body.artistId,
                     subject: req.body.subject,
                     message: req.body.message}; 
@@ -106,30 +137,26 @@ subscribers.route('/notify')
             if (response.status < 400) {
                 if (newsletter.getEmailsSubscribersByArtist(body.artistId).length !== 0) {
                     newsletter.getEmailsSubscribersByArtist(body.artistId).forEach( receiverEmail => {
-                        newsletter.notify(receiverEmail, body.subject, body.message);
+                        newsletter.sendEmail(receiverEmail, body.subject, body.message);
                     });    
                     res.status(200).json({});
                 } else {
-                    const internalServerError = new InternalServerError();
-                    res.status(internalServerError.status).json({status: internalServerError.status, errorCode: internalServerError.errorCode});
+                    next (new InternalServerError());
                 }
             } else {
-                const errorResponse = new RelatedResourceNotFoundError();
-                res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
+                next (new RelatedResourceNotFoundError());
             }
         })
         .catch( error => {
-            const internalServerError = new InternalServerError();
-            res.status(internalServerError.status).json({status: internalServerError.status, errorCode: internalServerError.errorCode});
+            next (new InternalServerError());
         });
     }else{
-        const badRequest = new BadRequestError();
-        res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});//res.status(response.status).json(response.statusText);
+        next (new BadRequestError());
     }
 });
 
 subscribers.route('/subscriptions')
-.get((req, res) => {
+.get((req, res, next) => {
     const artistId = req.query.artistId;
     if(validate(artistId)) {
         checkArtist(artistId).then(response => {
@@ -141,17 +168,15 @@ subscribers.route('/subscriptions')
                 };
                 res.status(200).json(resBody);
             }else{
-                const errorResponse = new RelatedResourceNotFoundError();
-                res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
+                next (new RelatedResourceNotFoundError());
             }
         })
         .catch(error => console.log(error));        
     } else {
-        const badRequest = new BadRequestError();
-        res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
+        next (new BadRequestError());
     }  
 })
-.delete((req, res) => {
+.delete((req, res, next) => {
     const body = {artistId: req.body.artistId};
     if(validate(body.artistId)) {
         checkArtist(body.artistId)
@@ -160,23 +185,19 @@ subscribers.route('/subscriptions')
                 newsletter.deleteInterested(body.artistId);
                 res.status(200).json({});
             }else{
-                const errorResponse = new RelatedResourceNotFoundError();
-                res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
+                next (new RelatedResourceNotFoundError());
             }
         })
         .catch(error => {
-            const errorResponse = new RelatedResourceNotFoundError();
-            res.status(errorResponse.status).json({status: errorResponse.status, errorCode: errorResponse.errorCode});
+            next (new RelatedResourceNotFoundError());
         });
     } else {
-        const badRequest = new BadRequestError();
-        res.status(badRequest.status).json({status: badRequest.status, errorCode: badRequest.errorCode});
+        next(new BadRequestError());
     }      
 });
 
-app.use('*', function(req, res) {
-    const invalidError = new InvalidURLError();
-    res.status(invalidError.status).json({status: invalidError.status, errorCode: invalidError.errorCode});
+app.use('*', function(req, res, next) {
+    next (new InvalidURLError());
 });
 
 app.use(errorHandler);

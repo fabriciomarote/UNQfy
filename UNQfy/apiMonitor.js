@@ -12,10 +12,15 @@ function getMonitor() {
 }
 
 const { errorHandler, InvalidURLError} = require('./errors');
+
+const ON = true;
+
+const OFF = false;
+
 const statusService = {
-    statusUnqfy : "off",
-    statusLogging : "off",
-    statusNewsletter : "off"
+    statusUnqfy : OFF,
+    statusLogging : OFF,
+    statusNewsletter : OFF
 };
 
 let isActive = false; 
@@ -49,11 +54,11 @@ const serviceUNQfy = new Monitor2({
 function services(service){
         service.on('down', function (res, state) {
             getMonitor().send(new Date().toLocaleTimeString() + ' The service ' + service.title + ' is back to normal');
-            setStatus(service.title, "on");
+            setStatus(service.title, ON);
         });
         service.on('error', function (error, res) {
             getMonitor().send(new Date().toLocaleTimeString() + ' The service ' + service.title + ' has stopped working');
-            setStatus(service.title, "off");
+            setStatus(service.title, OFF);
         }); 
 }
 
@@ -73,9 +78,6 @@ function isAlive (){
         services(serviceNewsletter);
         services(serviceUNQfy);
     }
-    else {
-        console.log("Failure, the service is disabled");
-    }
 }
 
 monitor.route('/stateServices')
@@ -83,7 +85,7 @@ monitor.route('/stateServices')
     if(isActive){
         res.status(200).json(statusService);
     } else {
-        res.status(500).json("Failure, the service is disabled");
+        res.status(500).json({"message" : "Failure, the service is disabled"});
     }   
 });
 
@@ -91,19 +93,18 @@ monitor.route('/active')
 .get((req, res) => {
         isActive = true;
         isAlive();
-        res.status(200).json("The service has been activated");
+        res.status(200).json({"message" : "The service has been activated"});
 });
 
 monitor.route('/dissable')
 .get((req, res) => {
     isActive = false;
     isAlive();
-    res.status(200).json("The service has been dissabled");
+    res.status(200).json({"message" : "The service has been dissabled"});
 });
 
-app.use('*', function(req, res) {
-    const invalidError = new InvalidURLError();
-    res.status(invalidError.status).json({status: invalidError.status, errorCode: invalidError.errorCode});
+app.use('*', function(req, res, next) {
+    next (new InvalidURLError());
 });
 
 app.use(errorHandler);

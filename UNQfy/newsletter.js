@@ -44,7 +44,7 @@ class Newsletter {
         return subsFiltered;
     }
 
-    notify(receiverEmail, subject, message) {
+    sendEmail(receiverEmail, subject, message) {
         console.log(receiverEmail);
         new GMailAPIClient().send_mail(subject, [message] ,
                                         {"name": "" , "email" : receiverEmail},
