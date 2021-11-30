@@ -10,13 +10,14 @@ const { ErrorResponse, DuplicatedError } = require('./responses');
 const rp = require('request-promise');
 const ObserverLogging = require('./observerLogging');
 const ObserverNewsletter = require('./observerNewsletter');
+const observerLogging = new ObserverLogging();
 
 class UNQfy {
   constructor() {
     this.artists = [];
     this.playlists = [];
     this.users = [];
-    this.observers = [];
+    this.observers = [observerLogging];
   }
 
   addObserver(observer) {
@@ -28,8 +29,8 @@ class UNQfy {
   }
 
   notifyObservers(nameFunction, param) {
-    this.observers.forEach(observer => observer.notify(nameFunction, param));
-    //observerLogging.notify(nameFunction, param);
+    //this.observers.forEach(observer => observer.notify(nameFunction, param));
+    observerLogging.notify(nameFunction, param);
     
   }
 
@@ -396,7 +397,7 @@ class UNQfy {
   }
 
   populateAlbumsForArtist(artistName) { 
-    const token = 'BQAbaZnjMrcd7jUV0IWMR_SlXsUULuTNA532xYc064P-03j8eI00DNkWWXG2VUIObpsn9MRhpVIznz15443kNrMmfkIZICh9ioUled7VZ8vGk-T9r_pAANZfgNQQWUiwb5pZ0ervH0YQt_ACH0rJXAinKvB3';
+    const token = 'BQAhBcKK83B53PZPAMuWtAw15gtaZy19mO-TOL_jz8O_G_QhZ1HNNaHFGLWyporfUlARdMD6rTZQyKQAIQqCxv_Z50M_Yxcs2MT4Tw97M7KgDBYopmrLylqLrUFKP1Kr11MnYQlZXw6XYKCiHLMSk1zkDw_9';
     const options = {
      url: `https://api.spotify.com/v1/search?q=${artistName}&type=artist`,
      headers: { Authorization: 'Bearer ' + token},

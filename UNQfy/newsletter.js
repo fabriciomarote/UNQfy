@@ -17,8 +17,6 @@ class Newsletter {
     }
     
     hasSubscriberToArtist(artistId, email) {
-        console.log(artistId);
-        console.log(email);
         const subscribers = this.subscribers.filter( subscriber => subscriber.artistId === artistId);
         return subscribers.some(subscriber => subscriber.email === email);
     }

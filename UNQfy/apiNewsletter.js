@@ -6,14 +6,21 @@ const fetch = require('cross-fetch');
 const port = process.env.PORT || 3000;
 const app = express();
 const subscribers = express();
+const newsletter = getNewsletter();
 
 function getNewsletter() {
     const newsletter = new Newsletter();
     return newsletter;
 }
 
+const fabri = new Interested("fabrii.cai93@gmail.com", "ar_1");
+const nadia = new Interested("enadialopez@gmail.com", "ar_1");
+
+newsletter.addSubscriber(fabri);
+newsletter.addSubscriber(nadia);
+
 const { errorHandler, InvalidURLError, BadRequestError, RelatedResourceNotFoundError, InternalServerError} = require('./errors'); 
-const newsletter = getNewsletter();
+
 app.use(express.json());
 
 app.use('/api', subscribers);

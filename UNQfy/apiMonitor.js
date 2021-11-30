@@ -18,7 +18,7 @@ const statusService = {
     statusNewsletter : "off"
 };
 
-let isActive = true; 
+let isActive = false; 
 
 app.use(express.json());
 
@@ -78,7 +78,7 @@ function isAlive (){
     }
 }
 
-isAlive();
+//isAlive();
 
 monitor.route('/stateServices')
 .get((req, res) => { 
@@ -91,24 +91,15 @@ monitor.route('/stateServices')
 
 monitor.route('/active')
 .get((req, res) => {
-    if (!isActive){
         isActive = true;
-        //isAlive();
+        isAlive();
         res.status(200).json("The service has been activated");
-    } else {
-        res.status(200).json("The service is already activated");
-    }
 });
 
 monitor.route('/dissable')
 .get((req, res) => {
-    if (isActive){
-        isActive = false;
-        //isAlive();
-        res.status(200).json("The service has been dissabled");
-    } else {
-        res.status(500).json("The service is already dissabled");
-    }
+    isActive = false;
+    res.status(200).json("The service has been dissabled");
 });
 
 app.use('*', function(req, res) {

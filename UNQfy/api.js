@@ -17,8 +17,8 @@ function getUNQfy(filename = 'data.json') {
 
 const unqfy = getUNQfy();
 
-unqfy.addObserver(observerLogging);
-unqfy.addObserverToArtists(observerNewsletter);
+//unqfy.addObserver(observerLogging);
+//unqfy.addObserverToArtists(observerNewsletter);
 
 const { errorHandler, InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError} = require('./errors');
 const { ErrorResponse, DuplicatedError } = require('./responses');

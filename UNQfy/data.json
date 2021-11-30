@@ -13,12 +13,13 @@
       "observers": "__00005__"
     },
     "__00002__": {
-      "0": "__00006__",
-      "1": "__00007__"
+      "0": "__00006__"
     },
     "__00003__": {},
     "__00004__": {},
-    "__00005__": {},
+    "__00005__": {
+      "0": "__00007__"
+    },
     "__00006__": {
       "id": "ar_1",
       "name": "Soda Stereo",
@@ -26,48 +27,225 @@
       "country": "Argentina",
       "observers": "__00009__"
     },
-    "__00007__": {
-      "id": "ar_2",
-      "name": "BTS",
-      "albums": "__00010__",
-      "country": "Korea",
-      "observers": "__00011__"
-    },
+    "__00007__": {},
     "__00008__": {
-      "0": "__00012__",
-      "1": "__00013__",
-      "2": "__00014__"
+      "0": "__00010__",
+      "1": "__00011__",
+      "2": "__00012__",
+      "3": "__00013__",
+      "4": "__00014__",
+      "5": "__00015__",
+      "6": "__00016__",
+      "7": "__00017__",
+      "8": "__00018__",
+      "9": "__00019__",
+      "10": "__00020__",
+      "11": "__00021__",
+      "12": "__00022__",
+      "13": "__00023__",
+      "14": "__00024__",
+      "15": "__00025__",
+      "16": "__00026__",
+      "17": "__00027__",
+      "18": "__00028__",
+      "19": "__00029__"
     },
     "__00009__": {},
-    "__00010__": {},
-    "__00011__": {},
-    "__00012__": {
+    "__00010__": {
       "id": "al_1",
-      "name": "Signos",
-      "year": 1990,
+      "name": "SEP7IMO DIA",
+      "year": 2017,
       "author": "Soda Stereo",
       "duration": 0,
-      "tracks": "__00015__"
+      "tracks": "__00030__"
+    },
+    "__00011__": {
+      "id": "al_2",
+      "name": "Gira Me Verás Volver",
+      "year": 2008,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00031__"
+    },
+    "__00012__": {
+      "id": "al_3",
+      "name": "Gira Me Verás Volver",
+      "year": 2008,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00032__"
     },
     "__00013__": {
-      "id": "al_2",
-      "name": "Dynamo",
-      "year": 1994,
+      "id": "al_4",
+      "name": "Lo Esencial",
+      "year": 2008,
       "author": "Soda Stereo",
-      "duration": 0,
-      "tracks": "__00016__"
+      "duration": 210,
+      "tracks": "__00033__"
     },
     "__00014__": {
-      "id": "al_3",
-      "name": "Sueño Stereo",
+      "id": "al_5",
+      "name": "El Ultimo Concierto B (Remastered)",
+      "year": 1997,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00034__"
+    },
+    "__00015__": {
+      "id": "al_6",
+      "name": "El Ultimo Concierto A (Remastered)",
+      "year": 1997,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00035__"
+    },
+    "__00016__": {
+      "id": "al_7",
+      "name": "Comfort Y Musica Para Volar",
+      "year": 1996,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00036__"
+    },
+    "__00017__": {
+      "id": "al_8",
+      "name": "Sueño Stereo (Remastered)",
+      "year": 1995,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00037__"
+    },
+    "__00018__": {
+      "id": "al_9",
+      "name": "Dynamo (Remastered)",
       "year": 1992,
       "author": "Soda Stereo",
       "duration": 0,
-      "tracks": "__00017__"
+      "tracks": "__00038__"
     },
-    "__00015__": {},
-    "__00016__": {},
-    "__00017__": {}
+    "__00019__": {
+      "id": "al_10",
+      "name": "Rex Mix (Remastered)",
+      "year": 1991,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00039__"
+    },
+    "__00020__": {
+      "id": "al_11",
+      "name": "Canción Animal (Remastered)",
+      "year": 1990,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00040__"
+    },
+    "__00021__": {
+      "id": "al_12",
+      "name": "Doble Vida (Remastered)",
+      "year": 1988,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00041__"
+    },
+    "__00022__": {
+      "id": "al_13",
+      "name": "Zona de Promesas (Mixes 1984 - 1993)",
+      "year": 1988,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00042__"
+    },
+    "__00023__": {
+      "id": "al_14",
+      "name": "Ruido Blanco (Remastered)",
+      "year": 1987,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00043__"
+    },
+    "__00024__": {
+      "id": "al_15",
+      "name": "Signos (Remastered)",
+      "year": 1986,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00044__"
+    },
+    "__00025__": {
+      "id": "al_16",
+      "name": "Nada Personal (Remastered)",
+      "year": 1985,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00045__"
+    },
+    "__00026__": {
+      "id": "al_17",
+      "name": "Soda Stereo (Remastered)",
+      "year": 1984,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00046__"
+    },
+    "__00027__": {
+      "id": "al_18",
+      "name": "Originales - 20 Exitos",
+      "year": 1983,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00047__"
+    },
+    "__00028__": {
+      "id": "al_19",
+      "name": "En el Séptimo Día (SEP7IMO DIA)",
+      "year": 2017,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00048__"
+    },
+    "__00029__": {
+      "id": "al_20",
+      "name": "Languis (Remastered)",
+      "year": 1989,
+      "author": "Soda Stereo",
+      "duration": 0,
+      "tracks": "__00049__"
+    },
+    "__00030__": {},
+    "__00031__": {},
+    "__00032__": {},
+    "__00033__": {
+      "0": "__00050__"
+    },
+    "__00034__": {},
+    "__00035__": {},
+    "__00036__": {},
+    "__00037__": {},
+    "__00038__": {},
+    "__00039__": {},
+    "__00040__": {},
+    "__00041__": {},
+    "__00042__": {},
+    "__00043__": {},
+    "__00044__": {},
+    "__00045__": {},
+    "__00046__": {},
+    "__00047__": {},
+    "__00048__": {},
+    "__00049__": {},
+    "__00050__": {
+      "id": "t_1",
+      "name": "Soda",
+      "duration": 210,
+      "genres": "__00051__",
+      "album": "Lo Esencial",
+      "author": "Soda Stereo",
+      "amountListened": 0,
+      "lyrics": ""
+    },
+    "__00051__": {
+      "0": "Rock"
+    }
   },
   "types": {
     "__00001__": "UNQfy",
@@ -76,16 +254,50 @@
     "__00004__": "Array",
     "__00005__": "Array",
     "__00006__": "Artist",
-    "__00007__": "Artist",
+    "__00007__": "ObserverLogging",
     "__00008__": "Array",
     "__00009__": "Array",
-    "__00010__": "Array",
-    "__00011__": "Array",
+    "__00010__": "Album",
+    "__00011__": "Album",
     "__00012__": "Album",
     "__00013__": "Album",
     "__00014__": "Album",
-    "__00015__": "Array",
-    "__00016__": "Array",
-    "__00017__": "Array"
+    "__00015__": "Album",
+    "__00016__": "Album",
+    "__00017__": "Album",
+    "__00018__": "Album",
+    "__00019__": "Album",
+    "__00020__": "Album",
+    "__00021__": "Album",
+    "__00022__": "Album",
+    "__00023__": "Album",
+    "__00024__": "Album",
+    "__00025__": "Album",
+    "__00026__": "Album",
+    "__00027__": "Album",
+    "__00028__": "Album",
+    "__00029__": "Album",
+    "__00030__": "Array",
+    "__00031__": "Array",
+    "__00032__": "Array",
+    "__00033__": "Array",
+    "__00034__": "Array",
+    "__00035__": "Array",
+    "__00036__": "Array",
+    "__00037__": "Array",
+    "__00038__": "Array",
+    "__00039__": "Array",
+    "__00040__": "Array",
+    "__00041__": "Array",
+    "__00042__": "Array",
+    "__00043__": "Array",
+    "__00044__": "Array",
+    "__00045__": "Array",
+    "__00046__": "Array",
+    "__00047__": "Array",
+    "__00048__": "Array",
+    "__00049__": "Array",
+    "__00050__": "Track",
+    "__00051__": "Array"
   }
 }
