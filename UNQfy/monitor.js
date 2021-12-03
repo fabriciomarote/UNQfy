@@ -1,6 +1,5 @@
 const fetch = require('cross-fetch');
 const Ping = require('ping-monitor');
-//const { isActive } = require('./apiMonitor');
 
 const OFF = false;
 
@@ -25,6 +24,7 @@ const serviceUNQfy = new Ping({
 class Monitor {
     
     constructor() {
+        this.isActive = false,
         this.statusServices = {
                             statusUnqfy : OFF,
                             statusLogging : OFF,
@@ -32,35 +32,19 @@ class Monitor {
                             };
     }   
 
-    serviceLogging() {
-        const serviceLogging = new Ping({
-            website: 'http://localhost:4000/api',
-            title: 'Logging',
-            interval: 0.3, // seconds
-        });
-        return serviceLogging;
+    getIsActive() {
+        return this.isActive;
     }
 
-    serviceNewsletter() {
-        const serviceNewsletter = new Ping({
-            website: 'http://localhost:3000/api',
-            title: 'Newsletter',
-            interval: 0.3, // seconds
-        });
-        return serviceNewsletter;
+    getStatusServices() {
+        return this.statusServices;
     }
 
-    serviceUNQfy() {
-        const serviceUNQfy = new Ping({
-            website: 'http://localhost:8080/api',
-            title: 'UNQfy',
-            interval: 0.3, // seconds
-        });        
-        return serviceUNQfy;
+    setIsActive(bool) {
+        this.isActive = bool;
     }
-    
 
-    send(message) {
+     send(message) {
         return fetch('https://discord.com/api/webhooks/907744313620975676/9ZiMdG0dDEuhlJJysjLD1ix0upH5WTCnSjxnFrxBpFLtCtY_t3DRQST_4j_0b8xzRjds', {
         method: 'POST',
             body: JSON.stringify({
@@ -71,7 +55,7 @@ class Monitor {
             } 
         });
     }
-    
+
     setStatus(title, status){
         if (title === "Newsletter"){
             this.statusServices.statusNewsletter = status;
@@ -81,8 +65,6 @@ class Monitor {
             this.statusServices.statusUnqfy = status;
         }
     }
-
-    
 }
 
 module.exports = {Monitor,
