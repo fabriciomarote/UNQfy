@@ -9,7 +9,7 @@ class Newsletter {
     addSubscriber(subscriber) {
         if(!this.hasSubscriber(subscriber)) {
             this.subscribers.push(subscriber);
-        }  
+        } 
     }   
 
     hasSubscriber(subscriber){
@@ -45,7 +45,6 @@ class Newsletter {
     }
 
     sendEmail(receiverEmail, subject, message) {
-        console.log(receiverEmail);
         new GMailAPIClient().send_mail(subject, [message] ,
                                         {"name": "" , "email" : receiverEmail},
                                         {"name": "" , "email" :""} );
@@ -59,6 +58,7 @@ class Newsletter {
         });
         console.log(this.subscribers);
     }
+    
 }
 
 module.exports = Newsletter;

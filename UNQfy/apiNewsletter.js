@@ -1,25 +1,11 @@
 const express = require('express');
-const Newsletter = require('./newsletter');
 const Interested = require('./interested');
 const fetch = require('cross-fetch');
+const { newsletter } = require('./observerNewsletter');
 
 const port = process.env.PORT || 3000;
 const app = express();
 const subscribers = express();
-const newsletter = getNewsletter();
-
-function getNewsletter() {
-    const newsletter = new Newsletter();
-    return newsletter;
-}
-/*
-const fabri = new Interested("fabrii.cai93@gmail.com", "ar_1");
-const nadia = new Interested("enadialopez@gmail.com", "ar_1");
-
-newsletter.addSubscriber(fabri);
-newsletter.addSubscriber(nadia);
-*/
-
 
 const {InvalidURLError, BadRequestError, RelatedResourceNotFoundError, InternalServerError, ResourceNotFoundError, ResourceAlreadyExistsError} = require('./errors'); 
 
@@ -135,6 +121,7 @@ subscribers.route('/notify')
         checkArtist(body.artistId)
         .then(response =>{
             if (response.status < 400) {
+                console.log(newsletter.subscribers);
                 if (newsletter.getEmailsSubscribersByArtist(body.artistId).length !== 0) {
                     newsletter.getEmailsSubscribersByArtist(body.artistId).forEach( receiverEmail => {
                         newsletter.sendEmail(receiverEmail, body.subject, body.message);
@@ -201,3 +188,4 @@ app.use('*', function(req, res, next) {
 });
 
 app.use(errorHandler);
+

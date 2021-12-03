@@ -1,27 +1,16 @@
 const express = require('express');
-const fs = require('fs'); // necesitado para guardar/cargar unqfy
-const unqmod = require('./unqfy'); // importamos el modulo unqfy
+const { getUNQfy } = require('./main');
 const ObserverLogging = require('./observerLogging');
+const { ObserverNewsletter } = require('./observerNewsletter');
+const { ErrorResponse, DuplicatedError } = require('./responses');
+const { InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError } = require('./errors');
 const observerLogging = new ObserverLogging();
-const ObserverNewsletter = require('./observerNewsletter');
 const observerNewsletter = new ObserverNewsletter();
-
-// Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.
-function getUNQfy(filename = 'data.json') {
-  let unqfy = new unqmod.UNQfy();
-  if (fs.existsSync(filename)) {
-    unqfy = unqmod.UNQfy.load(filename);
-  }
-  return unqfy;
-}
-
 const unqfy = getUNQfy();
 
-//unqfy.addObserver(observerLogging);
+unqfy.addObserver(observerLogging);
 //unqfy.addObserverToArtists(observerNewsletter);
 
-const { InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError} = require('./errors');
-const { ErrorResponse, DuplicatedError } = require('./responses');
 const app = express();
 const artists = express();
 const albums = express();
@@ -31,7 +20,6 @@ const playlists = express();
 const port = process.env.PORT || 8080;
 
 app.use(express.json());
-
 app.use('/api', artists, albums, tracks);
 app.listen(port,
     () => console.log(`Puerto ${port} Ok`)
@@ -294,8 +282,11 @@ playlists.route('/playlists/:playlistId')
     }
 });
 
+/*
 app.use('*', function(req, res, next) {
     next (new InvalidURLError());
-});
+});*/
 
 app.use(errorHandler);
+
+module.exports = { observerNewsletter };

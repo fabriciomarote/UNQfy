@@ -14,7 +14,7 @@ class ObserverNewsletter extends IObserver{
                 `Hi! The artist ${data.artist.name} add new album called ${data.album.name}`
             );
         } else if (nameFunction === "deleteArtist") {
-            this.notifyDeleteArtist();
+            this.notifyDeleteArtist(data.artist.id, newsletter);
         }  
     }
 
@@ -33,10 +33,12 @@ class ObserverNewsletter extends IObserver{
         });
     }
 
-    notifyDeleteArtist(artistId) {
+    notifyDeleteArtist(artistId, newsletter) {
         newsletter.deleteInterested(artistId);
     }
 
 }
 
-module.exports = ObserverNewsletter;
+module.exports = { ObserverNewsletter,
+                   newsletter
+                 };

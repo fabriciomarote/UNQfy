@@ -1,7 +1,5 @@
 const Generate = require('./generate');
 const generateId = new Generate();
-const ObserverNewsletter = require('./observerNewsletter');
-
 
 class Artist {
     constructor(name, country) {
@@ -17,7 +15,10 @@ class Artist {
       }
 
     notifyObservers(nameFunction, param) {
-        this.observers.forEach(observer => observer.notify(nameFunction, param));
+        this.observers.forEach(observer => {
+            observer.notify(nameFunction, param);
+        }
+            );
       }
 
     content() {

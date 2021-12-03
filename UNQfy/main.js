@@ -1,5 +1,4 @@
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
-//const unqfy = require('./unqfy');
 const unqmod = require('./unqfy'); // importamos el modulo unqfy
 const ErrorResponse = require('./responses');
 
@@ -12,9 +11,7 @@ function getUNQfy(filename = 'data.json') {
   return unqfy;
 }
 
-function saveUNQfy(unqfy, filename = 'data.json') {
-  unqfy.save(filename);
-}
+const unqfy = getUNQfy();
 
 /*
  En esta funcion deberán interpretar los argumentos pasado por linea de comandos
@@ -171,6 +168,10 @@ function contentAlbum(unqfy, name) {
   } 
 }
 
+function contentUnqfy() {
+  unqfy.contentUnqfy();
+}
+
 function contentTrack(unqfy, name) {
   const tracks = unqfy.getTracks();
   if(tracks.some(track => track.name === name)) {
@@ -231,9 +232,10 @@ function getArtists(unqfy) {
   unqfy.getArtists();
 }
 
+
+
 function main() {
   const arguments_ = process.argv.splice(2);
-  const unqfy = getUNQfy();
   try {
     if (arguments_[0] === "addArtist"){
       addArtist(unqfy, arguments_[1], arguments_[2]);
@@ -275,6 +277,8 @@ function main() {
       contentTrack(unqfy, arguments_[1]);
     }  else if (arguments_[0] === 'contentArtist') {
       contentArtist(unqfy, arguments_[1]);
+    }  else if (arguments_[0] === 'contentUnqfy') {
+      contentUnqfy();
     } else if (arguments_[0] === "thisIs") {
       thisIs(unqfy, arguments_[1]);
     } else if (arguments_[0] === "getLyrics") {
@@ -291,7 +295,8 @@ function main() {
   } catch(error) {
       console.log(error);
   }
- 
 }
 
 main();
+
+module.exports = { getUNQfy };

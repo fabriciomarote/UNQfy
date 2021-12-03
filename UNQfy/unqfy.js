@@ -9,29 +9,36 @@ const User = require('./user');
 const { ErrorResponse, DuplicatedError } = require('./responses');
 const rp = require('request-promise');
 const ObserverLogging = require('./observerLogging');
-const ObserverNewsletter = require('./observerNewsletter');
-const observerLogging = new ObserverLogging();
+const { ObserverNewsletter } = require('./observerNewsletter');
 
 class UNQfy {
   constructor() {
     this.artists = [];
     this.playlists = [];
     this.users = [];
-    this.observers = [observerLogging];
+    this.observers = [];
+  }
+
+  contentUnqfy() {
+    console.log(this);
   }
 
   addObserver(observer) {
     this.observers.push(observer);
+    this.save('data.json');
   }
 
   addObserverToArtists(observer) {
-    this.artists.forEach( artist => artist.addObserver(observer));
+    this.artists.forEach( artist => {
+      artist.addObserver(observer);
+      this.save('data.json');
+    });
   }
 
   notifyObservers(nameFunction, param) {
-    //this.observers.forEach(observer => observer.notify(nameFunction, param));
-    observerLogging.notify(nameFunction, param);
-    
+    this.observers.forEach(observer => {
+      observer.notify(nameFunction, param);
+    });
   }
 
   /////////////////////////// ARTISTA /////////////////////////////////////////////
@@ -155,6 +162,7 @@ class UNQfy {
       artist.addAlbum(album);
       this.notifyObservers("addAlbum", {artist: artist, album: album});
       this.save('data.json');
+     
       return album; 
     } 
     else {

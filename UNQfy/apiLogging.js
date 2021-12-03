@@ -1,6 +1,5 @@
 const express = require('express');
 const fs = require('fs');
-
 const winston  = require('winston');
 const {Loggly} = require('winston-loggly-bulk');
 
@@ -8,7 +7,7 @@ const port = process.env.PORT || 4000;
 const app = express();
 const logs = express();
 
-const {InvalidURLError} = require('./errors'); 
+const { InvalidURLError } = require('./errors'); 
 
 function errorHandler(err, req, res, next) {
     console.error(err); // imprimimos el error en consola
@@ -89,10 +88,6 @@ logs.route('/log')
         sendLog(body.message, body.type);
         saveLog(body.message, body.type);
         res.status(200).res.json({});
-});
-
-app.use('*', function(req, res, next) {
-    next ( new InvalidURLError());
 });
 
 app.use(errorHandler);
