@@ -183,9 +183,6 @@ subscribers.route('/subscriptions')
     }      
 });
 
-app.use('*', function(req, res, next) {
-    next (new InvalidURLError());
-});
 
 app.use(errorHandler);
 
