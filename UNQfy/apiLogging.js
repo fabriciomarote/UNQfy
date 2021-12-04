@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const winston  = require('winston');
 const {Loggly} = require('winston-loggly-bulk');
+require('events').EventEmitter.prototype._maxListeners = 100;
 
 const port = process.env.PORT || 4000;
 const app = express();

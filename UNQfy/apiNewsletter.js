@@ -73,11 +73,9 @@ subscribers.route('/subscribe')
                 const interested = new Interested(body.email, body.artistId);
                 newsletter.addSubscriber(interested);
                 res.status(200).json({});
-            } else {
-                next (new RelatedResourceNotFoundError());
             }
         }).catch( error => {
-            console.log(error);
+            next (new RelatedResourceNotFoundError());
         });
     } else {
         next (new BadRequestError());
@@ -121,7 +119,6 @@ subscribers.route('/notify')
         checkArtist(body.artistId)
         .then(response =>{
             if (response.status < 400) {
-                console.log(newsletter.subscribers);
                 if (newsletter.getEmailsSubscribersByArtist(body.artistId).length !== 0) {
                     newsletter.getEmailsSubscribersByArtist(body.artistId).forEach( receiverEmail => {
                         newsletter.sendEmail(receiverEmail, body.subject, body.message);
@@ -183,6 +180,9 @@ subscribers.route('/subscriptions')
     }      
 });
 
+app.use('*', function(req, res, next) {
+    next ( new InvalidURLError());
+});
 
 app.use(errorHandler);
 

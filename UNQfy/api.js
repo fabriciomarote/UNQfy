@@ -1,7 +1,6 @@
 const express = require('express');
 const { getUNQfy } = require('./main');
 const ObserverLogging = require('./observerLogging');
-const { ObserverNewsletter } = require('./observerNewsletter');
 const { ErrorResponse, DuplicatedError } = require('./responses');
 const { InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError } = require('./errors');
 const observerLogging = new ObserverLogging();

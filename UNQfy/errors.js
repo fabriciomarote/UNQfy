@@ -53,7 +53,7 @@ class APIError extends Error {
   } else if (err.type === 'entity.parse.failed'){
     // body-parser error para JSON invalido
     res.status(err.status);
-    res.json({status: err.status, errorCode: 'BAD_REQUEST'});
+    res.json({status: err.status, errorCode: err.errorCode});
   }
   else if (err instanceof BadRequestError){
     res.status(err.status);

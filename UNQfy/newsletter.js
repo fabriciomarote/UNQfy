@@ -56,7 +56,6 @@ class Newsletter {
             const pos = this.subscribers.indexOf(subscriber);
             this.subscribers.splice(pos, 1);
         });
-        console.log(this.subscribers);
     }
     
 }

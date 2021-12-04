@@ -400,7 +400,7 @@ class UNQfy {
   }
 
   populateAlbumsForArtist(artistName) { 
-    const token = 'BQAhBcKK83B53PZPAMuWtAw15gtaZy19mO-TOL_jz8O_G_QhZ1HNNaHFGLWyporfUlARdMD6rTZQyKQAIQqCxv_Z50M_Yxcs2MT4Tw97M7KgDBYopmrLylqLrUFKP1Kr11MnYQlZXw6XYKCiHLMSk1zkDw_9';
+    const token = 'BQC_JeJLMBLUjDzzq3rbmeYCnLnNwRHrRAsA-1BhHZ50CbnnIur9IExb1htVhJ5yb91qs88Rw-7yhAvDiPcDUsRQhY1Y-H3Ykk3GRIaNbBAzloSQxItHZHFGCLgRbuErRoVFLnbOrrZlYju9pK7fT3LWSiX2';
     const options = {
      url: `https://api.spotify.com/v1/search?q=${artistName}&type=artist`,
      headers: { Authorization: 'Bearer ' + token},
@@ -422,6 +422,7 @@ class UNQfy {
               const artist = this.getArtistByName(artistSpotify.name);
               const album = new Album(alb.name, parseInt(this.getYear(alb.release_date)), artistSpotify.name);
               artist.addAlbum(album); 
+              this.notifyObservers("addAlbum", {artist: artist, album: album});
           });
           this.save('data.json');
         });
