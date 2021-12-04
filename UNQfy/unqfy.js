@@ -9,7 +9,8 @@ const User = require('./user');
 const { ErrorResponse, DuplicatedError } = require('./responses');
 const rp = require('request-promise');
 const ObserverLogging = require('./observerLogging');
-const { ObserverNewsletter } = require('./observerNewsletter');
+const {ObserverNewsletter}  = require('./observerNewsletter');
+const observerNewsletter = new ObserverNewsletter();
 
 class UNQfy {
   constructor() {
@@ -26,13 +27,6 @@ class UNQfy {
   addObserver(observer) {
     this.observers.push(observer);
     this.save('data.json');
-  }
-
-  addObserverToArtists(observer) {
-    this.artists.forEach( artist => {
-      artist.addObserver(observer);
-      this.save('data.json');
-    });
   }
 
   notifyObservers(nameFunction, param) {
@@ -56,6 +50,7 @@ class UNQfy {
         const artist = new Artist(artistData.name, artistData.country);
         this.artists.push(artist);
         this.notifyObservers("addArtist", artist);
+        artist.addObserver(observerNewsletter);
         this.save('data.json');
         return artist; 
     } else {   

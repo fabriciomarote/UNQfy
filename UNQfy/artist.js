@@ -12,6 +12,8 @@ class Artist {
 
     addObserver(observer) {
         this.observers.push(observer);
+        console.log(observer);
+        console.log(this.observers[0]);
       }
 
     notifyObservers(nameFunction, param) {

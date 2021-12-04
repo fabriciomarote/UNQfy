@@ -5,11 +5,9 @@ const { ObserverNewsletter } = require('./observerNewsletter');
 const { ErrorResponse, DuplicatedError } = require('./responses');
 const { InvalidURLError, BadRequestError, ResourceAlreadyExistsError, ResourceNotFoundError, RelatedResourceNotFoundError } = require('./errors');
 const observerLogging = new ObserverLogging();
-const observerNewsletter = new ObserverNewsletter();
 const unqfy = getUNQfy();
 
 unqfy.addObserver(observerLogging);
-//unqfy.addObserverToArtists(observerNewsletter);
 
 const app = express();
 const artists = express();
@@ -74,8 +72,7 @@ artists.route('/artists')
         const artistData = {name: req.body.name,
                             country:req.body.country};
         if( artistData.name !== undefined && artistData.country !== undefined) {
-            const newArtist = unqfy.addArtist(artistData); 
-            unqfy.save('data.json');
+            const newArtist = unqfy.addArtist(artistData);
             res.status(201).json(newArtist);
         }  else {
             next (new BadRequestError());
@@ -94,7 +91,7 @@ artists.route('/artists/:artistId')
     } 
     catch (error) {
         next (new ResourceNotFoundError());
-    }
+    }         
 })
 
 .delete((req, res, next) => {
@@ -102,7 +99,6 @@ artists.route('/artists/:artistId')
         const artistId = req.params.artistId;
         const artist = unqfy.getArtistById(artistId);
         unqfy.deleteArtist(artist);
-        unqfy.save('data.json');
         res.status(204).json({});
     }
     catch(error) {
@@ -116,8 +112,7 @@ artists.route('/artists/:artistId')
         const artistData = { name: req.body.name,
                              country: req.body.country};
         if (artistId !== undefined && artistData.name !== undefined && artistData.country !== undefined) {
-            const artistEdited = unqfy.editArtist(artistId, artistData); 
-            unqfy.save('data.json');     
+            const artistEdited = unqfy.editArtist(artistId, artistData);     
             res.status(200).json(artistEdited);    
         } else {
             next (new BadRequestError());
@@ -149,7 +144,6 @@ albums.route('/albums')
         const albumData = { name: req.body.name, year: req.body.year};
         if (albumData.name !== undefined && albumData.year !== undefined && artistId !== undefined) {
             const newAlbum = unqfy.addAlbum(artistId, albumData);
-            unqfy.save('data.json');
             res.status(201).json(newAlbum);
         } else {
             next (new BadRequestError());
@@ -181,7 +175,6 @@ albums.route('/albums/:albumId')
         const album = unqfy.getAlbumById(albumId);
         const artist = unqfy.getArtistByName(album.author);
         unqfy.deleteAlbum(artist, album);
-        unqfy.save('data.json');
         res.status(204).json("Album deleted");
     }
     catch(error) {
@@ -193,8 +186,7 @@ albums.route('/albums/:albumId')
         const albumId = req.params.albumId;
         const albumYear = req.body.year;
         if (albumId !== undefined && albumYear !== undefined) {
-            const albumEdited = unqfy.editAlbum(albumId, albumYear);    
-            unqfy.save('data.json');  
+            const albumEdited = unqfy.editAlbum(albumId, albumYear); 
             res.status(200).json(albumEdited);  
         } else {
             next (new BadRequestError());
@@ -239,7 +231,6 @@ playlists.route('/playlists')
         const genres = req.body.genres;
         if(name !== undefined && maxDuration !== undefined && genres !== undefined) {
             const newPlaylist = unqfy.createPlaylist(name, genres, maxDuration); 
-            unqfy.save('data.json');
             res.status(201).json(newPlaylist);
         } else {
             next (new BadRequestError());
@@ -288,5 +279,3 @@ app.use('*', function(req, res, next) {
 });*/
 
 app.use(errorHandler);
-
-module.exports = { observerNewsletter };
